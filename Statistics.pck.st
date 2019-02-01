@@ -1,8 +1,9 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3528] on 18 December 2018 at 12:54:27 pm'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3589] on 1 February 2019 at 10:50:15 am'!
 'Description Please enter a description for this package'!
-!provides: 'Statistics' 1 12!
+!provides: 'Statistics' 1 13!
 !requires: 'Pen' 1 0 nil!
 SystemOrganization addCategory: #Statistics!
+SystemOrganization addCategory: #'Statistics-Tests'!
 
 
 !classDefinition: #UnitaryMonotonicMap category: #Statistics!
@@ -13,6 +14,16 @@ FloatArray variableWordSubclass: #UnitaryMonotonicMap
 	category: 'Statistics'!
 !classDefinition: 'UnitaryMonotonicMap class' category: #Statistics!
 UnitaryMonotonicMap class
+	instanceVariableNames: ''!
+
+!classDefinition: #StatisticsTest category: #'Statistics-Tests'!
+TestCase subclass: #StatisticsTest
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Statistics-Tests'!
+!classDefinition: 'StatisticsTest class' category: #'Statistics-Tests'!
+StatisticsTest class
 	instanceVariableNames: ''!
 
 !classDefinition: #Histogram category: #Statistics!
@@ -30,6 +41,9 @@ Histogram class
 We need a better name for this!!
 My instances are continuous monotonic increasing functions. Domain is [0..1]. Function values are also in [0..1]. f(0) = 0. f(1) = 1. They have inverse, and the inverse has the same properties.!
 
+!StatisticsTest commentStamp: '<historical>' prior: 0!
+Test statistics in Collection, Matrix and Histogram hierarchies. (This includes FloatMatrix, FloatImage, FloatArray, etc).!
+
 !Histogram commentStamp: '<historical>' prior: 0!
 Histograms to be used for statistical purposes. Useful, for example, for many image processing algorithms. See http://en.wikipedia.org/wiki/Histogram .
 Counts are currently held in a WordArray, and limited to about 4 billion counts (32 bit unsigned integers)
@@ -37,6 +51,10 @@ Counts are currently held in a WordArray, and limited to about 4 billion counts 
 Should replace classes ImageHistogram, ImageHistogram2, ImageHistogram3 and AccumulatedImageHistogram in package SignalProcessing. Keep working towards that!!!!!!
 
 A good number of bins can be n^(1/2) or n^(1/3), where n is the total number of samples. See Wikipedia article for rationale.!
+
+!Histogram methodsFor: 'copying' stamp: 'jmv 4/10/2015 16:16'!
+postCopy
+	tallies _ tallies copy! !
 
 !UnitaryMonotonicMap methodsFor: 'accessing' stamp: 'jmv 6/3/2015 22:22'!
 inverseValueAt: y
@@ -60,6 +78,111 @@ valueAt: x
 	^ i = i0
 		ifTrue: [ self at: i0 ]
 		ifFalse: [ (self at: i0) interpolateTo: (self at: i0+1) at: i-i0 ]! !
+
+!StatisticsTest methodsFor: 'testing' stamp: 'jmv 12/18/2018 09:42:49'!
+testMax
+	| i correct gimpCorrect |
+	i _ FloatImage lena.
+	correct _ i elements inject: 0 into: [ :prev :each | prev max: each ].
+	gimpCorrect _ 246 / 256.0.
+	self assert: correct = gimpCorrect.
+	self assert: i elements max = correct.
+	self assert: i max = correct.
+	self assert: i histogram max = correct.! !
+
+!StatisticsTest methodsFor: 'testing' stamp: 'jmv 12/18/2018 10:11:12'!
+testMean
+	| i correct gimpCorrect |
+	i _ FloatImage lena.
+	correct _ i elements sum / i elements size.
+	gimpCorrect _ 124.7 / 256.0.
+	self assert: correct % gimpCorrect <= 0.001.
+	self assert: i elements mean = correct.
+	self assert: i mean = correct.
+	self assert: correct % i histogram mean < 0.0001.! !
+
+!StatisticsTest methodsFor: 'testing' stamp: 'jmv 12/18/2018 09:55:33'!
+testMedian
+	| i correct n sorted gimpCorrect h |
+	i _ FloatImage lena.
+	sorted _ i elements asArray sort.
+	n _ sorted size.
+	self assert: n even.
+	correct _ ((sorted at: n/2) + (sorted at: n/2+1)) * 0.5.
+	gimpCorrect _ 129 / 256.0.
+	self assert: correct = gimpCorrect.
+	self assert: i elements median = correct.
+	self assert: i elements asSortedCollection median = correct.
+	"histogram well matched to pixel values"
+	self assert: (i histogram: 256 lowValue: 0.0 highValue: 255.0/256) median = correct.
+	"general histogram"
+	h _ i histogram.
+	self assert: (h median - correct) abs < h halfBinWidth.
+	self assert: (i median - correct) abs < h halfBinWidth.! !
+
+!StatisticsTest methodsFor: 'testing' stamp: 'jmv 12/18/2018 09:42:35'!
+testMin
+	| i correct gimpCorrect |
+	i _ FloatImage lena.
+	correct _ i elements inject: 1 into: [ :prev :each | prev min: each ].
+	gimpCorrect _ 14 / 256.0.
+	self assert: correct = gimpCorrect.
+	self assert: i elements min = correct.
+	self assert: i min = correct.
+	self assert: i histogram min = correct! !
+
+!StatisticsTest methodsFor: 'testing' stamp: 'jmv 12/18/2018 09:56:32'!
+testMode
+	| i correct h |
+	i _ FloatImage lena.
+	correct _ i elements asBag sortedCounts first value.
+
+	self assert: i elements mode = correct.
+	h _ i histogram.
+	self assert: (h mode - correct) abs < h halfBinWidth.
+	self assert: (i mode - correct) abs < h halfBinWidth.! !
+
+!StatisticsTest methodsFor: 'testing' stamp: 'jmv 12/18/2018 09:58:02'!
+testPercentiles
+	| image correct n sorted i0 i1 p percentiles gimpCorrect gimpCorrectValues histogram |
+	image _ FloatImage lena.
+	sorted _ image elements asArray sort.
+	n _ sorted size.
+	self assert: n even.
+	percentiles _ #(0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0).
+	gimpCorrectValues _ #(14 54 77 100 115 129 141 152 163 188 246).
+	histogram _ image histogram.
+	1 to: percentiles size do: [ :i |
+		p _ percentiles at: i.
+		i0 _ (n * p) floor max: 1.
+		i1 _ (n * p) ceiling max: 1.
+		correct _ ((sorted at: i0) + (sorted at: i1)) * 0.5.
+		gimpCorrect _ (gimpCorrectValues at: i) / 256.0.
+		self assert: correct = gimpCorrect.
+		self assert: (image elements percentile: p) = correct.
+		self assert: (image elements asSortedCollection percentile: p) = correct.
+		self assert: ((histogram percentile: p) - correct) abs < histogram halfBinWidth.
+		self assert: ((image percentile: p) - correct) abs < histogram halfBinWidth.
+	]! !
+
+!StatisticsTest methodsFor: 'testing' stamp: 'jmv 12/18/2018 09:42:23'!
+testStandardDeviation
+	| i correct gimpCorrect |
+	i _ FloatImage lena.
+	correct _ i elements standardDeviation.
+	gimpCorrect _ 46.7 / 256.0.
+	self assert: correct %  gimpCorrect < 0.0001.
+	self assert: correct % i standardDeviation < 0.0001.
+	self assert: correct % i histogram standardDeviation < 0.0001.! !
+
+!StatisticsTest methodsFor: 'testing' stamp: 'jmv 12/18/2018 10:10:38'!
+testSum
+	| i correct |
+	i _ FloatImage lena.
+	correct _ i elements inject: 0 into: [ :p :e | p + e ].
+	self assert: i elements sum = correct.
+	self assert: i sum = correct.
+	self assert: i histogram sum % correct < 0.0001.! !
 
 !Histogram methodsFor: 'building' stamp: 'jmv 4/10/2015 16:12'!
 accumulate
@@ -455,10 +578,6 @@ plotLogIn: rect color: aColor min: min max: max
 		x _ x + dx].
 	max printString displayOn: Display at: (x+2) @ (rect top-9).
 	min printString displayOn: Display at: (x+2) @ (rect bottom - 9)! !
-
-!Histogram methodsFor: 'copying' stamp: 'jmv 4/10/2015 16:16'!
-postCopy
-	tallies _ tallies copy! !
 
 !Histogram class methodsFor: 'instance creation' stamp: 'jmv 4/6/2015 11:57'!
 binCount: binCount lowBinCenter: lowBinCenter highBinCenter: highBinCenter
