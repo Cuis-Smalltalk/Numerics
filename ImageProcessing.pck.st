@@ -1,12 +1,12 @@
 'From Cuis 5.0 of 7 November 2016 [latest update: #3449] on 20 September 2018 at 3:33:29 pm'!
 'Description Please enter a description for this package'!
-!provides: 'ImageProcessing' 1 12!
+!provides: 'ImageProcessing' 1 13!
 !requires: 'Graphics-Files-Additional' 1 nil nil!
 !requires: 'Statistics' 1 nil nil!
 !requires: 'SignalProcessing' 1 100 nil!
 !requires: 'NumericalMethods' 1 8 nil!
 !requires: 'ProbabilityDistributions' 1 nil nil!
-!requires: 'Morphic3' 1 50 nil!
+!requires: 'VectorGraphics' 1 50 nil!
 SystemOrganization addCategory: #ImageProcessing!
 SystemOrganization addCategory: #'ImageProcessing-Images'!
 SystemOrganization addCategory: #'ImageProcessing-Interpolators'!
