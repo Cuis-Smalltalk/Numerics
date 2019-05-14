@@ -1,22 +1,22 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3464] on 3 October 2018 at 10:27:37 am'!
+'From Cuis 5.0 of 7 November 2016 [latest update: #3745] on 14 May 2019 at 9:38:35 am'!
 'Description Please enter a description for this package '!
-!provides: 'LinearAlgebra' 1 53!
+!provides: 'LinearAlgebra' 1 54!
 !requires: 'Collections-CompactArrays' 1 2 nil!
 SystemOrganization addCategory: #LinearAlgebra!
 
 
-!classDefinition: #Matrix category: #LinearAlgebra!
-Array2D subclass: #Matrix
+!classDefinition: #NumericalMatrix category: #LinearAlgebra!
+Array2D subclass: #NumericalMatrix
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'LinearAlgebra'!
-!classDefinition: 'Matrix class' category: #LinearAlgebra!
-Matrix class
+!classDefinition: 'NumericalMatrix class' category: #LinearAlgebra!
+NumericalMatrix class
 	instanceVariableNames: ''!
 
 !classDefinition: #ByteMatrix category: #LinearAlgebra!
-Matrix subclass: #ByteMatrix
+NumericalMatrix subclass: #ByteMatrix
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
@@ -26,7 +26,7 @@ ByteMatrix class
 	instanceVariableNames: ''!
 
 !classDefinition: #FloatMatrix category: #LinearAlgebra!
-Matrix subclass: #FloatMatrix
+NumericalMatrix subclass: #FloatMatrix
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
@@ -56,7 +56,7 @@ FloatBandMatrix class
 	instanceVariableNames: ''!
 
 !classDefinition: #IntegerMatrix category: #LinearAlgebra!
-Matrix subclass: #IntegerMatrix
+NumericalMatrix subclass: #IntegerMatrix
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
@@ -66,7 +66,7 @@ IntegerMatrix class
 	instanceVariableNames: ''!
 
 !classDefinition: #ShortIntegerMatrix category: #LinearAlgebra!
-Matrix subclass: #ShortIntegerMatrix
+NumericalMatrix subclass: #ShortIntegerMatrix
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
@@ -76,7 +76,7 @@ ShortIntegerMatrix class
 	instanceVariableNames: ''!
 
 !classDefinition: #ShortWordMatrix category: #LinearAlgebra!
-Matrix subclass: #ShortWordMatrix
+NumericalMatrix subclass: #ShortWordMatrix
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
@@ -86,7 +86,7 @@ ShortWordMatrix class
 	instanceVariableNames: ''!
 
 
-!Matrix commentStamp: 'jmv 7/19/2012 11:52' prior: 0!
+!NumericalMatrix commentStamp: 'jmv 7/19/2012 11:52' prior: 0!
 My instances are m x n matrices, where m is the height and n the width. A matrix is a kind of 2-d array. A Matrix whose width is 1 is called a "Column Vector". A Matrix whose height is 1 is called a "Row Vector".
 
 My instances can hold elements of any kind, but include some methods that assume that the elements understand arithmetic operations. These are useful for Matrices whose elements are Fractions, LargeIntegers, Matrices and Vectors (column or row Matrices). They are also suitable for Complex numbers, but in such cases, an alternative is to use different FloatMatrices for Real and Imaginary parts.!
@@ -129,11 +129,21 @@ ShortWordMatrix fromArrayOfArrays: #(
 	#( 40000 		127 		128)
 	#( 32768 		254		32767 ))!
 
-!Matrix methodsFor: 'aritmethic' stamp: 'jmv 8/23/2014 23:27'!
+!FloatMatrix methodsFor: 'printing' stamp: 'jmv 1/9/2014 21:28'!
+printOn: aStream
+	aStream newLine.
+	1 to: height do: [ :i |
+		aStream nextPutAll: '| '.
+		1 to: width do: [ :j |
+			(self i: i j: j) printOn: aStream integerDigits: 1 fractionDigits: 3.
+			aStream space ].
+		aStream nextPut: $|; newLine ]! !
+
+!NumericalMatrix methodsFor: 'aritmethic' stamp: 'jmv 5/14/2019 09:37:18'!
 * aMatrixOrNumber
 	"Standard matrix multiplication"
 	| result |
-	(aMatrixOrNumber is: #Matrix) ifTrue: [
+	(aMatrixOrNumber is: #NumericalMatrix) ifTrue: [
 		width = aMatrixOrNumber height ifFalse: [ ^self error: 'Matrix sizes do not match' ].
 		result _ self appropriateResultClass height: height width: aMatrixOrNumber width.
 		result fillWith: self multipliedBy: aMatrixOrNumber ]
@@ -143,11 +153,11 @@ ShortWordMatrix fromArrayOfArrays: #(
 	^result
 	! !
 
-!Matrix methodsFor: 'aritmethic' stamp: 'jmv 8/23/2014 23:27'!
+!NumericalMatrix methodsFor: 'aritmethic' stamp: 'jmv 5/14/2019 09:37:18'!
 + aMatrixOrNumber
 	"Add element by element"
 	| result |
-	(aMatrixOrNumber is: #Matrix) ifTrue: [
+	(aMatrixOrNumber is: #NumericalMatrix) ifTrue: [
 		(width = aMatrixOrNumber width) & (height = aMatrixOrNumber height)
 			ifFalse: [ ^self error: 'Matrix sizes do not match' ].
 		result _ self appropriateResultClass height: height width: width.
@@ -158,11 +168,11 @@ ShortWordMatrix fromArrayOfArrays: #(
 	^result
 	! !
 
-!Matrix methodsFor: 'aritmethic' stamp: 'jmv 9/18/2017 17:31:40'!
+!NumericalMatrix methodsFor: 'aritmethic' stamp: 'jmv 5/14/2019 09:37:18'!
 - aMatrixOrNumber
 	"Subtract element by element"
 	| result |
-	(aMatrixOrNumber is: #Matrix) ifTrue: [
+	(aMatrixOrNumber is: #NumericalMatrix) ifTrue: [
 		(width = aMatrixOrNumber width) & (height = aMatrixOrNumber height)
 			ifFalse: [ ^self error: 'Matrix sizes do not match' ].
 		result _ self appropriateResultClass height: height width: width.
@@ -173,7 +183,7 @@ ShortWordMatrix fromArrayOfArrays: #(
 	^result
 	! !
 
-!Matrix methodsFor: 'aritmethic' stamp: 'jmv 11/16/2012 12:15'!
+!NumericalMatrix methodsFor: 'aritmethic' stamp: 'jmv 11/16/2012 12:15'!
 / aNumber
 	"Divide by a scalar"
 	| reciprocal result |
@@ -183,7 +193,7 @@ ShortWordMatrix fromArrayOfArrays: #(
 	^result
 	! !
 
-!Matrix methodsFor: 'aritmethic' stamp: 'jmv 7/19/2012 11:18'!
+!NumericalMatrix methodsFor: 'aritmethic' stamp: 'jmv 7/19/2012 11:18'!
 fillWith: aMatrix minus: bMatrix
 
 	| elem |
@@ -192,7 +202,7 @@ fillWith: aMatrix minus: bMatrix
 			elem _ ((aMatrix i: i j: j) - (bMatrix i: i j: j)).
 			self i: i j: j put: elem ] ]! !
 
-!Matrix methodsFor: 'aritmethic' stamp: 'jmv 7/19/2012 12:36'!
+!NumericalMatrix methodsFor: 'aritmethic' stamp: 'jmv 7/19/2012 12:36'!
 fillWith: aMatrix multipliedBy: bMatrix
 
 	| zeroElement elem |
@@ -204,7 +214,7 @@ fillWith: aMatrix multipliedBy: bMatrix
 				elem _ ((aMatrix i: i j: k) * (bMatrix i: k j: j)) + elem ].
 			self i: i j: j put: elem ] ]! !
 
-!Matrix methodsFor: 'aritmethic' stamp: 'jmv 7/19/2012 11:18'!
+!NumericalMatrix methodsFor: 'aritmethic' stamp: 'jmv 7/19/2012 11:18'!
 fillWith: aMatrix plus: bMatrix
 
 	| elem |
@@ -213,14 +223,14 @@ fillWith: aMatrix plus: bMatrix
 			elem _ ((aMatrix i: i j: j) + (bMatrix i: i j: j)).
 			self i: i j: j put: elem ] ]! !
 
-!Matrix methodsFor: 'misc' stamp: 'jmv 9/27/2007 23:35'!
+!NumericalMatrix methodsFor: 'misc' stamp: 'jmv 9/27/2007 23:35'!
 appropriateResultClass
 	"Some subclasses might need to redefine this method.
 	For example to specify a more general class than themselves."
 
 	^self class! !
 
-!Matrix methodsFor: 'conversion' stamp: 'jmv 6/25/2018 15:23:45'!
+!NumericalMatrix methodsFor: 'conversion' stamp: 'jmv 6/25/2018 15:23:45'!
 as32bitForm: aBlock
 	"Fill 32bit Form with rgb values as computed by aBlock. See senders."
 
@@ -237,7 +247,7 @@ as32bitForm: aBlock
 			index _ index + 1 ]].
 	^answer! !
 
-!Matrix methodsFor: 'conversion' stamp: 'jmv 8/9/2018 13:39:11'!
+!NumericalMatrix methodsFor: 'conversion' stamp: 'jmv 8/9/2018 13:39:11'!
 asForm
 	"Assume the receiver is normalized in [0.0 .. 255/256.0]. Clip values out of range.
 	
@@ -245,14 +255,14 @@ asForm
 	
 	^ self asFormMin: 0.0 max: 255/256.0! !
 
-!Matrix methodsFor: 'conversion' stamp: 'jmv 8/9/2018 13:42:37'!
+!NumericalMatrix methodsFor: 'conversion' stamp: 'jmv 8/9/2018 13:42:37'!
 asFormAutoRange
 	"Answer a 8bit Form with gray values.
 	Map used range of pixel values to available gray values."
 
 	^ self asFormMin: elements min max: elements max! !
 
-!Matrix methodsFor: 'conversion' stamp: 'jmv 8/9/2018 13:51:07'!
+!NumericalMatrix methodsFor: 'conversion' stamp: 'jmv 8/9/2018 13:51:07'!
 asFormAutoRangeG: greenMatrix b: blueMatrix
 
 	| min max |
@@ -260,14 +270,14 @@ asFormAutoRangeG: greenMatrix b: blueMatrix
 	max _ (self max max: greenMatrix max) max: blueMatrix max.
 	^self asFormG: greenMatrix b: blueMatrix min: min max: max! !
 
-!Matrix methodsFor: 'conversion' stamp: 'jmv 8/9/2018 13:52:02'!
+!NumericalMatrix methodsFor: 'conversion' stamp: 'jmv 8/9/2018 13:52:02'!
 asFormG: greenMatrix b: blueMatrix
 	"Assume the receiver and arguments are normalized in [0.0 .. 255/256.0]. Clip values out of range.
 	Redefined in subclasses for performance."
 
 	^self asFormG: greenMatrix b: blueMatrix min: 0.0 max: 255/256.0! !
 
-!Matrix methodsFor: 'conversion' stamp: 'jmv 6/25/2018 15:24:21'!
+!NumericalMatrix methodsFor: 'conversion' stamp: 'jmv 6/25/2018 15:24:21'!
 asFormG: greenMatrix b: blueMatrix min: min max: max
 	| k r g b blueElements greenElements |
 	k _ 255.0 / (max-min).
@@ -279,7 +289,7 @@ asFormG: greenMatrix b: blueMatrix min: min max: max
 		b _ (((blueElements at: index) - min) * k + 0.5) truncated min: 255 max: 0.
 		word at: 1 put: b; at: 2 put: g; at: 3 put: r ]! !
 
-!Matrix methodsFor: 'conversion' stamp: 'jmv 8/9/2018 13:42:46'!
+!NumericalMatrix methodsFor: 'conversion' stamp: 'jmv 8/9/2018 13:42:46'!
 asFormMin: min max: max
 	"Answer a 8bit Form with gray values.
 	Map requested range of pixel values to available gray values."
@@ -289,7 +299,7 @@ asFormMin: min max: max
 	^ self asGrayForm: [ :index |
 		(((elements at: index) - min) * k + 0.5) truncated min: 255 max: 0 ]! !
 
-!Matrix methodsFor: 'conversion' stamp: 'jmv 8/9/2018 13:05:32'!
+!NumericalMatrix methodsFor: 'conversion' stamp: 'jmv 8/9/2018 13:05:32'!
 asGrayForm: aBlock
 	"Fill an 8-bit GrayForm with gray values."
 
@@ -306,7 +316,7 @@ asGrayForm: aBlock
 			bits byteAt: bitsIndex put: (aBlock value: elementsIndex) bigEndian: answer isBigEndian ]].
 	^answer! !
 
-!Matrix methodsFor: 'conversion' stamp: 'jmv 8/9/2018 14:02:03'!
+!NumericalMatrix methodsFor: 'conversion' stamp: 'jmv 8/9/2018 14:02:03'!
 asGrayGreenForm
 	"Make positive values gray, and negative values green.
 	Use brightness for magnitude (absolute value).
@@ -325,7 +335,7 @@ asGrayGreenForm
 			ifFalse: [ r _ b _ 0 ].
 		word at: 1 put: b; at: 2 put: g; at: 3 put: r ]! !
 
-!Matrix methodsFor: 'conversion' stamp: 'jmv 6/25/2018 13:43:26'!
+!NumericalMatrix methodsFor: 'conversion' stamp: 'jmv 6/25/2018 13:43:26'!
 asHeatmap: aBlock minVal: minVal maxVal: maxVal
 	"Fill 32bit Form with rgb values as computed by aBlock. See senders."
 
@@ -336,31 +346,31 @@ asHeatmap: aBlock minVal: minVal maxVal: maxVal
 		color _ color mixed: 0.6 with: Color gray.
 		word at: 1 put: color blue * 255 // 1; at: 2 put: color green * 255 // 1; at: 3 put: color red * 255// 1 ]! !
 
-!Matrix methodsFor: 'statistics' stamp: 'jmv 9/20/2018 09:56:23'!
+!NumericalMatrix methodsFor: 'statistics' stamp: 'jmv 9/20/2018 09:56:23'!
 absMax
 	^ elements max abs max: elements min abs! !
 
-!Matrix methodsFor: 'statistics' stamp: 'jmv 5/12/2015 11:56'!
+!NumericalMatrix methodsFor: 'statistics' stamp: 'jmv 5/12/2015 11:56'!
 average
 	^self mean! !
 
-!Matrix methodsFor: 'statistics' stamp: 'jmv 5/12/2015 11:52'!
+!NumericalMatrix methodsFor: 'statistics' stamp: 'jmv 5/12/2015 11:52'!
 max
 	^ elements max! !
 
-!Matrix methodsFor: 'statistics' stamp: 'jmv 5/12/2015 11:55'!
+!NumericalMatrix methodsFor: 'statistics' stamp: 'jmv 5/12/2015 11:55'!
 mean
 	^elements mean! !
 
-!Matrix methodsFor: 'statistics' stamp: 'jmv 5/12/2015 11:52'!
+!NumericalMatrix methodsFor: 'statistics' stamp: 'jmv 5/12/2015 11:52'!
 min
 	^ elements min! !
 
-!Matrix methodsFor: 'statistics' stamp: 'jmv 5/12/2015 11:56'!
+!NumericalMatrix methodsFor: 'statistics' stamp: 'jmv 5/12/2015 11:56'!
 sum
 	^elements sum! !
 
-!Matrix methodsFor: 'filling' stamp: 'jmv 10/19/2017 12:40:15'!
+!NumericalMatrix methodsFor: 'filling' stamp: 'jmv 10/19/2017 12:40:15'!
 border: box with: value
 	"box includes topLeft but doesn't include bottom right (as it is usual with Rectangles)
 	Coordinates are 1-based"
@@ -372,7 +382,7 @@ border: box with: value
 		self i: box top j: j put: value.
 		self i: box bottom-1 j: j put: value ]! !
 
-!Matrix methodsFor: 'filling' stamp: 'jmv 7/26/2016 11:32:38'!
+!NumericalMatrix methodsFor: 'filling' stamp: 'jmv 7/26/2016 11:32:38'!
 fill: box with: value
 	"box includes topLeft but doesn't include bottom right (as it is usual with Rectangles)
 	Coordinates are 1-based"
@@ -381,13 +391,13 @@ fill: box with: value
 		box left to: box right-1 do: [ :j |
 			self i: i j: j put: value ]]! !
 
-!Matrix methodsFor: 'filling' stamp: 'jmv 7/19/2012 11:21'!
+!NumericalMatrix methodsFor: 'filling' stamp: 'jmv 7/19/2012 11:21'!
 fillDiagonalWith: aVectorOrArray
 
 	1 to: (width min: height) do: [ :j |
 		self i: j j: j put: (aVectorOrArray at: j) ].! !
 
-!Matrix methodsFor: 'filling' stamp: 'jmv 9/28/2007 19:30'!
+!NumericalMatrix methodsFor: 'filling' stamp: 'jmv 9/28/2007 19:30'!
 fillWithIdentity
 
 	1 to: self width do: [ :i |
@@ -396,7 +406,7 @@ fillWithIdentity
 			self i: i j: j put: 0.
 			self i: j j: i put: 0 ] ].! !
 
-!Matrix methodsFor: 'aux operations' stamp: 'jmv 7/19/2012 12:25'!
+!NumericalMatrix methodsFor: 'aux operations' stamp: 'jmv 7/19/2012 12:25'!
 columnsWithoutPivot: count
 	"Return a collection with the indexes of the columns that are closer to not having a pivot"
 
@@ -410,7 +420,7 @@ columnsWithoutPivot: count
 		col add: (j @ col2 max) ].
 	^((col copyFrom: 1 to: count) collect: [ :each | each x ] ) asSortedCollection! !
 
-!Matrix methodsFor: 'aux operations' stamp: 'jmv 7/19/2012 12:04'!
+!NumericalMatrix methodsFor: 'aux operations' stamp: 'jmv 7/19/2012 12:04'!
 rowWithMaxInColumn: j startingAtRow: jStart
 
 	| rowWithMax |
@@ -420,7 +430,7 @@ rowWithMaxInColumn: j startingAtRow: jStart
 			rowWithMax _ i ] ].
 	^rowWithMax! !
 
-!Matrix methodsFor: 'aux operations' stamp: 'jmv 9/18/2017 17:31:53'!
+!NumericalMatrix methodsFor: 'aux operations' stamp: 'jmv 9/18/2017 17:31:53'!
 subtractRow: i multipliedBy: factor to: k startingAtColumn: jStart
 
 	self i: k j: jStart put: self zeroElement.
@@ -428,7 +438,7 @@ subtractRow: i multipliedBy: factor to: k startingAtColumn: jStart
 		self i: k j: j put:
 			(self i: k j: j) - ((self i: i j: j) * factor) ]! !
 
-!Matrix methodsFor: 'operations' stamp: 'jmv 7/19/2012 11:20'!
+!NumericalMatrix methodsFor: 'operations' stamp: 'jmv 7/19/2012 11:20'!
 determinant
 
 	| aux rowPermutationCount result |
@@ -440,7 +450,7 @@ determinant
 		result _ result * (aux i: i j: i) ].
 	^result! !
 
-!Matrix methodsFor: 'operations' stamp: 'jmv 8/23/2014 23:27'!
+!NumericalMatrix methodsFor: 'operations' stamp: 'jmv 8/23/2014 23:27'!
 inverse
 	"Answers the inverse matrix"
 
@@ -456,7 +466,7 @@ inverse
 		result j: i put: bigMatrix solveLinearSystem ].
 	^result! !
 
-!Matrix methodsFor: 'operations' stamp: 'jmv 7/19/2012 12:21'!
+!NumericalMatrix methodsFor: 'operations' stamp: 'jmv 7/19/2012 12:21'!
 moveOriginToCenter: aBoolean
 	"This method performs a circular shift of the both in horizontal and vertical direction. The magnitude of the shift is half our extent.
 	This is useful, for example, to make a better visualization of convolution kernels:
@@ -508,7 +518,7 @@ moveOriginToCenter: aBoolean
 			answer i: i+deltaI\\ey+1 j: j+deltaJ\\ex+1 put: (self i: i+1 j: j+1) ]].
 	^answer! !
 
-!Matrix methodsFor: 'operations' stamp: 'jmv 7/19/2012 12:37'!
+!NumericalMatrix methodsFor: 'operations' stamp: 'jmv 7/19/2012 12:37'!
 normalizeColumns
 
 	| zeroElement normSquared |
@@ -520,7 +530,7 @@ normalizeColumns
 		1 to: height do: [ :i |
 			self i: i j: j put: (self i: i j: j) / normSquared sqrt ] ]! !
 
-!Matrix methodsFor: 'operations' stamp: 'jmv 10/7/2016 15:35:55'!
+!NumericalMatrix methodsFor: 'operations' stamp: 'jmv 10/7/2016 15:35:55'!
 normalizeRows
 
 	| zeroElement normSquared |
@@ -532,7 +542,7 @@ normalizeRows
 		1 to: width do: [ :j |
 			self i: i j: j put: (self i: i j: j) / normSquared sqrt ] ]! !
 
-!Matrix methodsFor: 'operations' stamp: 'jmv 7/19/2012 12:17'!
+!NumericalMatrix methodsFor: 'operations' stamp: 'jmv 7/19/2012 12:17'!
 permuteRow: i and: k
 
 	| a b |
@@ -543,7 +553,7 @@ permuteRow: i and: k
 			self i: k j: j put: b.
 			self i: i j: j put: a ] ]! !
 
-!Matrix methodsFor: 'operations' stamp: 'jmv 10/6/2016 15:35:41'!
+!NumericalMatrix methodsFor: 'operations' stamp: 'jmv 10/6/2016 15:35:41'!
 trace
 
 	| trace |
@@ -552,7 +562,7 @@ trace
 		trace _ trace + (self i: i j: i ) ].
 	^trace! !
 
-!Matrix methodsFor: 'operations' stamp: 'jmv 7/19/2012 12:17'!
+!NumericalMatrix methodsFor: 'operations' stamp: 'jmv 7/19/2012 12:17'!
 transpose
 	"Traspose the receiver. Modify it."
 
@@ -563,7 +573,7 @@ transpose
 			self i: ii j: jj put: (self i: jj j: ii).
 			self i: jj j: ii put: (aux) ] ].! !
 
-!Matrix methodsFor: 'operations' stamp: 'jmv 8/23/2014 23:27'!
+!NumericalMatrix methodsFor: 'operations' stamp: 'jmv 8/23/2014 23:27'!
 transposed
 	"Answer a new matrix, transposed."
 
@@ -574,7 +584,7 @@ transposed
 			result i: i j: j put: (self i: j j: i) ] ].
 	^result! !
 
-!Matrix methodsFor: 'accessing' stamp: 'jmv 7/19/2012 11:18'!
+!NumericalMatrix methodsFor: 'accessing' stamp: 'jmv 7/19/2012 11:18'!
 diagonal
 
 	| x |
@@ -583,11 +593,11 @@ diagonal
 		x i: i j: 1 put: (self i: i j: i ) ].
 	^x! !
 
-!Matrix methodsFor: 'accessing' stamp: 'jmv 7/19/2012 10:25'!
+!NumericalMatrix methodsFor: 'accessing' stamp: 'jmv 7/19/2012 10:25'!
 elements
 	^ elements! !
 
-!Matrix methodsFor: 'accessing' stamp: 'jmv 7/19/2012 17:41'!
+!NumericalMatrix methodsFor: 'accessing' stamp: 'jmv 7/19/2012 17:41'!
 fillEndsWith1Derivative
 	"Fill one row and one column at each end with such values that the derivative is that at the ends of the inner submatrix.
 	If the size is less than 4 in any direction, meaning we don't have enough elements to compute the derivatives, do nothing.
@@ -614,7 +624,7 @@ fillEndsWith1Derivative
 			last  _ penultimate * 2 - antepenultimate.
 			self i: m j: j put: last ]]! !
 
-!Matrix methodsFor: 'accessing' stamp: 'jmv 7/19/2012 17:42'!
+!NumericalMatrix methodsFor: 'accessing' stamp: 'jmv 7/19/2012 17:42'!
 fillEndsWith2Derivative2
 	"Fill two rows and two columns at each end with such values that the second derivative is that at the ends of the inner submatrix.
 	If the size is less than 7 in any direction, meaning we don't have enough elements to compute the derivatives, do nothing.
@@ -651,7 +661,7 @@ fillEndsWith2Derivative2
 			self i: m-1 j: j put: penultimate.
 			self i: m j: j put: last ]]! !
 
-!Matrix methodsFor: 'accessing' stamp: 'jmv 7/19/2012 11:22'!
+!NumericalMatrix methodsFor: 'accessing' stamp: 'jmv 7/19/2012 11:22'!
 i: i
 	"Answers a row vector with the values at row y"
 
@@ -661,14 +671,14 @@ i: i
 		result i: 1 j: j put: (self i: i j: j) ].
 	^result! !
 
-!Matrix methodsFor: 'accessing' stamp: 'jmv 7/19/2012 11:22'!
+!NumericalMatrix methodsFor: 'accessing' stamp: 'jmv 7/19/2012 11:22'!
 i: i put: row
 	"aVector must be a row vector, i.e. a matrix with height 1"
 
 	1 to: width do: [ :j |
 		self i: i j: j put: (row at: j) ]! !
 
-!Matrix methodsFor: 'accessing' stamp: 'jmv 9/30/2007 09:31'!
+!NumericalMatrix methodsFor: 'accessing' stamp: 'jmv 9/30/2007 09:31'!
 i: i upTo: k
 	"Answers a row vector with the values at row y, but only up to index w"
 
@@ -678,7 +688,7 @@ i: i upTo: k
 		result i: 1 j: j put: (self i: i j: j) ].
 	^result! !
 
-!Matrix methodsFor: 'accessing' stamp: 'jmv 7/19/2012 11:22'!
+!NumericalMatrix methodsFor: 'accessing' stamp: 'jmv 7/19/2012 11:22'!
 iExtended: i
 	"Answers a row vector with the values at row y,
 	but with 2 extra values at each end, such that the second derivative is that at the original ends"
@@ -698,7 +708,7 @@ Tomar esto para lo que realmente hace falta. Ver el otro browser
 	"
 	^result! !
 
-!Matrix methodsFor: 'accessing' stamp: 'jmv 7/19/2012 11:19'!
+!NumericalMatrix methodsFor: 'accessing' stamp: 'jmv 7/19/2012 11:19'!
 j: j
 	"Answers a column vector with the values at column x"
 
@@ -708,37 +718,37 @@ j: j
 		result i: i j: 1 put: (self i: i j: j) ].
 	^result! !
 
-!Matrix methodsFor: 'accessing' stamp: 'jmv 10/3/2007 06:19'!
+!NumericalMatrix methodsFor: 'accessing' stamp: 'jmv 10/3/2007 06:19'!
 j: j i: i
 	"Convenience accessor"
 	^self i: i j: j! !
 
-!Matrix methodsFor: 'accessing' stamp: 'jmv 7/19/2012 11:19'!
+!NumericalMatrix methodsFor: 'accessing' stamp: 'jmv 7/19/2012 11:19'!
 j: j put: column
 	"column can be a column vector (m x 1 matrix), or a kind of Array"
 
 	1 to: height do: [ :i |
 		self i: i j: j put: (column at: i) ]! !
 
-!Matrix methodsFor: 'accessing' stamp: 'jmv 7/19/2012 11:27'!
+!NumericalMatrix methodsFor: 'accessing' stamp: 'jmv 7/19/2012 11:27'!
 m
 	"Usual name in Linear Algebra"
 
 	^height! !
 
-!Matrix methodsFor: 'accessing' stamp: 'jmv 7/19/2012 11:27'!
+!NumericalMatrix methodsFor: 'accessing' stamp: 'jmv 7/19/2012 11:27'!
 n
 	"Usual name in Linear Algebra"
 
 	^width! !
 
-!Matrix methodsFor: 'accessing' stamp: 'jmv 7/4/2001 11:38'!
+!NumericalMatrix methodsFor: 'accessing' stamp: 'jmv 7/4/2001 11:38'!
 scalarSize
 	"Specially useful for Vectors, but defined for matrices too."
 
 	^height * width! !
 
-!Matrix methodsFor: 'accessing' stamp: 'jmv 9/30/2007 09:30'!
+!NumericalMatrix methodsFor: 'accessing' stamp: 'jmv 9/30/2007 09:30'!
 subMatrixTopLeft: aPoint bottomRight: bPoint
 
 	| result |
@@ -749,16 +759,16 @@ subMatrixTopLeft: aPoint bottomRight: bPoint
 				(self at: (j@i)+aPoint-(1@1)) ] ].
 	^result! !
 
-!Matrix methodsFor: 'accessing' stamp: 'jmv 7/12/2011 17:49'!
+!NumericalMatrix methodsFor: 'accessing' stamp: 'jmv 7/12/2011 17:49'!
 subMatrixTopLeft: aPoint size: sizePoint
 	^ self subMatrixTopLeft: aPoint bottomRight: aPoint + sizePoint - 1! !
 
-!Matrix methodsFor: 'displaying' stamp: 'jmv 8/9/2018 14:29:22'!
+!NumericalMatrix methodsFor: 'displaying' stamp: 'jmv 8/9/2018 14:29:22'!
 display
 
 	^self displayAt: 0@0 zoom: 1! !
 
-!Matrix methodsFor: 'displaying' stamp: 'jmv 8/9/2018 14:24:43'!
+!NumericalMatrix methodsFor: 'displaying' stamp: 'jmv 8/9/2018 14:24:43'!
 displayAsHeatmapAt: aPoint zoom: scale
 	"Uses Nearest Neighbor interpolation, to help see each pixel. Usually useful to view very small images, such as PSFs
 	
@@ -774,13 +784,13 @@ displayAsHeatmapAt: aPoint zoom: scale
 	form displayAt: aPoint.
 	^ form! !
 
-!Matrix methodsFor: 'displaying' stamp: 'jmv 8/9/2018 14:29:14'!
+!NumericalMatrix methodsFor: 'displaying' stamp: 'jmv 8/9/2018 14:29:14'!
 displayAt: aPoint
 	"Display receiver, using default conversion to Form."
 
 	^ self displayAt: aPoint zoom: 1! !
 
-!Matrix methodsFor: 'displaying' stamp: 'jmv 8/9/2018 14:22:59'!
+!NumericalMatrix methodsFor: 'displaying' stamp: 'jmv 8/9/2018 14:22:59'!
 displayAt: aPoint zoom: scale
 	"Display receiver, using default conversion to Form."
 
@@ -791,13 +801,13 @@ displayAt: aPoint zoom: scale
 	form displayAt: aPoint.
 	^ form! !
 
-!Matrix methodsFor: 'displaying' stamp: 'jmv 8/9/2018 14:29:08'!
+!NumericalMatrix methodsFor: 'displaying' stamp: 'jmv 8/9/2018 14:29:08'!
 displayAutoRangeAt: aPoint
 	"Display receiver, mapping used range to available gray levels"
 
 	^ self displayAutoRangeAt: aPoint zoom: 1! !
 
-!Matrix methodsFor: 'displaying' stamp: 'jmv 8/9/2018 14:28:00'!
+!NumericalMatrix methodsFor: 'displaying' stamp: 'jmv 8/9/2018 14:28:00'!
 displayAutoRangeAt: aPoint zoom: scale
 	"Display receiver, mapping used range to available gray levels"
 
@@ -808,7 +818,7 @@ displayAutoRangeAt: aPoint zoom: scale
 	form displayAt: aPoint.
 	^ form! !
 
-!Matrix methodsFor: 'displaying' stamp: 'jmv 8/9/2018 14:28:07'!
+!NumericalMatrix methodsFor: 'displaying' stamp: 'jmv 8/9/2018 14:28:07'!
 displayGrayGreenAt: aPoint zoom: scale
 	"Uses Nearest Neighbor interpolation, to help see each pixel. Usually useful to view very small images, such as PSFs
 	
@@ -824,24 +834,24 @@ displayGrayGreenAt: aPoint zoom: scale
 	form displayAt: aPoint.
 	^ form! !
 
-!Matrix methodsFor: 'private' stamp: 'jmv 7/19/2012 12:35'!
+!NumericalMatrix methodsFor: 'private' stamp: 'jmv 7/19/2012 12:35'!
 epsilon
 	"Something better is needed. For example, taking into accoung the largest elements, or the norm, or something like that... In any case it is better to check senders, and use a different strategy for ending iterative methods or such...
 	Check inheritance too"
 
 	^self zeroElement! !
 
-!Matrix methodsFor: 'private' stamp: 'jmv 7/19/2012 12:35'!
+!NumericalMatrix methodsFor: 'private' stamp: 'jmv 7/19/2012 12:35'!
 zeroElement
 	"We don't really restrict the kind of objects we might hold... Our best guess for a kind of null additive value is to just ask some element..."
 
 	^elements first class zero! !
 
-!Matrix methodsFor: 'testing' stamp: 'jmv 12/2/2010 08:38'!
+!NumericalMatrix methodsFor: 'testing' stamp: 'jmv 5/14/2019 09:37:18'!
 is: aSymbol
-	^ aSymbol == #Matrix or: [ super is: aSymbol ]! !
+	^ aSymbol == #NumericalMatrix or: [ super is: aSymbol ]! !
 
-!Matrix methodsFor: 'linear equation systems' stamp: 'jmv 7/19/2012 13:07'!
+!NumericalMatrix methodsFor: 'linear equation systems' stamp: 'jmv 7/19/2012 13:07'!
 solveLinearSystem
 	| m n x sum |
 	"Solve the sistem A x = b where the receiver has this form | Ab |,
@@ -898,7 +908,7 @@ solveLinearSystem
 		x i: i j: 1 put: sum / (self i: i j: i) ].
 	^x! !
 
-!Matrix methodsFor: 'linear equation systems' stamp: 'jmv 9/18/2017 17:32:07'!
+!NumericalMatrix methodsFor: 'linear equation systems' stamp: 'jmv 9/18/2017 17:32:07'!
 triangleWithPartialPivoting
 	"Triangle self, and answer the row permutation count"
 
@@ -928,7 +938,7 @@ triangleWithPartialPivoting
 	].
 	^ permutationCount! !
 
-!Matrix class methodsFor: 'instance creation' stamp: 'jmv 8/23/2014 23:27'!
+!NumericalMatrix class methodsFor: 'instance creation' stamp: 'jmv 8/23/2014 23:27'!
 columnFrom: anArray	
 "Example:
 	FloatMatrix columnFrom: #(1 2 0 0 0 0 3)."
@@ -939,7 +949,7 @@ columnFrom: anArray
 		result i: i j: 1 put: (anArray at: i) ].
 	^result! !
 
-!Matrix class methodsFor: 'instance creation' stamp: 'jmv 5/3/2016 17:55'!
+!NumericalMatrix class methodsFor: 'instance creation' stamp: 'jmv 5/3/2016 17:55'!
 from32BitColorForm: aForm component: aSymbol
 	"aSymbol must be in #(red green blue alpha)"
 
@@ -948,7 +958,7 @@ from32BitColorForm: aForm component: aSymbol
 	instance fillFrom32BitForm: aForm component: aSymbol.
 	^instance! !
 
-!Matrix class methodsFor: 'instance creation' stamp: 'jmv 6/2/2016 20:18'!
+!NumericalMatrix class methodsFor: 'instance creation' stamp: 'jmv 6/2/2016 20:18'!
 fromGrayForm: aGrayForm
 	"aGrayForm can be an instance of GrayForm or a ColorForm with a colormap with 256 gray levels, going from black to white.
 	This is what we get, for instance, when reading a gray 8 bit bmp file"
@@ -958,14 +968,14 @@ fromGrayForm: aGrayForm
 	instance fillFromGrayForm: aGrayForm.
 	^instance! !
 
-!Matrix class methodsFor: 'instance creation' stamp: 'jmv 7/2/2018 11:16:49'!
+!NumericalMatrix class methodsFor: 'instance creation' stamp: 'jmv 7/2/2018 11:16:49'!
 fromMatrix: aMatrix
 	| answer |
 	answer _ self extent: aMatrix extent.
 	answer += aMatrix.
 	^ answer! !
 
-!Matrix class methodsFor: 'instance creation' stamp: 'jmv 11/16/2014 19:56'!
+!NumericalMatrix class methodsFor: 'instance creation' stamp: 'jmv 11/16/2014 19:56'!
 hilbert: n
 "
 (Matrix hilbert: 15) inverse inverse
@@ -978,7 +988,7 @@ hilbert: n
 			result i: j j: i put: 1/(i+j+1) ] ].
 	^result! !
 
-!Matrix class methodsFor: 'instance creation' stamp: 'jmv 8/23/2014 23:28'!
+!NumericalMatrix class methodsFor: 'instance creation' stamp: 'jmv 8/23/2014 23:28'!
 identity: size
 
 	| result |
@@ -987,7 +997,7 @@ identity: size
 	^result
 ! !
 
-!Matrix class methodsFor: 'instance creation' stamp: 'jmv 6/2/2016 20:34'!
+!NumericalMatrix class methodsFor: 'instance creation' stamp: 'jmv 6/2/2016 20:34'!
 lena
 	"
 	(Base64MimeConverter mimeEncode: ((FileStream readOnlyFileNamed: 'Lena.png') binary)) upToEnd
@@ -999,18 +1009,18 @@ ByteMatrix lena display.
 	form _ Form lena.
 	^self fromGrayForm: form! !
 
-!Matrix class methodsFor: 'instance creation' stamp: 'jmv 9/2/2014 10:10'!
+!NumericalMatrix class methodsFor: 'instance creation' stamp: 'jmv 9/2/2014 10:10'!
 m: height n: width
 
 	^self basicNew initHeight: height width: width! !
 
-!Matrix class methodsFor: 'instance creation' stamp: 'jmv 8/23/2014 23:28'!
+!NumericalMatrix class methodsFor: 'instance creation' stamp: 'jmv 8/23/2014 23:28'!
 newColumnVectorSize: size
 	"A column vector is just a matrix with width 1"
 
 	^self height: size width: 1! !
 
-!Matrix class methodsFor: 'instance creation' stamp: 'jmv 8/23/2014 23:28'!
+!NumericalMatrix class methodsFor: 'instance creation' stamp: 'jmv 8/23/2014 23:28'!
 newIdentity: size
 
 	| result |
@@ -1019,19 +1029,19 @@ newIdentity: size
 	^result
 ! !
 
-!Matrix class methodsFor: 'instance creation' stamp: 'jmv 8/23/2014 23:28'!
+!NumericalMatrix class methodsFor: 'instance creation' stamp: 'jmv 8/23/2014 23:28'!
 newRowVectorSize: size
 	"A row vector is just a matrix with height 1"
 
 	^self height: 1 width: size! !
 
-!Matrix class methodsFor: 'instance creation' stamp: 'jmv 7/3/2001 19:41'!
+!NumericalMatrix class methodsFor: 'instance creation' stamp: 'jmv 7/3/2001 19:41'!
 newVectorSize: size
 	"Vectors are by default Column Vectors"
 
 	^self newColumnVectorSize: size! !
 
-!Matrix class methodsFor: 'instance creation' stamp: 'jmv 8/23/2014 23:28'!
+!NumericalMatrix class methodsFor: 'instance creation' stamp: 'jmv 8/23/2014 23:28'!
 rowFrom: anArray	
 "Example:
 	FloatMatrix rowFrom: #(1 2 0 0 0 0 3)."
@@ -1042,7 +1052,7 @@ rowFrom: anArray
 		result i: 1 j: j put: (anArray at: j) ].
 	^result! !
 
-!Matrix class methodsFor: 'instance creation' stamp: 'jmv 10/7/2016 15:00:01'!
+!NumericalMatrix class methodsFor: 'instance creation' stamp: 'jmv 10/7/2016 15:00:01'!
 withColumns: aCollectionOfColumns
 	"Example:
 	FloatMatrix withColumns: #(
@@ -1066,7 +1076,7 @@ withColumns: aCollectionOfColumns
 			result i: i j: j put: ((aCollectionOfColumns at: j) at: i) ] ].
 	^result! !
 
-!Matrix class methodsFor: 'instance creation' stamp: 'jmv 10/7/2016 14:59:14'!
+!NumericalMatrix class methodsFor: 'instance creation' stamp: 'jmv 10/7/2016 14:59:14'!
 withRows: aCollectionOfRows
 	"Example:
 	FloatMatrix withRows: #(
@@ -2175,16 +2185,6 @@ rowsCloserToZero: count
 		i @ (self i: i) norm2Squared ])
 			asSortedCollection: [ :a :b | a y < b y ])
 				copyFrom: 1 to: count) collect: [ :each | each x ] ) asSortedCollection! !
-
-!FloatMatrix methodsFor: 'printing' stamp: 'jmv 1/9/2014 21:28'!
-printOn: aStream
-	aStream newLine.
-	1 to: height do: [ :i |
-		aStream nextPutAll: '| '.
-		1 to: width do: [ :j |
-			(self i: i j: j) printOn: aStream integerDigits: 1 fractionDigits: 3.
-			aStream space ].
-		aStream nextPut: $|; newLine ]! !
 
 !FloatMatrix methodsFor: 'files' stamp: 'jmv 12/4/2017 14:59:32'!
 readFromNpyStream: byteStream bigEndian: isByteStreamBigEndian
