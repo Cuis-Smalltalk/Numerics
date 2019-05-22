@@ -1,6 +1,6 @@
 'From Cuis 4.2 of 25 July 2013 [latest update: #2847] on 19 July 2016 at 11:22:03 am'!
-'Description Please enter a description for this package'!
-!provides: 'ProbabilityDistributions' 1 1!
+'Description '!
+!provides: 'ProbabilityDistributions' 1 2!
 !classDefinition: #ProbabilityDistribution category: #ProbabilityDistributions!
 Object subclass: #ProbabilityDistribution
 	instanceVariableNames: 'uniformRandomGenerator'

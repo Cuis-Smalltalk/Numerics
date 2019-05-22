@@ -1,6 +1,6 @@
 'From Cuis 5.0 of 7 November 2016 [latest update: #3745] on 14 May 2019 at 9:38:35 am'!
-'Description Please enter a description for this package '!
-!provides: 'LinearAlgebra' 1 54!
+'Description '!
+!provides: 'LinearAlgebra' 1 55!
 !requires: 'Collections-CompactArrays' 1 2 nil!
 SystemOrganization addCategory: #LinearAlgebra!
 

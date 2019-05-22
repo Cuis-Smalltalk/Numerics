@@ -1,6 +1,6 @@
 'From Cuis 5.0 of 7 November 2016 [latest update: #3589] on 1 February 2019 at 10:50:15 am'!
-'Description Please enter a description for this package'!
-!provides: 'Statistics' 1 13!
+'Description '!
+!provides: 'Statistics' 1 14!
 !requires: 'Pen' 1 0 nil!
 SystemOrganization addCategory: #Statistics!
 SystemOrganization addCategory: #'Statistics-Tests'!
