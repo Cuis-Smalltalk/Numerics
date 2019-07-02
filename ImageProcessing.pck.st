@@ -1,12 +1,13 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3449] on 20 September 2018 at 3:33:29 pm'!
+'From Cuis 5.0 [latest update: #3817] on 2 July 2019 at 11:45:51 am'!
 'Description '!
-!provides: 'ImageProcessing' 1 15!
+!provides: 'ImageProcessing' 1 17!
 !requires: 'Graphics-Files-Additional' 1 nil nil!
-!requires: 'Statistics' 1 nil nil!
 !requires: 'SignalProcessing' 1 100 nil!
 !requires: 'NumericalMethods' 1 8 nil!
 !requires: 'ProbabilityDistributions' 1 nil nil!
+!requires: 'Complex' 1 nil nil!
 !requires: 'VectorGraphics' 1 50 nil!
+!requires: 'Statistics' 1 nil nil!
 SystemOrganization addCategory: #ImageProcessing!
 SystemOrganization addCategory: #'ImageProcessing-Images'!
 SystemOrganization addCategory: #'ImageProcessing-Interpolators'!
@@ -314,6 +315,11 @@ are now obsolete. They have been superseded by Histogram and UnitaryMonotonicMap
 !FFT2D commentStamp: '<historical>' prior: 0!
 My instances provide for 2D FFT on FloatMatrix'es and FloatImages. I rely on FFT for succesive transform by rows and by columns.!
 
+!ComplexImage methodsFor: 'copying' stamp: 'jmv 7/5/2018 08:17:06'!
+postCopy
+	real _ real copy.
+	imaginary _ imaginary copy! !
+
 !FloatImage methodsFor: 'arithmetic-answer new' stamp: 'jmv 7/5/2018 07:27:09'!
 * aFloatImageOrNumber
 	"Answer a new FloatImage. Don't affect receiver or argument in any way.
@@ -349,13 +355,13 @@ squared
 			self validateSameSize: aFloatImageOrNumber.
 			elements *= aFloatImageOrNumber elements ]! !
 
-!FloatImage methodsFor: 'arithmetic-modify self' stamp: 'jmv 7/8/2018 18:52:46'!
+!FloatImage methodsFor: 'arithmetic-modify self' stamp: 'jmv 7/2/2019 08:53:18'!
 /= aFloatImageOrNumber
 	"Divide receiver by an image (pixel by pixel) or number"
 
 	^self divideBy: aFloatImageOrNumber
-		ifDivisorZero: [^ZeroDivide signalWithDividend: self]
-		ifBothZero: [^ZeroDivide signalWithDividend: self]! !
+		ifDivisorZero: [ZeroDivide new signalReceiver: self selector: #/= argument: aFloatImageOrNumber]
+		ifBothZero: [ZeroDivide new signalReceiver: self selector: #/= argument: aFloatImageOrNumber]! !
 
 !FloatImage methodsFor: 'arithmetic-modify self' stamp: 'jmv 7/8/2018 18:30:56'!
 divideBy: aFloatImageOrNumber ifDivisorZero: zeroDivisionBlockOrValue ifBothZero: indeterminateBlockOrValue
@@ -1747,7 +1753,7 @@ deconvolved displayAt: 10@10.
 
 	^ self deconvolutionWith: psf maxNoiseAmplification: maxNoiseFactor guardZoneInto: [ :guardZoneHeight : guardZoneWidth | ]! !
 
-!FloatImage methodsFor: 'convolution' stamp: 'jmv 8/23/2018 09:08:24'!
+!FloatImage methodsFor: 'convolution' stamp: 'jmv 7/2/2019 08:55:49'!
 deconvolutionWith: psf maxNoiseAmplification: maxNoiseFactor guardZoneInto: aBlockOrNil
 	"Compute convolution with aMatrix, usig 2D FFT. Answer a new instance.
 	- psf is a ConvolutionKernel
@@ -1801,8 +1807,8 @@ deconvolved display.
 	otfInverse _ ComplexImage extent: tileSize.
 	otfInverse realPart += 1.
 	otfInverse  divideByComplex: otf maxGain: maxNoiseFactor
-		ifDivisorZero: [^ZeroDivide signalWithDividend: otfInverse]
-		ifBothZero: [^ZeroDivide signalWithDividend: otfInverse].
+		ifDivisorZero: [^ZeroDivide signalReceiver: self selector: #divideByComplex:maxGain: arguments: {otf. maxNoiseFactor}]
+		ifBothZero: [^ZeroDivide signalReceiver: self selector: #divideByComplex:maxGain: arguments: {otf. maxNoiseFactor}].
 
 	"Find and apply proper Guard Zones.
 	For this, compute the 'inverse' psf, to check its support"
@@ -4688,13 +4694,13 @@ width
 		real -= aComplexOrFloatImageOrNumber.
 		imaginary -= aComplexOrFloatImageOrNumber ]! !
 
-!ComplexImage methodsFor: 'arithmetic-modify self' stamp: 'jmv 7/8/2018 18:52:09'!
+!ComplexImage methodsFor: 'arithmetic-modify self' stamp: 'jmv 7/2/2019 08:53:05'!
 /= aComplexOrFloatImageOrNumber
 	"Element by element"
 
 	^self divideBy: aComplexOrFloatImageOrNumber
-		ifDivisorZero: [^ZeroDivide signalWithDividend: self]
-		ifBothZero: [^ZeroDivide signalWithDividend: self]! !
+		ifDivisorZero: [ZeroDivide new signalReceiver: self selector: #/= argument: aComplexOrFloatImageOrNumber]
+		ifBothZero: [ZeroDivide new signalReceiver: self selector: #/= argument: aComplexOrFloatImageOrNumber]! !
 
 !ComplexImage methodsFor: 'arithmetic-modify self' stamp: 'jmv 7/2/2018 14:42:24'!
 beComplexConjugate
@@ -5024,11 +5030,6 @@ displayPhaseAt: aPoint zoom: scale
 		form _ form magnifyBy: scale ].
 	form displayAt: aPoint.
 	^ form! !
-
-!ComplexImage methodsFor: 'copying' stamp: 'jmv 7/5/2018 08:17:06'!
-postCopy
-	real _ real copy.
-	imaginary _ imaginary copy! !
 
 !ComplexImage methodsFor: 'testing' stamp: 'jmv 7/5/2018 12:34:22'!
 is: aSymbol
