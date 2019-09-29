@@ -1,6 +1,9 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3122] on 13 July 2017 at 9:27:12 am'!
+'From Cuis 5.0 [latest update: #3890] on 29 September 2019 at 1:12:08 pm'!
 'Description Stuff from Balloon3D-Math by Andreas Raab. Adapted to use 64-bit Float arithmetic (in addition to 32-bit FloatArray).'!
-!provides: 'Math 3D' 1 21!
+!provides: 'Math 3D' 1 22!
+SystemOrganization addCategory: #'Math 3D'!
+
+
 !classDefinition: #Float64Color4 category: #'Math 3D'!
 Float64Array variableWordSubclass: #Float64Color4
 	instanceVariableNames: ''
@@ -150,9 +153,66 @@ Based on Float64Matrix3x3, but 32 bits.!
 I represent simple (x, y, z) 3D Cartesian coordinates with 32-bit Float precision.
 Based on Float64Vector3!
 
-!Point methodsFor: '*Math 3D' stamp: 'jmv 2/26/2015 15:05'!
-@ aNumber
-	^Float64Vector3 x: x y: y z: aNumber! !
+!Float64Matrix3x3 methodsFor: 'printing' stamp: 'jmv 11/24/2015 10:09'!
+printOn: aStream
+	aStream newLine.
+	1 to: 3 do: [ :i |
+		aStream nextPutAll: '| '.
+		1 to: 3 do: [ :j |
+			(self at: i at: j) printOn: aStream integerDigits: 1 fractionDigits: 3.
+			aStream space ].
+		aStream nextPut: $|; newLine ]! !
+
+!Float64Matrix4x4 methodsFor: 'printing' stamp: 'jmv 7/3/2015 12:53'!
+printOn: aStream
+	aStream newLine.
+	1 to: 4 do: [ :i |
+		aStream nextPutAll: '| '.
+		1 to: 4 do: [ :j |
+			(self at: i at: j) printOn: aStream integerDigits: 1 fractionDigits: 3.
+			aStream space ].
+		aStream nextPut: $|; newLine ]! !
+
+!Float64Quaternion methodsFor: 'printing' stamp: 'jmv 7/13/2017 09:26:35'!
+printOn: aStream
+
+	aStream 
+		nextPutAll: self class name;
+		nextPut:$(;
+		print: self angleDegrees;
+		nextPut: Character space;
+		print: self axis;
+		nextPut:$).! !
+
+!Float64Vector3 methodsFor: 'private' stamp: 'jmv 3/16/2016 14:18'!
+printOn: aStream 
+	"The receiver prints on aStream in terms of infix notation."
+
+	self x printOn: aStream.
+	aStream nextPut: $@.
+	self y printOn: aStream.
+	aStream nextPut: $@.
+	self z printOn: aStream! !
+
+!Float32Matrix3x3 methodsFor: 'printing' stamp: 'jmv 11/24/2015 16:30'!
+printOn: aStream
+	aStream newLine.
+	1 to: 3 do: [ :i |
+		aStream nextPutAll: '| '.
+		1 to: 3 do: [ :j |
+			(self at: i at: j) printOn: aStream integerDigits: 1 fractionDigits: 3.
+			aStream space ].
+		aStream nextPut: $|; newLine ]! !
+
+!Float32Vector3 methodsFor: 'printing' stamp: 'jmv 3/16/2016 14:18'!
+printOn: aStream 
+	"The receiver prints on aStream in terms of infix notation."
+
+	self x printOn: aStream.
+	aStream nextPut: $@.
+	self y printOn: aStream.
+	aStream nextPut: $@.
+	self z printOn: aStream! !
 
 !Float64Color4 methodsFor: 'accessing'!
 alpha
@@ -161,14 +221,6 @@ alpha
 !Float64Color4 methodsFor: 'accessing'!
 alpha: aNumber
 	self floatAt: 4 put: aNumber! !
-
-!Float64Color4 methodsFor: 'converting'!
-asColor
-	^Color r: self red g: self green b: self blue alpha: self alpha! !
-
-!Float64Color4 methodsFor: 'converting' stamp: 'ar 5/4/2000 17:59'!
-asFloat64Color
-	^self! !
 
 !Float64Color4 methodsFor: 'accessing'!
 blue
@@ -185,6 +237,26 @@ green
 !Float64Color4 methodsFor: 'accessing'!
 green: aNumber
 	self floatAt: 2 put: aNumber! !
+
+!Float64Color4 methodsFor: 'accessing'!
+red
+	^self floatAt: 1! !
+
+!Float64Color4 methodsFor: 'accessing'!
+red: aNumber
+	self floatAt: 1 put: aNumber! !
+
+!Float64Color4 methodsFor: 'converting'!
+asColor
+	^Color r: self red g: self green b: self blue alpha: self alpha! !
+
+!Float64Color4 methodsFor: 'converting' stamp: 'ar 5/4/2000 17:59'!
+asFloat64Color
+	^self! !
+
+!Float64Color4 methodsFor: 'converting' stamp: 'ar 2/4/1999 20:21'!
+pixelValue32
+	^self asColor pixelWordForDepth: 32! !
 
 !Float64Color4 methodsFor: 'interpolating' stamp: 'jsp 2/8/1999 19:57'!
 interpolateTo: end at: amountDone
@@ -209,10 +281,6 @@ interpolateTo: end at: amountDone
 isZero
 	^self alpha isZero! !
 
-!Float64Color4 methodsFor: 'converting' stamp: 'ar 2/4/1999 20:21'!
-pixelValue32
-	^self asColor pixelWordForDepth: 32! !
-
 !Float64Color4 methodsFor: 'private' stamp: 'jmv 2/26/2015 11:57'!
 privateLoadFrom: aColor
 
@@ -227,14 +295,6 @@ r: rValue g: gValue b: bValue a: aValue
 	self green: gValue.
 	self blue: bValue.
 	self alpha: aValue.! !
-
-!Float64Color4 methodsFor: 'accessing'!
-red
-	^self floatAt: 1! !
-
-!Float64Color4 methodsFor: 'accessing'!
-red: aNumber
-	self floatAt: 1 put: aNumber! !
 
 !Float64Color4 class methodsFor: 'instance creation' stamp: 'ar 2/1/1999 21:22'!
 numElements
@@ -421,16 +481,6 @@ print
 	self printOn: Transcript.
 	Transcript newLine! !
 
-!Float64Matrix3x3 methodsFor: 'printing' stamp: 'jmv 11/24/2015 10:09'!
-printOn: aStream
-	aStream newLine.
-	1 to: 3 do: [ :i |
-		aStream nextPutAll: '| '.
-		1 to: 3 do: [ :j |
-			(self at: i at: j) printOn: aStream integerDigits: 1 fractionDigits: 3.
-			aStream space ].
-		aStream nextPut: $|; newLine ]! !
-
 !Float64Matrix3x3 methodsFor: 'initialize' stamp: 'jmv 11/24/2015 09:56'!
 setIdentity
 	"Set the receiver to the identity matrix"
@@ -452,13 +502,6 @@ setZero
 identity
 	^self new setIdentity! !
 
-!Float64Matrix3x3 class methodsFor: 'class initialization' stamp: 'jmv 11/24/2015 10:16'!
-initialize
-	"Float64Matrix3x3 initialize"
-	Float64Matrix3x3Zero := self new.
-	Float64Matrix3x3Identity := self new.
-	Float64Matrix3x3Identity a11: 1.0; a22: 1.0; a33: 1.0! !
-
 !Float64Matrix3x3 class methodsFor: 'instance creation' stamp: 'jmv 11/24/2015 09:58'!
 numElements
 	^9! !
@@ -470,6 +513,13 @@ withScale: amount
 !Float64Matrix3x3 class methodsFor: 'instance creation' stamp: 'jmv 11/24/2015 09:54'!
 zero
 	^self new! !
+
+!Float64Matrix3x3 class methodsFor: 'class initialization' stamp: 'jmv 11/24/2015 10:16'!
+initialize
+	"Float64Matrix3x3 initialize"
+	Float64Matrix3x3Zero := self new.
+	Float64Matrix3x3Identity := self new.
+	Float64Matrix3x3Identity a11: 1.0; a22: 1.0; a33: 1.0! !
 
 !Float64Matrix4x4 methodsFor: 'arithmetic' stamp: 'jmv 2/26/2015 13:25'!
 + aFloat64Matrix
@@ -687,52 +737,6 @@ alternateRotation
 	^ vAngles.
 ! !
 
-!Float64Matrix4x4 methodsFor: 'converting'!
-asMatrix4x4
-	^self! !
-
-!Float64Matrix4x4 methodsFor: 'converting' stamp: 'jmv 10/11/2016 10:14:47'!
-asQuaternion
-	"Convert the matrix to a quaternion"
-
-	| x y z a a2 x2 y2 a4 |
-
-	a2 := 0.25 * (1.0 + (self a11) + (self a22) + (self a33)).
-
-	(a2 > 0) ifTrue: [
-						a := a2 sqrt.
-						a4 := 4.0 * a.
-						x := ((self a32) - (self a23)) / a4.
-						y := ((self a13) - (self a31)) / a4.
-						z := ((self a21) - (self a12)) / a4.
-					]
-			ifFalse: [
-						a := 0.
-						x2 := -0.5 * ((self a22) + (self a33)).
-						(x2 > 0) ifTrue: [
-											x := x2 sqrt.
-											x2 := 2 * x.
-											y := (self a21) / x2.
-											z := (self a31) / x2.
-										]
-								ifFalse: [
-											x := 0.
-											y2 := 0.5 * (1.0 - (self a33)).
-											(y2 > 0) ifTrue: [
-																y := y2 sqrt.
-																y2 := 2 * y.
-																z := (self a32) / y2.
-															]
-													ifFalse: [
-																y := 0.0.
-																z := 1.0.
-															]
-										]
-					].
-
-	^ (Float64Quaternion a: a b: x c: y d: z).
-! !
-
 !Float64Matrix4x4 methodsFor: 'accessing' stamp: 'jsp 2/11/1999 14:09'!
 at: i at: j
 	^ self at: ((i - 1) * 4 + j).
@@ -742,276 +746,6 @@ at: i at: j
 at: i at: j put: aValue
 	^ self at: ((i - 1) * 4 + j) put: aValue.
 ! !
-
-!Float64Matrix4x4 methodsFor: 'row-access' stamp: 'das 12/11/2002 14:35'!
-column1
-	"Return column 1"
-
-	^ (Float64Vector3 x: (self a11) y: (self a21) z: (self a31)).
-! !
-
-!Float64Matrix4x4 methodsFor: 'row-access' stamp: 'das 12/11/2002 14:37'!
-column1: col
-	"Set column 1"
-	self a11: col x.
-	self a21: col y.
-	self a31: col z.
-! !
-
-!Float64Matrix4x4 methodsFor: 'row-access' stamp: 'das 12/11/2002 14:36'!
-column2
-	"Return column 2"
-
-	^ (Float64Vector3 x: (self a12) y: (self a22) z: (self a32)).
-! !
-
-!Float64Matrix4x4 methodsFor: 'row-access' stamp: 'das 12/11/2002 14:37'!
-column2: col
-	"Set column 2"
-
-	self a12: col x.
-	self a22: col y.
-	self a32: col z.
-! !
-
-!Float64Matrix4x4 methodsFor: 'row-access' stamp: 'das 12/11/2002 14:37'!
-column3
-	"Return column 3"
-
-	^ (Float64Vector3 x: (self a13) y: (self a23) z: (self a33)).
-! !
-
-!Float64Matrix4x4 methodsFor: 'row-access' stamp: 'das 12/11/2002 14:37'!
-column3: col
-	"Set column 3"
-
-	self a13: col x.
-	self a23: col y.
-	self a33: col z.
-! !
-
-!Float64Matrix4x4 methodsFor: 'transforming' stamp: 'ar 11/7/2000 14:48'!
-composeWith: m2
-	"Perform a 4x4 matrix multiplication."
-	^self composedWithLocal: m2.! !
-
-!Float64Matrix4x4 methodsFor: 'transforming' stamp: 'DPR 9/3/2002 16:45'!
-composeWith: m2 times: nTimes
-
-	"Perform a 4x4 matrix exponentiation and multiplication."
-
-	| result |
-	result := self.
-	nTimes negative ifTrue: [ self halt ].
-	nTimes >= 2 ifTrue: [ 
-			result := result composeWith: (m2 composedWithLocal: m2) times: nTimes // 2 ].
-	(nTimes \\ 2) = 1 ifTrue: [ result := result composedWithLocal: m2].
-	^ result
-	
-! !
-
-!Float64Matrix4x4 methodsFor: 'transforming' stamp: 'ar 2/15/1999 23:56'!
-composedWithGlobal: aFloat64Matrix4x4
-	| result |
-	result := self class new.
-	self privateTransformMatrix: aFloat64Matrix4x4 with: self into: result.
-	^result! !
-
-!Float64Matrix4x4 methodsFor: 'transforming' stamp: 'ar 2/15/1999 23:57'!
-composedWithLocal: aFloat64Matrix4x4
-	| result |
-	result := self class new.
-	self privateTransformMatrix: self with: aFloat64Matrix4x4 into: result.
-	^result! !
-
-!Float64Matrix4x4 methodsFor: 'solving' stamp: 'ar 2/1/1999 21:50'!
-inplaceDecomposeLU
-	"Decompose the receiver in place by using gaussian elimination w/o pivot search"
-	| x |
-	1 to: 4 do:[:j|
-		"i-th equation (row)"
-		j+1 to: 4 do:[:i|
-			x := (self at: i at: j) / (self at: j at: j).
-			j to: 4 do:[:k|
-				self at: i at: k put: (self at: i at: k) - ((self at: j at: k) * x)].
-			self at: i at: j put: x]].
-! !
-
-!Float64Matrix4x4 methodsFor: 'solving' stamp: 'jmv 2/26/2015 13:25'!
-inplaceHouseHolderInvert
-	"Solve the linear equation self * aVector = x by using HouseHolder's transformation.
-	Note: This scheme is numerically better than using gaussian elimination even though it takes
-	somewhat longer"
-	| d x sigma beta sum s|
-	"It would be nice to have a plugin for this...
-	<primitive:'Float64InplaceHouseHolderInvert' module:'Squeak3D'>"
-	self flag: #Float64Primitive.
-
-	x := Float64Matrix4x4 identity.
-	d := Float64Matrix4x4 new.
-	1 to: 4 do:[:j|
-		sigma := 0.0.
-		j to: 4 do:[:i| sigma := sigma + ((self at: i at: j) squared)].
-		sigma isZero ifTrue:[^nil]. "matrix is singular"
-		((self at: j at: j) < 0.0) 
-			ifTrue:[ s:= sigma sqrt]
-			ifFalse:[ s:= sigma sqrt negated].
-		1 to: 4 do:[:r| d at: j at: r put: s].
-		beta := 1.0 / ( s * (self at: j at: j) - sigma).
-		self at: j at: j put: ((self at: j at: j) - s).
-		"update remaining columns"
-		j+1 to: 4 do:[:k|
-			sum := 0.0.
-			j to: 4 do:[:i| sum := sum + ((self at: i at: j) * (self at: i at: k))].
-			sum := sum * beta.
-			j to: 4 do:[:i| 
-				self at: i at: k put: ((self at: i at: k) + ((self at: i at: j) * sum))]].
-		"update vector"
-		1 to: 4 do:[:r|
-			sum := nil.
-			j to: 4 do:[:i| 
-				sum := sum isNil 
-					ifTrue:[(x at: i at: r) * (self at: i at: j)] 
-					ifFalse:[sum + ((x at: i at: r) * (self at: i at: j))]].
-			sum := sum * beta.
-			j to: 4 do:[:i| 
-				x at: i at: r put:((x at: i at: r) + (sum * (self at: i at: j)))].
-		].
-	].
-	"Now calculate result"
-	1 to: 4 do:[:r|
-		4 to: 1 by: -1 do:[:i|
-			i+1 to: 4 do:[:j|
-				x at: i at: r put: ((x at: i at: r) - ((x at: j at: r) * (self at: i at: j))) ].
-			x at: i at: r put: ((x at: i at: r) / (d at: i at: r))].
-	].
-	self loadFrom: x.
-	"Return receiver"! !
-
-!Float64Matrix4x4 methodsFor: 'solving'!
-inplaceHouseHolderTransform: aVector
-	"Solve the linear equation self * aVector = x by using HouseHolder's transformation.
-	Note: This scheme is numerically better than using gaussian elimination even though it takes
-	somewhat longer"
-	| d x sigma beta sum s|
-	x := Array with: aVector x with: aVector y with: aVector z with: aVector w.
-	d := Array new: 4.
-	1 to: 4 do:[:j|
-		sigma := 0.0.
-		j to: 4 do:[:i| sigma := sigma + ((self at: i at: j) squared)].
-		sigma isZero ifTrue:[^nil]. "matrix is singular"
-		((self at: j at: j) < 0.0) 
-			ifTrue:[ s:= d at: j put: (sigma sqrt)]
-			ifFalse:[ s:= d at: j put: (sigma sqrt negated)].
-		beta := 1.0 / ( s * (self at: j at: j) - sigma).
-		self at: j at: j put: ((self at: j at: j) - s).
-		"update remaining columns"
-		j+1 to: 4 do:[:k|
-			sum := 0.0.
-			j to: 4 do:[:i| sum := sum + ((self at: i at: j) * (self at: i at: k))].
-			sum := sum * beta.
-			j to: 4 do:[:i| 
-				self at: i at: k put: ((self at: i at: k) + ((self at: i at: j) * sum))]].
-		"update vector"
-		sum := nil.
-		j to: 4 do:[:i| 
-			sum := sum isNil 
-				ifTrue:[(x at: i) * (self at: i at: j)] 
-				ifFalse:[sum + ((x at: i) * (self at: i at: j))]].
-		sum := sum * beta.
-		j to: 4 do:[:i| 
-			x at: i put:((x at: i) + (sum * (self at: i at: j)))].
-	].
-	"Now calculate result"
-	4 to: 1 by: -1 do:[:i|
-		i+1 to: 4 do:[:j|
-			x at: i put: ((x at: i) - ((x at: j) * (self at: i at: j))) ].
-		x at: i put: ((x at: i) / (d at: i))].
-	^Float64Vector4 x: (x at: 1) y: (x at: 2) z: (x at: 3) w: (x at: 4)
-! !
-
-!Float64Matrix4x4 methodsFor: 'transforming' stamp: 'jmv 5/14/2015 09:51'!
-inverseTransformation
-	"Return the inverse matrix of the receiver."
-
-	^ self copy inplaceHouseHolderInvert! !
-
-!Float64Matrix4x4 methodsFor: 'testing' stamp: 'jmv 11/24/2015 09:52'!
-isIdentity
-	^self = Float64Matrix4x4Identity! !
-
-!Float64Matrix4x4 methodsFor: 'testing' stamp: 'jmv 11/24/2015 09:52'!
-isZero
-	^self = Float64Matrix4x4Zero! !
-
-!Float64Matrix4x4 methodsFor: 'transforming' stamp: 'jmv 2/26/2015 13:24'!
-localDirToGlobal: aVector
-	"Multiply direction vector with the receiver"
-	| x y z rx ry rz |
-	"It would be nice to have a plugin for this...
-	<primitive: 'Float64TransformDirection' module: 'Squeak3D'>"
-	self flag: #Float64Primitive.
-
-	x := aVector x.
-	y := aVector y.
-	z := aVector z.
-
-	rx := (x * self a11) + (y * self a12) + (z * self a13).
-	ry := (x * self a21) + (y * self a22) + (z * self a23).
-	rz := (x * self a31) + (y * self a32) + (z * self a33).
-
-	^Float64Vector3 x: rx y: ry z: rz! !
-
-!Float64Matrix4x4 methodsFor: 'transforming' stamp: 'jmv 2/26/2015 13:24'!
-localPointToGlobal: aVector
-	"Multiply aVector (temporarily converted to 4D) with the receiver"
-	| x y z rx ry rz rw |
-	"It would be nice to have a plugin for this...
-	<primitive: 'Float64TransformPoint' module: 'Squeak3D'>"
-	self flag: #Float64Primitive.
-
-	x := aVector x.
-	y := aVector y.
-	z := aVector z.
-
-	rx := (x * self a11) + (y * self a12) + (z * self a13) + self a14.
-	ry := (x * self a21) + (y * self a22) + (z * self a23) + self a24.
-	rz := (x * self a31) + (y * self a32) + (z * self a33) + self a34.
-	rw := (x * self a41) + (y * self a42) + (z * self a43) + self a44.
-
-	^Float64Vector3 x:(rx/rw) y: (ry/rw) z: (rz/rw)! !
-
-!Float64Matrix4x4 methodsFor: 'transforming' stamp: 'jmv 5/14/2015 09:51'!
-orthoNormInverse
-	| m x y z rx ry rz |
-	"It would be nice to have a plugin for this...
-	<primitive: 'Float64OrthoNormInverseMatrix' module: 'Squeak3D'>"
-	self flag: #Float64Primitive.
-
-	m := self copy.
-	"transpose upper 3x3 matrix"
-	m a11: self a11; a12: self a21; a13: self a31.
-	m a21: self a12; a22: self a22; a23: self a32.
-	m a31: self a13; a32: self a23; a33: self a33.
-	"Compute inverse translation vector"
-	x := self a14.
-	y := self a24.
-	z := self a34.
-	rx := (x * m a11) + (y * m a12) + (z * m a13).
-	ry := (x * m a21) + (y * m a22) + (z * m a23).
-	rz := (x * m a31) + (y * m a32) + (z * m a33).
-
-	m a14: 0.0-rx; a24: 0.0-ry; a34: 0.0-rz.
-	^m
-" Used to be:
-	m := self clone.
-	v := m translation.
-	m translation: Float64Vector3 zero.
-	m := m transposed.
-	v := (m localPointToGlobal: v) negated.
-	m translation: v.
-	^ m.
-"! !
 
 !Float64Matrix4x4 methodsFor: 'accessing' stamp: 'jmv 2/26/2015 16:09'!
 pitchYawRoll
@@ -1034,172 +768,6 @@ pitchYawRoll: ypr
 	self loadFrom: (mz composeWith: (my composeWith: mx)).
 	self translation: offset
 ! !
-
-!Float64Matrix4x4 methodsFor: 'printing' stamp: 'jmv 7/13/2015 10:10'!
-print
-	self printOn: Transcript.
-	Transcript newLine! !
-
-!Float64Matrix4x4 methodsFor: 'printing' stamp: 'jmv 7/3/2015 12:53'!
-printOn: aStream
-	aStream newLine.
-	1 to: 4 do: [ :i |
-		aStream nextPutAll: '| '.
-		1 to: 4 do: [ :j |
-			(self at: i at: j) printOn: aStream integerDigits: 1 fractionDigits: 3.
-			aStream space ].
-		aStream nextPut: $|; newLine ]! !
-
-!Float64Matrix4x4 methodsFor: 'private' stamp: 'jmv 2/26/2015 13:29'!
-privateTransformMatrix: m1 with: m2 into: m3
-	"Perform a 4x4 matrix multiplication
-		m2 * m1 = m3
-	being equal to first transforming points by m2 and then by m1.
-	Note that m1 may be identical to m3.
-	NOTE: The primitive implementation does NOT return m3 - and so don't we!!"
-	| c1 c2 c3 c4 |
-	"It would be nice to have a plugin for this...
-	<primitive: 'Float64TransformMatrixWithInto' module:'Squeak3D'>"
-	self flag: #Float64Primitive.
-
-	m2 == m3 ifTrue:[^self error:'Argument and result matrix identical'].
-	c1 := ((m1 a11 * m2 a11) + (m1 a12 * m2 a21) + 
-				(m1 a13 * m2 a31) + (m1 a14 * m2 a41)).
-	c2 := ((m1 a11 * m2 a12) + (m1 a12 * m2 a22) + 
-				(m1 a13 * m2 a32) + (m1 a14 * m2 a42)).
-	c3 := ((m1 a11 * m2 a13) + (m1 a12 * m2 a23) + 
-				(m1 a13 * m2 a33) + (m1 a14 * m2 a43)).
-	c4 := ((m1 a11 * m2 a14) + (m1 a12 * m2 a24) + 
-				(m1 a13 * m2 a34) + (m1 a14 * m2 a44)).
-
-	m3 a11: c1; a12: c2; a13: c3; a14: c4.
-
-	c1 := ((m1 a21 * m2 a11) + (m1 a22 * m2 a21) + 
-				(m1 a23 * m2 a31) + (m1 a24 * m2 a41)).
-	c2 := ((m1 a21 * m2 a12) + (m1 a22 * m2 a22) + 
-				(m1 a23 * m2 a32) + (m1 a24 * m2 a42)).
-	c3 := ((m1 a21 * m2 a13) + (m1 a22 * m2 a23) + 
-				(m1 a23 * m2 a33) + (m1 a24 * m2 a43)).
-	c4 := ((m1 a21 * m2 a14) + (m1 a22 * m2 a24) + 
-				(m1 a23 * m2 a34) + (m1 a24 * m2 a44)).
-
-	m3 a21: c1; a22: c2; a23: c3; a24: c4.
-
-	c1 := ((m1 a31 * m2 a11) + (m1 a32 * m2 a21) + 
-				(m1 a33 * m2 a31) + (m1 a34 * m2 a41)).
-	c2 := ((m1 a31 * m2 a12) + (m1 a32 * m2 a22) + 
-				(m1 a33 * m2 a32) + (m1 a34 * m2 a42)).
-	c3 := ((m1 a31 * m2 a13) + (m1 a32 * m2 a23) + 
-				(m1 a33 * m2 a33) + (m1 a34 * m2 a43)).
-	c4 := ((m1 a31 * m2 a14) + (m1 a32 * m2 a24) + 
-				(m1 a33 * m2 a34) + (m1 a34 * m2 a44)).
-
-	m3 a31: c1; a32: c2; a33: c3; a34: c4.
-
-	c1 := ((m1 a41 * m2 a11) + (m1 a42 * m2 a21) + 
-				(m1 a43 * m2 a31) + (m1 a44 * m2 a41)).
-	c2 := ((m1 a41 * m2 a12) + (m1 a42 * m2 a22) + 
-				(m1 a43 * m2 a32) + (m1 a44 * m2 a42)).
-	c3 := ((m1 a41 * m2 a13) + (m1 a42 * m2 a23) + 
-				(m1 a43 * m2 a33) + (m1 a44 * m2 a43)).
-	c4 := ((m1 a41 * m2 a14) + (m1 a42 * m2 a24) + 
-				(m1 a43 * m2 a34) + (m1 a44 * m2 a44)).
-
-	m3 a41: c1; a42: c2; a43: c3; a44: c4.! !
-
-!Float64Matrix4x4 methodsFor: 'double dispatching' stamp: 'ar 2/8/1999 20:11'!
-productFromMatrix4x4: matrix
-	"Multiply a 4x4 matrix with the receiver."
-	| result |
-	result := self class new.
-	result a11: ((matrix a11 * self a11) + (matrix a12 * self a21) + 
-				(matrix a13 * self a31) + (matrix a14 * self a41)).
-	result a12: ((matrix a11 * self a12) + (matrix a12 * self a22) + 
-				(matrix a13 * self a32) + (matrix a14 * self a42)).
-	result a13: ((matrix a11 * self a13) + (matrix a12 * self a23) + 
-				(matrix a13 * self a33) + (matrix a14 * self a43)).
-	result a14: ((matrix a11 * self a14) + (matrix a12 * self a24) + 
-				(matrix a13 * self a34) + (matrix a14 * self a44)).
-
-	result a21: ((matrix a21 * self a11) + (matrix a22 * self a21) + 
-				(matrix a23 * self a31) + (matrix a24 * self a41)).
-	result a22: ((matrix a21 * self a12) + (matrix a22 * self a22) + 
-				(matrix a23 * self a32) + (matrix a24 * self a42)).
-	result a23: ((matrix a21 * self a13) + (matrix a22 * self a23) + 
-				(matrix a23 * self a33) + (matrix a24 * self a43)).
-	result a24: ((matrix a21 * self a14) + (matrix a22 * self a24) + 
-				(matrix a23 * self a34) + (matrix a24 * self a44)).
-
-	result a31: ((matrix a31 * self a11) + (matrix a32 * self a21) + 
-				(matrix a33 * self a31) + (matrix a34 * self a41)).
-	result a32: ((matrix a31 * self a12) + (matrix a32 * self a22) + 
-				(matrix a33 * self a32) + (matrix a34 * self a42)).
-	result a33: ((matrix a31 * self a13) + (matrix a32 * self a23) + 
-				(matrix a33 * self a33) + (matrix a34 * self a43)).
-	result a34: ((matrix a31 * self a14) + (matrix a32 * self a24) + 
-				(matrix a33 * self a34) + (matrix a34 * self a44)).
-
-	result a41: ((matrix a41 * self a11) + (matrix a42 * self a21) + 
-				(matrix a43 * self a31) + (matrix a44 * self a41)).
-	result a42: ((matrix a41 * self a12) + (matrix a42 * self a22) + 
-				(matrix a43 * self a32) + (matrix a44 * self a42)).
-	result a43: ((matrix a41 * self a13) + (matrix a42 * self a23) + 
-				(matrix a43 * self a33) + (matrix a44 * self a43)).
-	result a44: ((matrix a41 * self a14) + (matrix a42 * self a24) + 
-				(matrix a43 * self a34) + (matrix a44 * self a44)).
-
-	^result! !
-
-!Float64Matrix4x4 methodsFor: 'double dispatching'!
-productFromVector3: aVector3
-	"Multiply aVector (temporarily converted to 4D) with the receiver"
-	| x y z rx ry rz rw |
-	x := aVector3 x.
-	y := aVector3 y.
-	z := aVector3 z.
-
-	rx := (x * self a11) + (y * self a21) + (z * self a31) + self a41.
-	ry := (x * self a12) + (y * self a22) + (z * self a32) + self a42.
-	rz := (x * self a13) + (y * self a23) + (z * self a33) + self a43.
-	rw := (x * self a14) + (y * self a24) + (z * self a34) + self a44.
-
-	^Float64Vector3 x:(rx/rw) y: (ry/rw) z: (rz/rw)! !
-
-!Float64Matrix4x4 methodsFor: 'double dispatching'!
-productFromVector4: aVector4
-	"Multiply aVector with the receiver"
-	| x y z w rx ry rz rw |
-	x := aVector4 x.
-	y := aVector4 y.
-	z := aVector4 z.
-	w := aVector4 w.
-
-	rx := (x * self a11) + (y * self a21) + (z * self a31) + (w * self a41).
-	ry := (x * self a12) + (y * self a22) + (z * self a32) + (w * self a42).
-	rz := (x * self a13) + (y * self a23) + (z * self a33) + (w * self a43).
-	rw := (x * self a14) + (y * self a24) + (z * self a34) + (w * self a44).
-
-	^Float64Vector4 x:rx y: ry z: rz w: rw! !
-
-!Float64Matrix4x4 methodsFor: 'transforming' stamp: 'ar 2/7/1999 06:32'!
-quickTransformV3ArrayFrom: srcArray to: dstArray
-	"Transform the 3 element vertices from srcArray to dstArray.
-	ASSUMPTION: a41 = a42 = a43 = 0.0 and a44 = 1.0"
-	| a11 a12 a13 a14 a21 a22 a23 a24 a31 a32 a33 a34 x y z index |
-	self flag: #Float64Primitive.
-	a11 := self a11.	a12 := self a12.	a13 := self a13.	a14 := self a14.
-	a21 := self a21.	a22 := self a22.	a23 := self a23.	a24 := self a24.
-	a31 := self a31.	a32 := self a32.	a33 := self a33.	a34 := self a34.
-	1 to: srcArray size do:[:i|
-		index := i-1*3.
-		x := srcArray floatAt: index+1.
-		y := srcArray floatAt: index+2.
-		z := srcArray floatAt: index+3.
-		dstArray floatAt: index+1 put: (a11*x) + (a12*y) + (a13*z) + a14.
-		dstArray floatAt: index+2 put: (a21*x) + (a22*y) + (a23*z) + a24.
-		dstArray floatAt: index+3 put: (a31*x) + (a32*y) + (a33*z) + a34.
-	].
-	^dstArray! !
 
 !Float64Matrix4x4 methodsFor: 'accessing' stamp: 'jsp 2/25/1999 13:58'!
 rotation
@@ -1345,6 +913,177 @@ rotationAroundZ: anAngle
 	self a21: s.
 	^self! !
 
+!Float64Matrix4x4 methodsFor: 'accessing' stamp: 'ar 2/1/1999 21:35'!
+scaling: aVector
+
+	^self scalingX: aVector x y: aVector y z: aVector z! !
+
+!Float64Matrix4x4 methodsFor: 'accessing' stamp: 'das 9/13/2002 13:17'!
+scalingX: xValue y: yValue z: zValue
+
+	self a11: self a11 * xValue.
+	self a22: self a22 * yValue.
+	self a33: self a33 * zValue.
+	^self! !
+
+!Float64Matrix4x4 methodsFor: 'accessing' stamp: 'ar 4/16/1999 21:51'!
+squaredDistanceFrom: aMatrix
+	| sum |
+	sum := 0.0.
+	1 to: 4 do:[:i|
+		1 to: 4 do:[:j|
+			sum := sum + ((self at: i at: j) - (aMatrix at: i at: j)) squared]].
+	^sum! !
+
+!Float64Matrix4x4 methodsFor: 'accessing'!
+translation
+
+	^(Float64Vector3 x: self a14 y: self a24 z: self a34)! !
+
+!Float64Matrix4x4 methodsFor: 'accessing' stamp: 'ar 2/1/1999 21:36'!
+translation: aVector
+
+	^self translationX: aVector x y: aVector y z: aVector z! !
+
+!Float64Matrix4x4 methodsFor: 'accessing' stamp: 'ar 2/1/1999 21:36'!
+translationX: xValue y: yValue z: zValue
+
+	self a14: xValue.
+	self a24: yValue.
+	self a34: zValue.
+	^self! !
+
+!Float64Matrix4x4 methodsFor: 'accessing' stamp: 'jsp 2/25/1999 13:58'!
+trotation
+	"Return the angular rotation around each axis of the matrix"
+
+	| cp sp cy sy cr sr vAngles |
+
+	vAngles := Float64Vector3 new.
+
+	((self a13) = 0) ifTrue: [ ((self a33) >= 0)  ifTrue: [ vAngles at: 2 put: 0.
+													  cr := (self a11).
+													  sr := (self a12).
+													  cp := (self a33). ]
+											 ifFalse: [ vAngles at: 2 put: (Float pi).
+														cr := (self a11) negated.
+														sr := (self a12) negated.
+														cp := (self a33) negated. ]
+							]
+					ifFalse: [
+								vAngles at: 2 put: (((self a13) negated) arcTan: (self a33)).
+								cy := (vAngles at: 3) cos.
+								sy := (vAngles at: 3) sin.
+								cr := (cy * (self a11)) + (sy * (self a31)).
+								sr := (cy* (self a12)) + (sy * (self a32)).
+								cp := (cy * (self a33)) - (sy * (self a13)).
+							].
+
+	sp := (self a23).
+ 
+	vAngles at: 1 put: (sp arcTan: cp).
+	vAngles at: 3 put: (sr arcTan: cr).
+
+	vAngles at: 1 put: ((vAngles at: 1) radiansToDegrees).
+	vAngles at: 2 put: ((vAngles at: 2) radiansToDegrees).
+	vAngles at: 3 put: ((vAngles at: 3) radiansToDegrees).
+
+	^ vAngles.
+! !
+
+!Float64Matrix4x4 methodsFor: 'converting'!
+asMatrix4x4
+	^self! !
+
+!Float64Matrix4x4 methodsFor: 'converting' stamp: 'jmv 10/11/2016 10:14:47'!
+asQuaternion
+	"Convert the matrix to a quaternion"
+
+	| x y z a a2 x2 y2 a4 |
+
+	a2 := 0.25 * (1.0 + (self a11) + (self a22) + (self a33)).
+
+	(a2 > 0) ifTrue: [
+						a := a2 sqrt.
+						a4 := 4.0 * a.
+						x := ((self a32) - (self a23)) / a4.
+						y := ((self a13) - (self a31)) / a4.
+						z := ((self a21) - (self a12)) / a4.
+					]
+			ifFalse: [
+						a := 0.
+						x2 := -0.5 * ((self a22) + (self a33)).
+						(x2 > 0) ifTrue: [
+											x := x2 sqrt.
+											x2 := 2 * x.
+											y := (self a21) / x2.
+											z := (self a31) / x2.
+										]
+								ifFalse: [
+											x := 0.
+											y2 := 0.5 * (1.0 - (self a33)).
+											(y2 > 0) ifTrue: [
+																y := y2 sqrt.
+																y2 := 2 * y.
+																z := (self a32) / y2.
+															]
+													ifFalse: [
+																y := 0.0.
+																z := 1.0.
+															]
+										]
+					].
+
+	^ (Float64Quaternion a: a b: x c: y d: z).
+! !
+
+!Float64Matrix4x4 methodsFor: 'row-access' stamp: 'das 12/11/2002 14:35'!
+column1
+	"Return column 1"
+
+	^ (Float64Vector3 x: (self a11) y: (self a21) z: (self a31)).
+! !
+
+!Float64Matrix4x4 methodsFor: 'row-access' stamp: 'das 12/11/2002 14:37'!
+column1: col
+	"Set column 1"
+	self a11: col x.
+	self a21: col y.
+	self a31: col z.
+! !
+
+!Float64Matrix4x4 methodsFor: 'row-access' stamp: 'das 12/11/2002 14:36'!
+column2
+	"Return column 2"
+
+	^ (Float64Vector3 x: (self a12) y: (self a22) z: (self a32)).
+! !
+
+!Float64Matrix4x4 methodsFor: 'row-access' stamp: 'das 12/11/2002 14:37'!
+column2: col
+	"Set column 2"
+
+	self a12: col x.
+	self a22: col y.
+	self a32: col z.
+! !
+
+!Float64Matrix4x4 methodsFor: 'row-access' stamp: 'das 12/11/2002 14:37'!
+column3
+	"Return column 3"
+
+	^ (Float64Vector3 x: (self a13) y: (self a23) z: (self a33)).
+! !
+
+!Float64Matrix4x4 methodsFor: 'row-access' stamp: 'das 12/11/2002 14:37'!
+column3: col
+	"Set column 3"
+
+	self a13: col x.
+	self a23: col y.
+	self a33: col z.
+! !
+
 !Float64Matrix4x4 methodsFor: 'row-access' stamp: 'jsp 2/24/1999 17:10'!
 row1
 	"Return row 1"
@@ -1392,18 +1131,443 @@ row3: row
 	self a33: row z.
 ! !
 
-!Float64Matrix4x4 methodsFor: 'accessing' stamp: 'ar 2/1/1999 21:35'!
-scaling: aVector
+!Float64Matrix4x4 methodsFor: 'transforming' stamp: 'ar 11/7/2000 14:48'!
+composeWith: m2
+	"Perform a 4x4 matrix multiplication."
+	^self composedWithLocal: m2.! !
 
-	^self scalingX: aVector x y: aVector y z: aVector z! !
+!Float64Matrix4x4 methodsFor: 'transforming' stamp: 'DPR 9/3/2002 16:45'!
+composeWith: m2 times: nTimes
 
-!Float64Matrix4x4 methodsFor: 'accessing' stamp: 'das 9/13/2002 13:17'!
-scalingX: xValue y: yValue z: zValue
+	"Perform a 4x4 matrix exponentiation and multiplication."
 
-	self a11: self a11 * xValue.
-	self a22: self a22 * yValue.
-	self a33: self a33 * zValue.
-	^self! !
+	| result |
+	result := self.
+	nTimes negative ifTrue: [ self halt ].
+	nTimes >= 2 ifTrue: [ 
+			result := result composeWith: (m2 composedWithLocal: m2) times: nTimes // 2 ].
+	(nTimes \\ 2) = 1 ifTrue: [ result := result composedWithLocal: m2].
+	^ result
+	
+! !
+
+!Float64Matrix4x4 methodsFor: 'transforming' stamp: 'ar 2/15/1999 23:56'!
+composedWithGlobal: aFloat64Matrix4x4
+	| result |
+	result := self class new.
+	self privateTransformMatrix: aFloat64Matrix4x4 with: self into: result.
+	^result! !
+
+!Float64Matrix4x4 methodsFor: 'transforming' stamp: 'ar 2/15/1999 23:57'!
+composedWithLocal: aFloat64Matrix4x4
+	| result |
+	result := self class new.
+	self privateTransformMatrix: self with: aFloat64Matrix4x4 into: result.
+	^result! !
+
+!Float64Matrix4x4 methodsFor: 'transforming' stamp: 'jmv 5/14/2015 09:51'!
+inverseTransformation
+	"Return the inverse matrix of the receiver."
+
+	^ self copy inplaceHouseHolderInvert! !
+
+!Float64Matrix4x4 methodsFor: 'transforming' stamp: 'jmv 2/26/2015 13:24'!
+localDirToGlobal: aVector
+	"Multiply direction vector with the receiver"
+	| x y z rx ry rz |
+	"It would be nice to have a plugin for this...
+	<primitive: 'Float64TransformDirection' module: 'Squeak3D'>"
+	self flag: #Float64Primitive.
+
+	x := aVector x.
+	y := aVector y.
+	z := aVector z.
+
+	rx := (x * self a11) + (y * self a12) + (z * self a13).
+	ry := (x * self a21) + (y * self a22) + (z * self a23).
+	rz := (x * self a31) + (y * self a32) + (z * self a33).
+
+	^Float64Vector3 x: rx y: ry z: rz! !
+
+!Float64Matrix4x4 methodsFor: 'transforming' stamp: 'jmv 2/26/2015 13:24'!
+localPointToGlobal: aVector
+	"Multiply aVector (temporarily converted to 4D) with the receiver"
+	| x y z rx ry rz rw |
+	"It would be nice to have a plugin for this...
+	<primitive: 'Float64TransformPoint' module: 'Squeak3D'>"
+	self flag: #Float64Primitive.
+
+	x := aVector x.
+	y := aVector y.
+	z := aVector z.
+
+	rx := (x * self a11) + (y * self a12) + (z * self a13) + self a14.
+	ry := (x * self a21) + (y * self a22) + (z * self a23) + self a24.
+	rz := (x * self a31) + (y * self a32) + (z * self a33) + self a34.
+	rw := (x * self a41) + (y * self a42) + (z * self a43) + self a44.
+
+	^Float64Vector3 x:(rx/rw) y: (ry/rw) z: (rz/rw)! !
+
+!Float64Matrix4x4 methodsFor: 'transforming' stamp: 'jmv 5/14/2015 09:51'!
+orthoNormInverse
+	| m x y z rx ry rz |
+	"It would be nice to have a plugin for this...
+	<primitive: 'Float64OrthoNormInverseMatrix' module: 'Squeak3D'>"
+	self flag: #Float64Primitive.
+
+	m := self copy.
+	"transpose upper 3x3 matrix"
+	m a11: self a11; a12: self a21; a13: self a31.
+	m a21: self a12; a22: self a22; a23: self a32.
+	m a31: self a13; a32: self a23; a33: self a33.
+	"Compute inverse translation vector"
+	x := self a14.
+	y := self a24.
+	z := self a34.
+	rx := (x * m a11) + (y * m a12) + (z * m a13).
+	ry := (x * m a21) + (y * m a22) + (z * m a23).
+	rz := (x * m a31) + (y * m a32) + (z * m a33).
+
+	m a14: 0.0-rx; a24: 0.0-ry; a34: 0.0-rz.
+	^m
+" Used to be:
+	m := self clone.
+	v := m translation.
+	m translation: Float64Vector3 zero.
+	m := m transposed.
+	v := (m localPointToGlobal: v) negated.
+	m translation: v.
+	^ m.
+"! !
+
+!Float64Matrix4x4 methodsFor: 'transforming' stamp: 'ar 2/7/1999 06:32'!
+quickTransformV3ArrayFrom: srcArray to: dstArray
+	"Transform the 3 element vertices from srcArray to dstArray.
+	ASSUMPTION: a41 = a42 = a43 = 0.0 and a44 = 1.0"
+	| a11 a12 a13 a14 a21 a22 a23 a24 a31 a32 a33 a34 x y z index |
+	self flag: #Float64Primitive.
+	a11 := self a11.	a12 := self a12.	a13 := self a13.	a14 := self a14.
+	a21 := self a21.	a22 := self a22.	a23 := self a23.	a24 := self a24.
+	a31 := self a31.	a32 := self a32.	a33 := self a33.	a34 := self a34.
+	1 to: srcArray size do:[:i|
+		index := i-1*3.
+		x := srcArray floatAt: index+1.
+		y := srcArray floatAt: index+2.
+		z := srcArray floatAt: index+3.
+		dstArray floatAt: index+1 put: (a11*x) + (a12*y) + (a13*z) + a14.
+		dstArray floatAt: index+2 put: (a21*x) + (a22*y) + (a23*z) + a24.
+		dstArray floatAt: index+3 put: (a31*x) + (a32*y) + (a33*z) + a34.
+	].
+	^dstArray! !
+
+!Float64Matrix4x4 methodsFor: 'transforming' stamp: 'jmv 2/26/2015 13:25'!
+transposed
+	"Return a transposed copy of the receiver"
+	| matrix |
+	"It would be nice to have a plugin for this...
+	<primitive: 'Float64TransposeMatrix' module: 'Squeak3D'>"
+	self flag: #Float64Primitive.
+
+	matrix := self class new.
+	matrix 
+		a11: self a11; a12: self a21; a13: self a31; a14: self a41;
+		a21: self a12; a22: self a22; a23: self a32; a24: self a42;
+		a31: self a13; a32: self a23; a33: self a33; a34: self a43;
+		a41: self a14; a42: self a24; a43: self a34; a44: self a44.
+	^matrix! !
+
+!Float64Matrix4x4 methodsFor: 'solving' stamp: 'ar 2/1/1999 21:50'!
+inplaceDecomposeLU
+	"Decompose the receiver in place by using gaussian elimination w/o pivot search"
+	| x |
+	1 to: 4 do:[:j|
+		"i-th equation (row)"
+		j+1 to: 4 do:[:i|
+			x := (self at: i at: j) / (self at: j at: j).
+			j to: 4 do:[:k|
+				self at: i at: k put: (self at: i at: k) - ((self at: j at: k) * x)].
+			self at: i at: j put: x]].
+! !
+
+!Float64Matrix4x4 methodsFor: 'solving' stamp: 'jmv 2/26/2015 13:25'!
+inplaceHouseHolderInvert
+	"Solve the linear equation self * aVector = x by using HouseHolder's transformation.
+	Note: This scheme is numerically better than using gaussian elimination even though it takes
+	somewhat longer"
+	| d x sigma beta sum s|
+	"It would be nice to have a plugin for this...
+	<primitive:'Float64InplaceHouseHolderInvert' module:'Squeak3D'>"
+	self flag: #Float64Primitive.
+
+	x := Float64Matrix4x4 identity.
+	d := Float64Matrix4x4 new.
+	1 to: 4 do:[:j|
+		sigma := 0.0.
+		j to: 4 do:[:i| sigma := sigma + ((self at: i at: j) squared)].
+		sigma isZero ifTrue:[^nil]. "matrix is singular"
+		((self at: j at: j) < 0.0) 
+			ifTrue:[ s:= sigma sqrt]
+			ifFalse:[ s:= sigma sqrt negated].
+		1 to: 4 do:[:r| d at: j at: r put: s].
+		beta := 1.0 / ( s * (self at: j at: j) - sigma).
+		self at: j at: j put: ((self at: j at: j) - s).
+		"update remaining columns"
+		j+1 to: 4 do:[:k|
+			sum := 0.0.
+			j to: 4 do:[:i| sum := sum + ((self at: i at: j) * (self at: i at: k))].
+			sum := sum * beta.
+			j to: 4 do:[:i| 
+				self at: i at: k put: ((self at: i at: k) + ((self at: i at: j) * sum))]].
+		"update vector"
+		1 to: 4 do:[:r|
+			sum := nil.
+			j to: 4 do:[:i| 
+				sum := sum isNil 
+					ifTrue:[(x at: i at: r) * (self at: i at: j)] 
+					ifFalse:[sum + ((x at: i at: r) * (self at: i at: j))]].
+			sum := sum * beta.
+			j to: 4 do:[:i| 
+				x at: i at: r put:((x at: i at: r) + (sum * (self at: i at: j)))].
+		].
+	].
+	"Now calculate result"
+	1 to: 4 do:[:r|
+		4 to: 1 by: -1 do:[:i|
+			i+1 to: 4 do:[:j|
+				x at: i at: r put: ((x at: i at: r) - ((x at: j at: r) * (self at: i at: j))) ].
+			x at: i at: r put: ((x at: i at: r) / (d at: i at: r))].
+	].
+	self loadFrom: x.
+	"Return receiver"! !
+
+!Float64Matrix4x4 methodsFor: 'solving'!
+inplaceHouseHolderTransform: aVector
+	"Solve the linear equation self * aVector = x by using HouseHolder's transformation.
+	Note: This scheme is numerically better than using gaussian elimination even though it takes
+	somewhat longer"
+	| d x sigma beta sum s|
+	x := Array with: aVector x with: aVector y with: aVector z with: aVector w.
+	d := Array new: 4.
+	1 to: 4 do:[:j|
+		sigma := 0.0.
+		j to: 4 do:[:i| sigma := sigma + ((self at: i at: j) squared)].
+		sigma isZero ifTrue:[^nil]. "matrix is singular"
+		((self at: j at: j) < 0.0) 
+			ifTrue:[ s:= d at: j put: (sigma sqrt)]
+			ifFalse:[ s:= d at: j put: (sigma sqrt negated)].
+		beta := 1.0 / ( s * (self at: j at: j) - sigma).
+		self at: j at: j put: ((self at: j at: j) - s).
+		"update remaining columns"
+		j+1 to: 4 do:[:k|
+			sum := 0.0.
+			j to: 4 do:[:i| sum := sum + ((self at: i at: j) * (self at: i at: k))].
+			sum := sum * beta.
+			j to: 4 do:[:i| 
+				self at: i at: k put: ((self at: i at: k) + ((self at: i at: j) * sum))]].
+		"update vector"
+		sum := nil.
+		j to: 4 do:[:i| 
+			sum := sum isNil 
+				ifTrue:[(x at: i) * (self at: i at: j)] 
+				ifFalse:[sum + ((x at: i) * (self at: i at: j))]].
+		sum := sum * beta.
+		j to: 4 do:[:i| 
+			x at: i put:((x at: i) + (sum * (self at: i at: j)))].
+	].
+	"Now calculate result"
+	4 to: 1 by: -1 do:[:i|
+		i+1 to: 4 do:[:j|
+			x at: i put: ((x at: i) - ((x at: j) * (self at: i at: j))) ].
+		x at: i put: ((x at: i) / (d at: i))].
+	^Float64Vector4 x: (x at: 1) y: (x at: 2) z: (x at: 3) w: (x at: 4)
+! !
+
+!Float64Matrix4x4 methodsFor: 'solving' stamp: 'jmv 5/14/2015 09:52'!
+solve3x3: aVector
+	"Solve a 3x3 system of linear equations. Assume that all the a[4,x] and a[x,4] are zero.
+	NOTE: This is a hack, but it's the fastest way for now."
+	| m |
+	m := self copy.
+	m a44: 1. "need this for inversion"
+	m := m inplaceHouseHolderInvert.
+	m ifNil:[^nil].
+	^m localDirToGlobal: aVector.! !
+
+!Float64Matrix4x4 methodsFor: 'solving' stamp: 'jmv 5/14/2015 09:52'!
+solve: aVector
+
+	^ self copy inplaceHouseHolderTransform: aVector
+	"or:
+	^self clone inplaceDecomposeLU solveLU: aVector
+	"! !
+
+!Float64Matrix4x4 methodsFor: 'solving'!
+solveLU: aVector
+	"Given a decomposed matrix using gaussian elimination solve the linear equations."
+	| x v |
+	v := Array with: aVector x with: aVector y with: aVector z with: aVector w.
+	"L first"
+	1 to: 4 do:[:i| "Top to bottom"
+		x := 0.0.
+		1 to: i-1 do:[:j|
+			"From left to right w/o diagonal element"
+			x := x + ((v at: j) * (self at: i at: j))].
+		"No need to divide by the diagonal element - this is always 1.0 in L"
+		v at: i put: (v at: i) - x].
+	"Now U"
+	4 to: 1 by: -1 do:[:i| "Bottom to top"
+		x := 0.0.
+		4 to: i+1 by: -1 do:[:j|
+			"From right to left w/o diagonal element"
+			x := x + ((v at: j) * (self at: i at: j))].
+		"Divide by diagonal element"
+		v at: i put: (v at: i) - x / (self at: i at: i)].
+	^Float64Vector4 x: (v at: 1) y: (v at: 2) z: (v at: 3) w: (v at: 4)
+! !
+
+!Float64Matrix4x4 methodsFor: 'testing' stamp: 'jmv 11/24/2015 09:52'!
+isIdentity
+	^self = Float64Matrix4x4Identity! !
+
+!Float64Matrix4x4 methodsFor: 'testing' stamp: 'jmv 11/24/2015 09:52'!
+isZero
+	^self = Float64Matrix4x4Zero! !
+
+!Float64Matrix4x4 methodsFor: 'printing' stamp: 'jmv 7/13/2015 10:10'!
+print
+	self printOn: Transcript.
+	Transcript newLine! !
+
+!Float64Matrix4x4 methodsFor: 'private' stamp: 'jmv 2/26/2015 13:29'!
+privateTransformMatrix: m1 with: m2 into: m3
+	"Perform a 4x4 matrix multiplication
+		m2 * m1 = m3
+	being equal to first transforming points by m2 and then by m1.
+	Note that m1 may be identical to m3.
+	NOTE: The primitive implementation does NOT return m3 - and so don't we!!"
+	| c1 c2 c3 c4 |
+	"It would be nice to have a plugin for this...
+	<primitive: 'Float64TransformMatrixWithInto' module:'Squeak3D'>"
+	self flag: #Float64Primitive.
+
+	m2 == m3 ifTrue:[^self error:'Argument and result matrix identical'].
+	c1 := ((m1 a11 * m2 a11) + (m1 a12 * m2 a21) + 
+				(m1 a13 * m2 a31) + (m1 a14 * m2 a41)).
+	c2 := ((m1 a11 * m2 a12) + (m1 a12 * m2 a22) + 
+				(m1 a13 * m2 a32) + (m1 a14 * m2 a42)).
+	c3 := ((m1 a11 * m2 a13) + (m1 a12 * m2 a23) + 
+				(m1 a13 * m2 a33) + (m1 a14 * m2 a43)).
+	c4 := ((m1 a11 * m2 a14) + (m1 a12 * m2 a24) + 
+				(m1 a13 * m2 a34) + (m1 a14 * m2 a44)).
+
+	m3 a11: c1; a12: c2; a13: c3; a14: c4.
+
+	c1 := ((m1 a21 * m2 a11) + (m1 a22 * m2 a21) + 
+				(m1 a23 * m2 a31) + (m1 a24 * m2 a41)).
+	c2 := ((m1 a21 * m2 a12) + (m1 a22 * m2 a22) + 
+				(m1 a23 * m2 a32) + (m1 a24 * m2 a42)).
+	c3 := ((m1 a21 * m2 a13) + (m1 a22 * m2 a23) + 
+				(m1 a23 * m2 a33) + (m1 a24 * m2 a43)).
+	c4 := ((m1 a21 * m2 a14) + (m1 a22 * m2 a24) + 
+				(m1 a23 * m2 a34) + (m1 a24 * m2 a44)).
+
+	m3 a21: c1; a22: c2; a23: c3; a24: c4.
+
+	c1 := ((m1 a31 * m2 a11) + (m1 a32 * m2 a21) + 
+				(m1 a33 * m2 a31) + (m1 a34 * m2 a41)).
+	c2 := ((m1 a31 * m2 a12) + (m1 a32 * m2 a22) + 
+				(m1 a33 * m2 a32) + (m1 a34 * m2 a42)).
+	c3 := ((m1 a31 * m2 a13) + (m1 a32 * m2 a23) + 
+				(m1 a33 * m2 a33) + (m1 a34 * m2 a43)).
+	c4 := ((m1 a31 * m2 a14) + (m1 a32 * m2 a24) + 
+				(m1 a33 * m2 a34) + (m1 a34 * m2 a44)).
+
+	m3 a31: c1; a32: c2; a33: c3; a34: c4.
+
+	c1 := ((m1 a41 * m2 a11) + (m1 a42 * m2 a21) + 
+				(m1 a43 * m2 a31) + (m1 a44 * m2 a41)).
+	c2 := ((m1 a41 * m2 a12) + (m1 a42 * m2 a22) + 
+				(m1 a43 * m2 a32) + (m1 a44 * m2 a42)).
+	c3 := ((m1 a41 * m2 a13) + (m1 a42 * m2 a23) + 
+				(m1 a43 * m2 a33) + (m1 a44 * m2 a43)).
+	c4 := ((m1 a41 * m2 a14) + (m1 a42 * m2 a24) + 
+				(m1 a43 * m2 a34) + (m1 a44 * m2 a44)).
+
+	m3 a41: c1; a42: c2; a43: c3; a44: c4.! !
+
+!Float64Matrix4x4 methodsFor: 'double dispatching' stamp: 'ar 2/8/1999 20:11'!
+productFromMatrix4x4: matrix
+	"Multiply a 4x4 matrix with the receiver."
+	| result |
+	result := self class new.
+	result a11: ((matrix a11 * self a11) + (matrix a12 * self a21) + 
+				(matrix a13 * self a31) + (matrix a14 * self a41)).
+	result a12: ((matrix a11 * self a12) + (matrix a12 * self a22) + 
+				(matrix a13 * self a32) + (matrix a14 * self a42)).
+	result a13: ((matrix a11 * self a13) + (matrix a12 * self a23) + 
+				(matrix a13 * self a33) + (matrix a14 * self a43)).
+	result a14: ((matrix a11 * self a14) + (matrix a12 * self a24) + 
+				(matrix a13 * self a34) + (matrix a14 * self a44)).
+
+	result a21: ((matrix a21 * self a11) + (matrix a22 * self a21) + 
+				(matrix a23 * self a31) + (matrix a24 * self a41)).
+	result a22: ((matrix a21 * self a12) + (matrix a22 * self a22) + 
+				(matrix a23 * self a32) + (matrix a24 * self a42)).
+	result a23: ((matrix a21 * self a13) + (matrix a22 * self a23) + 
+				(matrix a23 * self a33) + (matrix a24 * self a43)).
+	result a24: ((matrix a21 * self a14) + (matrix a22 * self a24) + 
+				(matrix a23 * self a34) + (matrix a24 * self a44)).
+
+	result a31: ((matrix a31 * self a11) + (matrix a32 * self a21) + 
+				(matrix a33 * self a31) + (matrix a34 * self a41)).
+	result a32: ((matrix a31 * self a12) + (matrix a32 * self a22) + 
+				(matrix a33 * self a32) + (matrix a34 * self a42)).
+	result a33: ((matrix a31 * self a13) + (matrix a32 * self a23) + 
+				(matrix a33 * self a33) + (matrix a34 * self a43)).
+	result a34: ((matrix a31 * self a14) + (matrix a32 * self a24) + 
+				(matrix a33 * self a34) + (matrix a34 * self a44)).
+
+	result a41: ((matrix a41 * self a11) + (matrix a42 * self a21) + 
+				(matrix a43 * self a31) + (matrix a44 * self a41)).
+	result a42: ((matrix a41 * self a12) + (matrix a42 * self a22) + 
+				(matrix a43 * self a32) + (matrix a44 * self a42)).
+	result a43: ((matrix a41 * self a13) + (matrix a42 * self a23) + 
+				(matrix a43 * self a33) + (matrix a44 * self a43)).
+	result a44: ((matrix a41 * self a14) + (matrix a42 * self a24) + 
+				(matrix a43 * self a34) + (matrix a44 * self a44)).
+
+	^result! !
+
+!Float64Matrix4x4 methodsFor: 'double dispatching'!
+productFromVector3: aVector3
+	"Multiply aVector (temporarily converted to 4D) with the receiver"
+	| x y z rx ry rz rw |
+	x := aVector3 x.
+	y := aVector3 y.
+	z := aVector3 z.
+
+	rx := (x * self a11) + (y * self a21) + (z * self a31) + self a41.
+	ry := (x * self a12) + (y * self a22) + (z * self a32) + self a42.
+	rz := (x * self a13) + (y * self a23) + (z * self a33) + self a43.
+	rw := (x * self a14) + (y * self a24) + (z * self a34) + self a44.
+
+	^Float64Vector3 x:(rx/rw) y: (ry/rw) z: (rz/rw)! !
+
+!Float64Matrix4x4 methodsFor: 'double dispatching'!
+productFromVector4: aVector4
+	"Multiply aVector with the receiver"
+	| x y z w rx ry rz rw |
+	x := aVector4 x.
+	y := aVector4 y.
+	z := aVector4 z.
+	w := aVector4 w.
+
+	rx := (x * self a11) + (y * self a21) + (z * self a31) + (w * self a41).
+	ry := (x * self a12) + (y * self a22) + (z * self a32) + (w * self a42).
+	rz := (x * self a13) + (y * self a23) + (z * self a33) + (w * self a43).
+	rw := (x * self a14) + (y * self a24) + (z * self a34) + (w * self a44).
+
+	^Float64Vector4 x:rx y: ry z: rz w: rw! !
 
 !Float64Matrix4x4 methodsFor: 'initialize' stamp: 'ar 2/1/1999 21:26'!
 setBSplineBase
@@ -1542,58 +1706,6 @@ skew: vector
 	self a23: vector x negated.
 ! !
 
-!Float64Matrix4x4 methodsFor: 'solving' stamp: 'jmv 5/14/2015 09:52'!
-solve3x3: aVector
-	"Solve a 3x3 system of linear equations. Assume that all the a[4,x] and a[x,4] are zero.
-	NOTE: This is a hack, but it's the fastest way for now."
-	| m |
-	m := self copy.
-	m a44: 1. "need this for inversion"
-	m := m inplaceHouseHolderInvert.
-	m ifNil:[^nil].
-	^m localDirToGlobal: aVector.! !
-
-!Float64Matrix4x4 methodsFor: 'solving' stamp: 'jmv 5/14/2015 09:52'!
-solve: aVector
-
-	^ self copy inplaceHouseHolderTransform: aVector
-	"or:
-	^self clone inplaceDecomposeLU solveLU: aVector
-	"! !
-
-!Float64Matrix4x4 methodsFor: 'solving'!
-solveLU: aVector
-	"Given a decomposed matrix using gaussian elimination solve the linear equations."
-	| x v |
-	v := Array with: aVector x with: aVector y with: aVector z with: aVector w.
-	"L first"
-	1 to: 4 do:[:i| "Top to bottom"
-		x := 0.0.
-		1 to: i-1 do:[:j|
-			"From left to right w/o diagonal element"
-			x := x + ((v at: j) * (self at: i at: j))].
-		"No need to divide by the diagonal element - this is always 1.0 in L"
-		v at: i put: (v at: i) - x].
-	"Now U"
-	4 to: 1 by: -1 do:[:i| "Bottom to top"
-		x := 0.0.
-		4 to: i+1 by: -1 do:[:j|
-			"From right to left w/o diagonal element"
-			x := x + ((v at: j) * (self at: i at: j))].
-		"Divide by diagonal element"
-		v at: i put: (v at: i) - x / (self at: i at: i)].
-	^Float64Vector4 x: (v at: 1) y: (v at: 2) z: (v at: 3) w: (v at: 4)
-! !
-
-!Float64Matrix4x4 methodsFor: 'accessing' stamp: 'ar 4/16/1999 21:51'!
-squaredDistanceFrom: aMatrix
-	| sum |
-	sum := 0.0.
-	1 to: 4 do:[:i|
-		1 to: 4 do:[:j|
-			sum := sum + ((self at: i at: j) - (aMatrix at: i at: j)) squared]].
-	^sum! !
-
 !Float64Matrix4x4 methodsFor: 'comparing' stamp: 'ar 2/1/1999 21:53'!
 squaredErrorDistanceTo: anotherMatrix
 	| result temp |
@@ -1602,88 +1714,9 @@ squaredErrorDistanceTo: anotherMatrix
 	1 to: 4 do: [:i | 1 to: 4 do: [:j| temp := temp + ((result at: i-1*4+j) squared)]].
 	^temp sqrt.! !
 
-!Float64Matrix4x4 methodsFor: 'accessing'!
-translation
-
-	^(Float64Vector3 x: self a14 y: self a24 z: self a34)! !
-
-!Float64Matrix4x4 methodsFor: 'accessing' stamp: 'ar 2/1/1999 21:36'!
-translation: aVector
-
-	^self translationX: aVector x y: aVector y z: aVector z! !
-
-!Float64Matrix4x4 methodsFor: 'accessing' stamp: 'ar 2/1/1999 21:36'!
-translationX: xValue y: yValue z: zValue
-
-	self a14: xValue.
-	self a24: yValue.
-	self a34: zValue.
-	^self! !
-
-!Float64Matrix4x4 methodsFor: 'transforming' stamp: 'jmv 2/26/2015 13:25'!
-transposed
-	"Return a transposed copy of the receiver"
-	| matrix |
-	"It would be nice to have a plugin for this...
-	<primitive: 'Float64TransposeMatrix' module: 'Squeak3D'>"
-	self flag: #Float64Primitive.
-
-	matrix := self class new.
-	matrix 
-		a11: self a11; a12: self a21; a13: self a31; a14: self a41;
-		a21: self a12; a22: self a22; a23: self a32; a24: self a42;
-		a31: self a13; a32: self a23; a33: self a33; a34: self a43;
-		a41: self a14; a42: self a24; a43: self a34; a44: self a44.
-	^matrix! !
-
-!Float64Matrix4x4 methodsFor: 'accessing' stamp: 'jsp 2/25/1999 13:58'!
-trotation
-	"Return the angular rotation around each axis of the matrix"
-
-	| cp sp cy sy cr sr vAngles |
-
-	vAngles := Float64Vector3 new.
-
-	((self a13) = 0) ifTrue: [ ((self a33) >= 0)  ifTrue: [ vAngles at: 2 put: 0.
-													  cr := (self a11).
-													  sr := (self a12).
-													  cp := (self a33). ]
-											 ifFalse: [ vAngles at: 2 put: (Float pi).
-														cr := (self a11) negated.
-														sr := (self a12) negated.
-														cp := (self a33) negated. ]
-							]
-					ifFalse: [
-								vAngles at: 2 put: (((self a13) negated) arcTan: (self a33)).
-								cy := (vAngles at: 3) cos.
-								sy := (vAngles at: 3) sin.
-								cr := (cy * (self a11)) + (sy * (self a31)).
-								sr := (cy* (self a12)) + (sy * (self a32)).
-								cp := (cy * (self a33)) - (sy * (self a13)).
-							].
-
-	sp := (self a23).
- 
-	vAngles at: 1 put: (sp arcTan: cp).
-	vAngles at: 3 put: (sr arcTan: cr).
-
-	vAngles at: 1 put: ((vAngles at: 1) radiansToDegrees).
-	vAngles at: 2 put: ((vAngles at: 2) radiansToDegrees).
-	vAngles at: 3 put: ((vAngles at: 3) radiansToDegrees).
-
-	^ vAngles.
-! !
-
 !Float64Matrix4x4 class methodsFor: 'instance creation'!
 identity
 	^self new setIdentity! !
-
-!Float64Matrix4x4 class methodsFor: 'class initialization' stamp: 'jmv 11/24/2015 09:52'!
-initialize
-	"Float64Matrix4x4 initialize"
-	Float64Matrix4x4Zero := self new.
-	Float64Matrix4x4Identity := self new.
-	Float64Matrix4x4Identity a11: 1.0; a22: 1.0; a33: 1.0; a44: 1.0.! !
 
 !Float64Matrix4x4 class methodsFor: 'instance creation' stamp: 'ar 2/1/1999 21:25'!
 numElements
@@ -1719,6 +1752,13 @@ withScale: amount
 zero
 	^self new! !
 
+!Float64Matrix4x4 class methodsFor: 'class initialization' stamp: 'jmv 11/24/2015 09:52'!
+initialize
+	"Float64Matrix4x4 initialize"
+	Float64Matrix4x4Zero := self new.
+	Float64Matrix4x4Identity := self new.
+	Float64Matrix4x4Identity a11: 1.0; a22: 1.0; a33: 1.0; a44: 1.0.! !
+
 !Float64Quaternion methodsFor: 'arithmetic' stamp: 'jmv 10/11/2016 10:14:55'!
 * aRotation
 	"Multiplying two rotations is the same as concatenating the two rotations."
@@ -1733,97 +1773,6 @@ zero
 		c: vv y
 		d: vv z! !
 
-!Float64Quaternion methodsFor: 'accessing' stamp: 'jmv 10/11/2016 10:14:25'!
-a
-	^self at: 1! !
-
-!Float64Quaternion methodsFor: 'accessing' stamp: 'jmv 7/13/2017 09:26:26'!
-angleDegrees
-	^self angleRadians radiansToDegrees! !
-
-!Float64Quaternion methodsFor: 'accessing' stamp: 'jmv 7/12/2017 16:02:40'!
-angleRadians
-	^self a arcCos * 2.0! !
-
-!Float64Quaternion methodsFor: 'converting' stamp: 'jmv 10/11/2016 10:14:26'!
-asMatrix3x3
-	"Answer a Float64Matrix3x3 that does the same rotation as us"
-	| m |
-	m _ Float64Matrix3x3 new.
-	self asMatrixOn: m.
-	^m
-! !
-
-!Float64Quaternion methodsFor: 'converting' stamp: 'jmv 10/11/2016 10:14:26'!
-asMatrix4x4
-	"Answer a Float64Matrix4x4 that does the same rotation as us"
-	| m |
-	m _ Float64Matrix4x4 identity.
-	self asMatrixOn: m.
-	^m
-! !
-
-!Float64Quaternion methodsFor: 'converting' stamp: 'jmv 10/11/2016 10:14:26'!
-asMatrixOn: m
-	"Given a quaternion q = (a, [ b , c , d]) the rotation matrix can be calculated as
-				|	1 -	2(cc+dd),			2(bc-da),				2(db+ca)	|
-		m =	|		2(bc+da),	1 - 	2(bb+dd),			2(cd-ba)	|
-				|		2(db-ca),			2(cd+ba),		1 -	2(bb+cc)	|
-	"
-	| a b c d bb cc dd bc cd db ba ca da |
-	a _ self a. b _ self b. c _ self c. d _ self d.
-	bb _ (b * b).	cc _ (c * c).	dd _ (d * d).
-	bc _ (b * c).	cd _ (c * d).	db _ (d * b).
-	ba _ (b * a).	ca _ (c * a).	da _ (d * a).
-	m 
-		a11: 1.0 - (cc + dd * 2.0);	a12: (bc - da * 2.0); 			a13: (db + ca * 2.0);
-		a21: (bc + da * 2.0);		a22: 1.0 - (bb + dd * 2.0);	a23: (cd - ba * 2.0);
-		a31: (db - ca * 2.0);			a32: (cd + ba * 2.0);		a33: 1.0 - (bb + cc * 2.0)! !
-
-!Float64Quaternion methodsFor: 'accessing' stamp: 'jmv 10/11/2016 10:14:26'!
-axis
-	| sinAngle |
-	sinAngle := self a arcCos sin.
-	sinAngle isZero ifTrue:[^Float64Vector3 zero].
-	^Float64Vector3 
-		x: (self b / sinAngle)
-		y: (self c / sinAngle)
-		z: (self d / sinAngle)! !
-
-!Float64Quaternion methodsFor: 'accessing' stamp: 'jmv 10/11/2016 10:14:26'!
-b
-	^self at: 2! !
-
-!Float64Quaternion methodsFor: 'rotating' stamp: 'jmv 10/11/2016 10:40:10'!
-bodyToInertial: vectorInSpacecraftFrame
-	"See class comment
-
-	http://www.euclideanspace.com/maths/algebra/realNormedAlgebra/quaternions/geometric/quaternionTraining001.pdf
-
-	Vector Rotation:
-		We know a Vector in the Spacecraft Frame,
-		Where is it pointing in Inertial Frame?
-		(eg: Given Spacecraft Attitude and Spacecraft Frame Star Tracker Vector,
-		Where is the Star Tracker Pointed in Inertial Frame?)
-
-		Vs: Vector in Spacecraft Frame (argument)
-		Vi: Vector in Inertial Frame (answer)
-		Q: Spacecraft Attitude Quaternion (receiver)
-		Q*: Quaternion conjugate (receiver conjugate)
-
-	Vi = Q* . Vs .  Q
-	"
-	"If we were able to represent any quaternion, and not just unit quaternions, this would be correct:
-	^(self conjugate * vectorInSpacecraftFrame asPureQuaternion * self) vectorPart
-	"
-
-	"This should be inlined!!!!!!!!!!!!"
-	^(self conjugate * vectorInSpacecraftFrame asPureQuaternion * self) vectorPart * vectorInSpacecraftFrame length! !
-
-!Float64Quaternion methodsFor: 'accessing' stamp: 'jmv 10/11/2016 10:14:26'!
-c
-	^self at: 3! !
-
 !Float64Quaternion methodsFor: 'arithmetic' stamp: 'jmv 10/11/2016 10:14:56'!
 conjugate
 	^Float64Quaternion
@@ -1831,41 +1780,6 @@ conjugate
 		b: self b negated
 		c: self c negated
 		d: self d negated! !
-
-!Float64Quaternion methodsFor: 'accessing' stamp: 'jmv 10/11/2016 10:14:26'!
-d
-	^self at: 4! !
-
-!Float64Quaternion methodsFor: 'rotating' stamp: 'jmv 10/11/2016 10:40:01'!
-inertialToBody: vectorInInertialFrame
-	"See class comment
-
-	http://www.euclideanspace.com/maths/algebra/realNormedAlgebra/quaternions/geometric/quaternionTraining001.pdf
-
-	Coordinate Transformation:
-		We know a Vector in the Inertial Frame,
-		What is it in the Spacecraft Frame?
-		(eg: Given Spacecraft Attitude, Earth and Spacecraft Ephemeris,
-		Where do we point de Payload relative to the Spacecraft?)
-
-		Vs: Vector in Spacecraft Frame (answer)
-		Vi: Vector in Inertial Frame (argument)
-		Q: Spacecraft Attitude Quaternion (receiver)
-		Q*: Quaternion conjugate (receiver conjugate)
-
-	Vs = Q . Vi . Q*
-	"
-	"If we were able to represent any quaternion, and not just unit quaternions, this would be correct:
-	^(self * vectorInInertialFrame asPureQuaternion * self conjugate) vectorPart
-	"
-
-	"This should be inlined!!!!!!!!!!!!"
-	^(self * vectorInInertialFrame asPureQuaternion * self conjugate) vectorPart * vectorInInertialFrame length! !
-
-!Float64Quaternion methodsFor: 'interpolating' stamp: 'jmv 10/11/2016 10:14:26'!
-interpolateTo: aRotation at: t
-	"Spherical linear interpolation (slerp) from the receiver to aQuaternion"
-	^self slerpTo: aRotation at: t extraSpins: 0! !
 
 !Float64Quaternion methodsFor: 'arithmetic' stamp: 'jmv 10/11/2016 10:14:58'!
 negated
@@ -1903,52 +1817,137 @@ normalize
 	self at: 3 put: self c / length.
 	self at: 4 put: self d / length! !
 
+!Float64Quaternion methodsFor: 'accessing' stamp: 'jmv 10/11/2016 10:14:25'!
+a
+	^self at: 1! !
+
+!Float64Quaternion methodsFor: 'accessing' stamp: 'jmv 7/13/2017 09:26:26'!
+angleDegrees
+	^self angleRadians radiansToDegrees! !
+
+!Float64Quaternion methodsFor: 'accessing' stamp: 'jmv 7/12/2017 16:02:40'!
+angleRadians
+	^self a arcCos * 2.0! !
+
+!Float64Quaternion methodsFor: 'accessing' stamp: 'jmv 10/11/2016 10:14:26'!
+axis
+	| sinAngle |
+	sinAngle := self a arcCos sin.
+	sinAngle isZero ifTrue:[^Float64Vector3 zero].
+	^Float64Vector3 
+		x: (self b / sinAngle)
+		y: (self c / sinAngle)
+		z: (self d / sinAngle)! !
+
+!Float64Quaternion methodsFor: 'accessing' stamp: 'jmv 10/11/2016 10:14:26'!
+b
+	^self at: 2! !
+
+!Float64Quaternion methodsFor: 'accessing' stamp: 'jmv 10/11/2016 10:14:26'!
+c
+	^self at: 3! !
+
+!Float64Quaternion methodsFor: 'accessing' stamp: 'jmv 10/11/2016 10:14:26'!
+d
+	^self at: 4! !
+
+!Float64Quaternion methodsFor: 'accessing' stamp: 'jmv 7/13/2017 09:26:49'!
+turns
+	"Answer the number of turns"
+	^self angleRadians / Float twoPi! !
+
+!Float64Quaternion methodsFor: 'converting' stamp: 'jmv 10/11/2016 10:14:26'!
+asMatrix3x3
+	"Answer a Float64Matrix3x3 that does the same rotation as us"
+	| m |
+	m _ Float64Matrix3x3 new.
+	self asMatrixOn: m.
+	^m
+! !
+
+!Float64Quaternion methodsFor: 'converting' stamp: 'jmv 10/11/2016 10:14:26'!
+asMatrix4x4
+	"Answer a Float64Matrix4x4 that does the same rotation as us"
+	| m |
+	m _ Float64Matrix4x4 identity.
+	self asMatrixOn: m.
+	^m
+! !
+
+!Float64Quaternion methodsFor: 'converting' stamp: 'jmv 10/11/2016 10:14:26'!
+asMatrixOn: m
+	"Given a quaternion q = (a, [ b , c , d]) the rotation matrix can be calculated as
+				|	1 -	2(cc+dd),			2(bc-da),				2(db+ca)	|
+		m =	|		2(bc+da),	1 - 	2(bb+dd),			2(cd-ba)	|
+				|		2(db-ca),			2(cd+ba),		1 -	2(bb+cc)	|
+	"
+	| a b c d bb cc dd bc cd db ba ca da |
+	a _ self a. b _ self b. c _ self c. d _ self d.
+	bb _ (b * b).	cc _ (c * c).	dd _ (d * d).
+	bc _ (b * c).	cd _ (c * d).	db _ (d * b).
+	ba _ (b * a).	ca _ (c * a).	da _ (d * a).
+	m 
+		a11: 1.0 - (cc + dd * 2.0);	a12: (bc - da * 2.0); 			a13: (db + ca * 2.0);
+		a21: (bc + da * 2.0);		a22: 1.0 - (bb + dd * 2.0);	a23: (cd - ba * 2.0);
+		a31: (db - ca * 2.0);			a32: (cd + ba * 2.0);		a33: 1.0 - (bb + cc * 2.0)! !
+
 !Float64Quaternion methodsFor: 'converting' stamp: 'jmv 10/11/2016 10:14:26'!
 normalized
 	"Our instances are always normalized... This is not really needed...
 	(well, except someone calls: #a:, #b:, #c:, #d: or #loadFrom:)"
 	^self copy normalize! !
 
-!Float64Quaternion methodsFor: 'printing' stamp: 'jmv 10/11/2016 10:16:06'!
-printAbcd
-	"Alternative way of printing a quaternion
-		(Float64Quaternion q1: -0.120340 q2: 0.399205 q3: 0.906501 q4: -0.066405) printAbcd 
-			'(-0.066405, -0.120340, 0.399205, 0.906501)' 
+!Float64Quaternion methodsFor: 'rotating' stamp: 'jmv 10/11/2016 10:40:10'!
+bodyToInertial: vectorInSpacecraftFrame
+	"See class comment
+
+	http://www.euclideanspace.com/maths/algebra/realNormedAlgebra/quaternions/geometric/quaternionTraining001.pdf
+
+	Vector Rotation:
+		We know a Vector in the Spacecraft Frame,
+		Where is it pointing in Inertial Frame?
+		(eg: Given Spacecraft Attitude and Spacecraft Frame Star Tracker Vector,
+		Where is the Star Tracker Pointed in Inertial Frame?)
+
+		Vs: Vector in Spacecraft Frame (argument)
+		Vi: Vector in Inertial Frame (answer)
+		Q: Spacecraft Attitude Quaternion (receiver)
+		Q*: Quaternion conjugate (receiver conjugate)
+
+	Vi = Q* . Vs .  Q
 	"
-	^String streamContents: [ :strm |
-		strm nextPut: $(.
-		self a printOn: strm fractionDigits: 6.
-		strm nextPutAll: ', '.
-		self b printOn: strm fractionDigits: 6.
-		strm nextPutAll: ', '.
-		self c printOn: strm fractionDigits: 6.
-		strm nextPutAll: ', '.
-		self d printOn: strm fractionDigits: 6.
-		strm nextPut: $) ]! !
+	"If we were able to represent any quaternion, and not just unit quaternions, this would be correct:
+	^(self conjugate * vectorInSpacecraftFrame asPureQuaternion * self) vectorPart
+	"
 
-!Float64Quaternion methodsFor: 'printing' stamp: 'jmv 7/13/2017 09:26:35'!
-printOn: aStream
+	"This should be inlined!!!!!!!!!!!!"
+	^(self conjugate * vectorInSpacecraftFrame asPureQuaternion * self) vectorPart * vectorInSpacecraftFrame length! !
 
-	aStream 
-		nextPutAll: self class name;
-		nextPut:$(;
-		print: self angleDegrees;
-		nextPut: Character space;
-		print: self axis;
-		nextPut:$).! !
+!Float64Quaternion methodsFor: 'rotating' stamp: 'jmv 10/11/2016 10:40:01'!
+inertialToBody: vectorInInertialFrame
+	"See class comment
 
-!Float64Quaternion methodsFor: 'printing' stamp: 'jmv 10/11/2016 10:14:27'!
-printq1q2q3q4
-	^String streamContents: [ :strm |
-		strm nextPut: $(.
-		self b printOn: strm fractionDigits: 6.
-		strm nextPutAll: ', '.
-		self c printOn: strm fractionDigits: 6.
-		strm nextPutAll: ', '.
-		self d printOn: strm fractionDigits: 6.
-		strm nextPutAll: ', '.
-		self a printOn: strm fractionDigits: 6.
-		strm nextPut: $) ]! !
+	http://www.euclideanspace.com/maths/algebra/realNormedAlgebra/quaternions/geometric/quaternionTraining001.pdf
+
+	Coordinate Transformation:
+		We know a Vector in the Inertial Frame,
+		What is it in the Spacecraft Frame?
+		(eg: Given Spacecraft Attitude, Earth and Spacecraft Ephemeris,
+		Where do we point de Payload relative to the Spacecraft?)
+
+		Vs: Vector in Spacecraft Frame (answer)
+		Vi: Vector in Inertial Frame (argument)
+		Q: Spacecraft Attitude Quaternion (receiver)
+		Q*: Quaternion conjugate (receiver conjugate)
+
+	Vs = Q . Vi . Q*
+	"
+	"If we were able to represent any quaternion, and not just unit quaternions, this would be correct:
+	^(self * vectorInInertialFrame asPureQuaternion * self conjugate) vectorPart
+	"
+
+	"This should be inlined!!!!!!!!!!!!"
+	^(self * vectorInInertialFrame asPureQuaternion * self conjugate) vectorPart * vectorInInertialFrame length! !
 
 !Float64Quaternion methodsFor: 'rotating' stamp: 'jmv 10/11/2016 10:43:28'!
 rotate: aFloat64Vector3
@@ -1972,28 +1971,10 @@ rotate: aFloat64Vector3
 	^(self conjugate * aFloat64Vector3 asPureQuaternion * self) vectorPart * aFloat64Vector3 length
 	"See class comment"! !
 
-!Float64Quaternion methodsFor: 'private' stamp: 'jmv 10/11/2016 10:16:20'!
-setA: aValue b: bValue c: cValue d: dValue
-
-	self at: 1 put: aValue.
-	self at: 2 put: bValue.
-	self at: 3 put: cValue.
-	self at: 4 put: dValue.
-	"
-	(Float64Quaternion axis: 0@0@1 angle: 0.01) rotate: 0@0@ -1.
-	should answer 0@0@-1,
-	but was answering 0@0@1
-	because of this.
-	It is subtle, but a conjugate must be a conjugate, etc. In this particular case, it was the product #*
-	(jmv)
-	"
-	"(aValue < 0.0) ifTrue:[self *= -1.0]."
-	
-	self normalize! !
-
-!Float64Quaternion methodsFor: 'initialize' stamp: 'jmv 10/11/2016 10:18:03'!
-setIdentity
-	^self loadFrom: Identity! !
+!Float64Quaternion methodsFor: 'interpolating' stamp: 'jmv 10/11/2016 10:14:26'!
+interpolateTo: aRotation at: t
+	"Spherical linear interpolation (slerp) from the receiver to aQuaternion"
+	^self slerpTo: aRotation at: t extraSpins: 0! !
 
 !Float64Quaternion methodsFor: 'interpolating' stamp: 'jmv 10/11/2016 10:14:26'!
 slerpTo: aRotation at: t
@@ -2035,14 +2016,62 @@ slerpTo: aRotation at: t extraSpins: spin
 		c: (alpha * aRotation c) + (beta * self c)
 		d: (alpha * aRotation d) + (beta * self d)! !
 
-!Float64Quaternion methodsFor: 'accessing' stamp: 'jmv 7/13/2017 09:26:49'!
-turns
-	"Answer the number of turns"
-	^self angleRadians / Float twoPi! !
+!Float64Quaternion methodsFor: 'printing' stamp: 'jmv 10/11/2016 10:16:06'!
+printAbcd
+	"Alternative way of printing a quaternion
+		(Float64Quaternion q1: -0.120340 q2: 0.399205 q3: 0.906501 q4: -0.066405) printAbcd 
+			'(-0.066405, -0.120340, 0.399205, 0.906501)' 
+	"
+	^String streamContents: [ :strm |
+		strm nextPut: $(.
+		self a printOn: strm fractionDigits: 6.
+		strm nextPutAll: ', '.
+		self b printOn: strm fractionDigits: 6.
+		strm nextPutAll: ', '.
+		self c printOn: strm fractionDigits: 6.
+		strm nextPutAll: ', '.
+		self d printOn: strm fractionDigits: 6.
+		strm nextPut: $) ]! !
+
+!Float64Quaternion methodsFor: 'printing' stamp: 'jmv 10/11/2016 10:14:27'!
+printq1q2q3q4
+	^String streamContents: [ :strm |
+		strm nextPut: $(.
+		self b printOn: strm fractionDigits: 6.
+		strm nextPutAll: ', '.
+		self c printOn: strm fractionDigits: 6.
+		strm nextPutAll: ', '.
+		self d printOn: strm fractionDigits: 6.
+		strm nextPutAll: ', '.
+		self a printOn: strm fractionDigits: 6.
+		strm nextPut: $) ]! !
+
+!Float64Quaternion methodsFor: 'private' stamp: 'jmv 10/11/2016 10:16:20'!
+setA: aValue b: bValue c: cValue d: dValue
+
+	self at: 1 put: aValue.
+	self at: 2 put: bValue.
+	self at: 3 put: cValue.
+	self at: 4 put: dValue.
+	"
+	(Float64Quaternion axis: 0@0@1 angle: 0.01) rotate: 0@0@ -1.
+	should answer 0@0@-1,
+	but was answering 0@0@1
+	because of this.
+	It is subtle, but a conjugate must be a conjugate, etc. In this particular case, it was the product #*
+	(jmv)
+	"
+	"(aValue < 0.0) ifTrue:[self *= -1.0]."
+	
+	self normalize! !
 
 !Float64Quaternion methodsFor: 'private' stamp: 'jmv 10/11/2016 10:14:27'!
 vectorPart
 	^Float64Vector3 x: self b y: self c z: self d! !
+
+!Float64Quaternion methodsFor: 'initialize' stamp: 'jmv 10/11/2016 10:18:03'!
+setIdentity
+	^self loadFrom: Identity! !
 
 !Float64Quaternion class methodsFor: 'instance creation' stamp: 'jmv 10/11/2016 10:14:27'!
 a: aValue b: bValue c: cValue d: dValue
@@ -2082,14 +2111,6 @@ from: startVector to: endVector
 !Float64Quaternion class methodsFor: 'instance creation' stamp: 'jmv 10/11/2016 10:14:27'!
 identity
 	^self new setIdentity! !
-
-!Float64Quaternion class methodsFor: 'class initialization' stamp: 'jmv 10/11/2016 10:18:12'!
-initialize
-	"
-	Float64Quaternion initialize
-	"
-	Identity := self new.
-	Identity floatAt: 1 put: 1.0.! !
 
 !Float64Quaternion class methodsFor: 'instance creation' stamp: 'jmv 10/11/2016 10:14:27'!
 numElements
@@ -2154,6 +2175,14 @@ xyzRotations: xyzRotationsFloatArray
 		yRotation: xyzRotationsFloatArray second
 		zRotation: xyzRotationsFloatArray third! !
 
+!Float64Quaternion class methodsFor: 'class initialization' stamp: 'jmv 10/11/2016 10:18:12'!
+initialize
+	"
+	Float64Quaternion initialize
+	"
+	Identity := self new.
+	Identity floatAt: 1 put: 1.0.! !
+
 !Float64Vector2 methodsFor: 'converting' stamp: 'ar 2/13/1999 20:03'!
 asPoint
 	^self x @ self y! !
@@ -2165,11 +2194,6 @@ u
 !Float64Vector2 methodsFor: 'accessing' stamp: 'ar 2/6/1999 23:27'!
 u: aFloat
 	self floatAt: 1 put: aFloat! !
-
-!Float64Vector2 methodsFor: 'initialize' stamp: 'ar 2/6/1999 23:30'!
-u: uValue v: vValue
-	self u: uValue.
-	self v: vValue.! !
 
 !Float64Vector2 methodsFor: 'accessing' stamp: 'ar 2/6/1999 23:27'!
 v
@@ -2187,11 +2211,6 @@ x
 x: aFloat
 	self floatAt: 1 put: aFloat! !
 
-!Float64Vector2 methodsFor: 'initialize' stamp: 'ar 5/4/2000 15:50'!
-x: uValue y: vValue
-	self x: uValue.
-	self y: vValue.! !
-
 !Float64Vector2 methodsFor: 'accessing' stamp: 'ar 2/7/1999 02:58'!
 y
 	^self at: 2! !
@@ -2199,6 +2218,16 @@ y
 !Float64Vector2 methodsFor: 'accessing' stamp: 'ar 5/4/2000 16:00'!
 y: aFloat
 	self floatAt: 2 put: aFloat! !
+
+!Float64Vector2 methodsFor: 'initialize' stamp: 'ar 2/6/1999 23:30'!
+u: uValue v: vValue
+	self u: uValue.
+	self v: vValue.! !
+
+!Float64Vector2 methodsFor: 'initialize' stamp: 'ar 5/4/2000 15:50'!
+x: uValue y: vValue
+	self x: uValue.
+	self y: vValue.! !
 
 !Float64Vector2 class methodsFor: 'instance creation' stamp: 'ar 2/6/1999 23:31'!
 numElements
@@ -2215,19 +2244,6 @@ x: uValue y: vValue
 !Float64Vector3 methodsFor: 'converting' stamp: 'jmv 11/3/2016 16:01:12'!
 @ aNumber
 	^Float64Vector4 x: self x y: self y z: self z w: aNumber! !
-
-!Float64Vector3 methodsFor: 'vector functions' stamp: 'jmv 10/26/2016 18:04:01'!
-angleTo: aVector 
-	"calculate the rotation angle that rotates this vector into aVector. I return the value in terms of radians."
-	| cosine |
-
-	"In many cases doing v dot: v with v normalized gives an answer sligtly above 1.0, because of rounding.
-	Actually asking for cosine > 1.0 is enough."
-	cosine _ (self dot: aVector) / self length / aVector length.
-	cosine > 1.0 ifTrue: [
-		^ 0.0 ].
-
-	^ cosine arcCos! !
 
 !Float64Vector3 methodsFor: 'converting' stamp: 'ar 2/6/1999 00:06'!
 asFloat64Vector3
@@ -2262,6 +2278,19 @@ asPureQuaternion
 asTurnDirection
 	^self! !
 
+!Float64Vector3 methodsFor: 'vector functions' stamp: 'jmv 10/26/2016 18:04:01'!
+angleTo: aVector 
+	"calculate the rotation angle that rotates this vector into aVector. I return the value in terms of radians."
+	| cosine |
+
+	"In many cases doing v dot: v with v normalized gives an answer sligtly above 1.0, because of rounding.
+	Actually asking for cosine > 1.0 is enough."
+	cosine _ (self dot: aVector) / self length / aVector length.
+	cosine > 1.0 ifTrue: [
+		^ 0.0 ].
+
+	^ cosine arcCos! !
+
 !Float64Vector3 methodsFor: 'vector functions'!
 cross: aVector 
 	"calculate the cross product from the receiver with aVector"
@@ -2273,24 +2302,6 @@ cross: aVector
 !Float64Vector3 methodsFor: 'vector functions' stamp: 'ar 2/11/2003 18:41'!
 distanceTo: aVector
 	^(self - aVector) length! !
-
-!Float64Vector3 methodsFor: 'interpolating' stamp: 'jsp 2/9/1999 11:17'!
-interpolateTo: end at: amountDone
-	"Interpolates a new vector based on the instance vector, the end state vector, and the amount already done (between 0 and 1)."
-
-	| tX tY tZ |
-	tX := self x.
-	tY := self y.
-	tZ := self z.
-
-	^ (Float64Vector3 x: (tX + (((end x) - tX) * amountDone))
-				y: (tY + (((end y) - tY) * amountDone))
-				z: (tZ + (((end z) - tZ) * amountDone))).
-! !
-
-!Float64Vector3 methodsFor: 'testing' stamp: 'laza 3/16/2000 16:30'!
-isZero
-	^self = Float64Vector3 zero! !
 
 !Float64Vector3 methodsFor: 'vector functions'!
 length: newLength
@@ -2317,20 +2328,6 @@ normalize
 !Float64Vector3 methodsFor: 'vector functions'!
 normalized
 	^self / self length! !
-
-!Float64Vector3 methodsFor: 'private' stamp: 'jmv 3/16/2016 14:18'!
-printOn: aStream 
-	"The receiver prints on aStream in terms of infix notation."
-
-	self x printOn: aStream.
-	aStream nextPut: $@.
-	self y printOn: aStream.
-	aStream nextPut: $@.
-	self z printOn: aStream! !
-
-!Float64Vector3 methodsFor: 'private'!
-privateLoadFrom: srcObject
-	self x: srcObject x y: srcObject y z: srcObject z.! !
 
 !Float64Vector3 methodsFor: 'vector functions' stamp: 'jmv 11/24/2015 10:16'!
 rotationTo: aVector 
@@ -2412,6 +2409,28 @@ vectorRejectionOnto: aVector
 
 	^ self - (self vectorProjectionOnto: aVector )! !
 
+!Float64Vector3 methodsFor: 'interpolating' stamp: 'jsp 2/9/1999 11:17'!
+interpolateTo: end at: amountDone
+	"Interpolates a new vector based on the instance vector, the end state vector, and the amount already done (between 0 and 1)."
+
+	| tX tY tZ |
+	tX := self x.
+	tY := self y.
+	tZ := self z.
+
+	^ (Float64Vector3 x: (tX + (((end x) - tX) * amountDone))
+				y: (tY + (((end y) - tY) * amountDone))
+				z: (tZ + (((end z) - tZ) * amountDone))).
+! !
+
+!Float64Vector3 methodsFor: 'testing' stamp: 'laza 3/16/2000 16:30'!
+isZero
+	^self = Float64Vector3 zero! !
+
+!Float64Vector3 methodsFor: 'private'!
+privateLoadFrom: srcObject
+	self x: srcObject x y: srcObject y z: srcObject z.! !
+
 !Float64Vector3 methodsFor: 'enumerating' stamp: 'ar 5/20/2001 00:05'!
 vertexPositionsDo: aBlock
 	aBlock value: self! !
@@ -2423,12 +2442,6 @@ x
 !Float64Vector3 methodsFor: 'accessing' stamp: 'ar 2/1/1999 21:24'!
 x: aFloat
 	self at: 1 put: aFloat! !
-
-!Float64Vector3 methodsFor: 'initialize'!
-x: x y: y z: z
-	self x: x.
-	self y: y.
-	self z: z.! !
 
 !Float64Vector3 methodsFor: 'accessing' stamp: 'ar 2/1/1999 21:24'!
 y
@@ -2445,6 +2458,12 @@ z
 !Float64Vector3 methodsFor: 'accessing' stamp: 'ar 2/1/1999 21:24'!
 z: aFloat
 	self at: 3 put: aFloat! !
+
+!Float64Vector3 methodsFor: 'initialize'!
+x: x y: y z: z
+	self x: x.
+	self y: y.
+	self z: z.! !
 
 !Float64Vector3 class methodsFor: 'instance creation' stamp: 'ar 2/1/1999 21:23'!
 numElements
@@ -2493,13 +2512,6 @@ x
 x: aFloat
 	self at: 1 put: aFloat! !
 
-!Float64Vector4 methodsFor: 'initialize'!
-x: x y: y z: z w: w
-	self x: x.
-	self y: y.
-	self z: z.
-	self w: w.! !
-
 !Float64Vector4 methodsFor: 'accessing' stamp: 'ar 2/1/1999 21:16'!
 y
 	^self at: 2! !
@@ -2515,6 +2527,13 @@ z
 !Float64Vector4 methodsFor: 'accessing' stamp: 'ar 2/1/1999 21:17'!
 z: aFloat
 	self at: 3 put: aFloat! !
+
+!Float64Vector4 methodsFor: 'initialize'!
+x: x y: y z: z w: w
+	self x: x.
+	self y: y.
+	self z: z.
+	self w: w.! !
 
 !Float64Vector4 class methodsFor: 'instance creation' stamp: 'ar 2/1/1999 21:21'!
 numElements
@@ -2687,16 +2706,6 @@ print
 	self printOn: Transcript.
 	Transcript newLine! !
 
-!Float32Matrix3x3 methodsFor: 'printing' stamp: 'jmv 11/24/2015 16:30'!
-printOn: aStream
-	aStream newLine.
-	1 to: 3 do: [ :i |
-		aStream nextPutAll: '| '.
-		1 to: 3 do: [ :j |
-			(self at: i at: j) printOn: aStream integerDigits: 1 fractionDigits: 3.
-			aStream space ].
-		aStream nextPut: $|; newLine ]! !
-
 !Float32Matrix3x3 methodsFor: 'initialize' stamp: 'jmv 11/24/2015 16:31'!
 setIdentity
 	"Set the receiver to the identity matrix"
@@ -2718,17 +2727,6 @@ setZero
 identity
 	^self new setIdentity! !
 
-!Float32Matrix3x3 class methodsFor: 'class initialization' stamp: 'jmv 11/24/2015 16:31'!
-initialize
-	"Float32Matrix3x3 initialize"
-	Float32Matrix3x3Zero := self new.
-	Float32Matrix3x3Identity := self new.
-	Float32Matrix3x3Identity a11: 1.0; a22: 1.0; a33: 1.0! !
-
-!Float32Matrix3x3 class methodsFor: 'instance creation' stamp: 'jmv 11/24/2015 16:42'!
-new
-	^self new: self numElements! !
-
 !Float32Matrix3x3 class methodsFor: 'instance creation' stamp: 'jmv 11/24/2015 16:30'!
 numElements
 	^9! !
@@ -2741,6 +2739,13 @@ withScale: amount
 zero
 	^self new! !
 
+!Float32Matrix3x3 class methodsFor: 'class initialization' stamp: 'jmv 11/24/2015 16:31'!
+initialize
+	"Float32Matrix3x3 initialize"
+	Float32Matrix3x3Zero := self new.
+	Float32Matrix3x3Identity := self new.
+	Float32Matrix3x3Identity a11: 1.0; a22: 1.0; a33: 1.0! !
+
 !Float32Vector3 methodsFor: 'vector functions' stamp: 'jmv 11/24/2015 16:32'!
 normalize
 	self /= self length! !
@@ -2748,20 +2753,6 @@ normalize
 !Float32Vector3 methodsFor: 'vector functions' stamp: 'jmv 11/24/2015 16:32'!
 normalized
 	^self / self length! !
-
-!Float32Vector3 methodsFor: 'printing' stamp: 'jmv 3/16/2016 14:18'!
-printOn: aStream 
-	"The receiver prints on aStream in terms of infix notation."
-
-	self x printOn: aStream.
-	aStream nextPut: $@.
-	self y printOn: aStream.
-	aStream nextPut: $@.
-	self z printOn: aStream! !
-
-!Float32Vector3 methodsFor: 'private' stamp: 'jmv 11/24/2015 16:32'!
-privateLoadFrom: srcObject
-	self x: srcObject x y: srcObject y z: srcObject z.! !
 
 !Float32Vector3 methodsFor: 'vector functions' stamp: 'jmv 11/24/2015 16:32'!
 safelyNormalize
@@ -2776,6 +2767,10 @@ safelyNormalized
 	"Safely normalize the receiver, e.g. check if the length is non-zero"
 	^self copy safelyNormalize! !
 
+!Float32Vector3 methodsFor: 'private' stamp: 'jmv 11/24/2015 16:32'!
+privateLoadFrom: srcObject
+	self x: srcObject x y: srcObject y z: srcObject z.! !
+
 !Float32Vector3 methodsFor: 'accessing' stamp: 'jmv 11/24/2015 16:32'!
 x
 	^self at: 1! !
@@ -2783,12 +2778,6 @@ x
 !Float32Vector3 methodsFor: 'accessing' stamp: 'jmv 11/24/2015 16:32'!
 x: aFloat
 	self at: 1 put: aFloat! !
-
-!Float32Vector3 methodsFor: 'initialize' stamp: 'jmv 11/24/2015 16:33'!
-x: x y: y z: z
-	self x: x.
-	self y: y.
-	self z: z.! !
 
 !Float32Vector3 methodsFor: 'accessing' stamp: 'jmv 11/24/2015 16:32'!
 y
@@ -2806,9 +2795,11 @@ z
 z: aFloat
 	self at: 3 put: aFloat! !
 
-!Float32Vector3 class methodsFor: 'instance creation' stamp: 'jmv 11/24/2015 16:41'!
-new
-	^self new: self numElements! !
+!Float32Vector3 methodsFor: 'initialize' stamp: 'jmv 11/24/2015 16:33'!
+x: x y: y z: z
+	self x: x.
+	self y: y.
+	self z: z.! !
 
 !Float32Vector3 class methodsFor: 'instance creation' stamp: 'jmv 11/24/2015 16:33'!
 numElements
@@ -2825,6 +2816,10 @@ x: x y: y z: z
 !Float32Vector3 class methodsFor: 'instance creation' stamp: 'jmv 11/24/2015 16:33'!
 zero
 	^self new! !
+
+!Point methodsFor: '*Math 3D' stamp: 'jmv 2/26/2015 15:05'!
+@ aNumber
+	^Float64Vector3 x: x y: y z: aNumber! !
 Float64Matrix3x3 initialize!
 Float64Matrix4x4 initialize!
 Float64Quaternion initialize!
