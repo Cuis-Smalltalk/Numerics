@@ -1,7 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3745] on 14 May 2019 at 9:38:35 am'!
+'From Cuis 5.0 [latest update: #4112] on 17 April 2020 at 3:19:57 pm'!
 'Description '!
-!provides: 'LinearAlgebra' 1 55!
-!requires: 'Collections-CompactArrays' 1 2 nil!
+!provides: 'LinearAlgebra' 1 56!
 SystemOrganization addCategory: #LinearAlgebra!
 
 
@@ -65,26 +64,6 @@ NumericalMatrix subclass: #IntegerMatrix
 IntegerMatrix class
 	instanceVariableNames: ''!
 
-!classDefinition: #ShortIntegerMatrix category: #LinearAlgebra!
-NumericalMatrix subclass: #ShortIntegerMatrix
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'LinearAlgebra'!
-!classDefinition: 'ShortIntegerMatrix class' category: #LinearAlgebra!
-ShortIntegerMatrix class
-	instanceVariableNames: ''!
-
-!classDefinition: #ShortWordMatrix category: #LinearAlgebra!
-NumericalMatrix subclass: #ShortWordMatrix
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'LinearAlgebra'!
-!classDefinition: 'ShortWordMatrix class' category: #LinearAlgebra!
-ShortWordMatrix class
-	instanceVariableNames: ''!
-
 
 !NumericalMatrix commentStamp: 'jmv 7/19/2012 11:52' prior: 0!
 My instances are m x n matrices, where m is the height and n the width. A matrix is a kind of 2-d array. A Matrix whose width is 1 is called a "Column Vector". A Matrix whose height is 1 is called a "Row Vector".
@@ -112,22 +91,6 @@ IntegerMatrix fromArrayOfArrays: {
 	{ 0. 									1. 						-1 }.
 	{ (2 raisedTo: 31) negated.	-10000.   				-16r80000000}.
 	{ (2 raisedTo: 31) -1. 			12 factorial.			16r7FFFFFFF }}!
-
-!ShortIntegerMatrix commentStamp: '<historical>' prior: 0!
-Elements are integers between -32768 and 32767, i.e. signed 16-bit words.
-
-ShortIntegerMatrix fromArrayOfArrays: #(
-	#( 0 			255 		94)
-	#(-4 			127 		128)
-	#( -32768 	254		32767 ))!
-
-!ShortWordMatrix commentStamp: '<historical>' prior: 0!
-Elements are integers between 0 and 65535, i.e. unsigned 16-bit words.
-
-ShortWordMatrix fromArrayOfArrays: #(
-	#( 0 			255 		65500)
-	#( 40000 		127 		128)
-	#( 32768 		254		32767 ))!
 
 !FloatMatrix methodsFor: 'printing' stamp: 'jmv 1/9/2014 21:28'!
 printOn: aStream
@@ -2528,24 +2491,6 @@ at: aPointOrIndex put: aNumber
 initializeElements
 
 	elements _ IntegerArray new: height * width! !
-
-!ShortIntegerMatrix methodsFor: 'initialization' stamp: 'jmv 9/4/2015 13:12'!
-initializeElements
-
-	| n |
-	n _ height * width.
-	n even ifFalse: [
-		n _ n + 1 ].
-	elements _ ShortIntegerArray new: n! !
-
-!ShortWordMatrix methodsFor: 'initialization' stamp: 'jmv 7/26/2016 12:37:58'!
-initializeElements
-
-	| n |
-	n _ height * width.
-	n even ifFalse: [
-		n _ n + 1 ].
-	elements _ ShortWordArray new: n! !
 
 !Form methodsFor: '*LinearAlgebra' stamp: 'jmv 12/14/2017 14:25:38'!
 hackBitsForFloat64Matrix: aFloa64tMatrix
