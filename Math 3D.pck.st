@@ -1,8 +1,28 @@
-'From Cuis 5.0 [latest update: #3890] on 29 September 2019 at 1:12:08 pm'!
+'From Cuis 5.0 [latest update: #4370] on 4 September 2020 at 11:11:58 am'!
 'Description Stuff from Balloon3D-Math by Andreas Raab. Adapted to use 64-bit Float arithmetic (in addition to 32-bit FloatArray).'!
-!provides: 'Math 3D' 1 22!
+!provides: 'Math 3D' 1 23!
 SystemOrganization addCategory: #'Math 3D'!
 
+
+!classDefinition: #Float32Matrix3x3 category: #'Math 3D'!
+Float32Array variableWordSubclass: #Float32Matrix3x3
+	instanceVariableNames: ''
+	classVariableNames: 'Float32Matrix3x3Identity Float32Matrix3x3Zero'
+	poolDictionaries: ''
+	category: 'Math 3D'!
+!classDefinition: 'Float32Matrix3x3 class' category: #'Math 3D'!
+Float32Matrix3x3 class
+	instanceVariableNames: ''!
+
+!classDefinition: #Float32Vector3 category: #'Math 3D'!
+Float32Array variableWordSubclass: #Float32Vector3
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Math 3D'!
+!classDefinition: 'Float32Vector3 class' category: #'Math 3D'!
+Float32Vector3 class
+	instanceVariableNames: ''!
 
 !classDefinition: #Float64Color4 category: #'Math 3D'!
 Float64Array variableWordSubclass: #Float64Color4
@@ -74,26 +94,14 @@ Float64Array variableWordSubclass: #Float64Vector4
 Float64Vector4 class
 	instanceVariableNames: ''!
 
-!classDefinition: #Float32Matrix3x3 category: #'Math 3D'!
-FloatArray variableWordSubclass: #Float32Matrix3x3
-	instanceVariableNames: ''
-	classVariableNames: 'Float32Matrix3x3Identity Float32Matrix3x3Zero'
-	poolDictionaries: ''
-	category: 'Math 3D'!
-!classDefinition: 'Float32Matrix3x3 class' category: #'Math 3D'!
-Float32Matrix3x3 class
-	instanceVariableNames: ''!
 
-!classDefinition: #Float32Vector3 category: #'Math 3D'!
-FloatArray variableWordSubclass: #Float32Vector3
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'Math 3D'!
-!classDefinition: 'Float32Vector3 class' category: #'Math 3D'!
-Float32Vector3 class
-	instanceVariableNames: ''!
+!Float32Matrix3x3 commentStamp: '<historical>' prior: 0!
+I represent a 3x3 matrix for linear transformations (rotation and scale, maybe also skew) commonly used in 3D computer graphics.
+Based on Float64Matrix3x3, but 32 bits.!
 
+!Float32Vector3 commentStamp: '<historical>' prior: 0!
+I represent simple (x, y, z) 3D Cartesian coordinates with 32-bit Float precision.
+Based on Float64Vector3!
 
 !Float64Color4 commentStamp: '<historical>' prior: 0!
 I represent an RGBA color value in floating point format. I am used during the lighting and shading computations.
@@ -145,13 +153,25 @@ Based on B3DVector3 (from Balloon3D-Math), but with 64 bit Float elements (inste
 I represent 3D points in homogenous coordinates.
 A copy of B3DVector4 (from Balloon3D-Math), but with 64 bit Float elements (instead of 32 bit Float).!
 
-!Float32Matrix3x3 commentStamp: '<historical>' prior: 0!
-I represent a 3x3 matrix for linear transformations (rotation and scale, maybe also skew) commonly used in 3D computer graphics.
-Based on Float64Matrix3x3, but 32 bits.!
+!Float32Matrix3x3 methodsFor: 'printing' stamp: 'jmv 11/24/2015 16:30'!
+printOn: aStream
+	aStream newLine.
+	1 to: 3 do: [ :i |
+		aStream nextPutAll: '| '.
+		1 to: 3 do: [ :j |
+			(self at: i at: j) printOn: aStream integerDigits: 1 fractionDigits: 3.
+			aStream space ].
+		aStream nextPut: $|; newLine ]! !
 
-!Float32Vector3 commentStamp: '<historical>' prior: 0!
-I represent simple (x, y, z) 3D Cartesian coordinates with 32-bit Float precision.
-Based on Float64Vector3!
+!Float32Vector3 methodsFor: 'printing' stamp: 'jmv 3/16/2016 14:18'!
+printOn: aStream 
+	"The receiver prints on aStream in terms of infix notation."
+
+	self x printOn: aStream.
+	aStream nextPut: $@.
+	self y printOn: aStream.
+	aStream nextPut: $@.
+	self z printOn: aStream! !
 
 !Float64Matrix3x3 methodsFor: 'printing' stamp: 'jmv 11/24/2015 10:09'!
 printOn: aStream
@@ -195,24 +215,251 @@ printOn: aStream
 	self z printOn: aStream! !
 
 !Float32Matrix3x3 methodsFor: 'printing' stamp: 'jmv 11/24/2015 16:30'!
-printOn: aStream
-	aStream newLine.
-	1 to: 3 do: [ :i |
-		aStream nextPutAll: '| '.
-		1 to: 3 do: [ :j |
-			(self at: i at: j) printOn: aStream integerDigits: 1 fractionDigits: 3.
-			aStream space ].
-		aStream nextPut: $|; newLine ]! !
+print
+	self printOn: Transcript.
+	Transcript newLine! !
 
-!Float32Vector3 methodsFor: 'printing' stamp: 'jmv 3/16/2016 14:18'!
-printOn: aStream 
-	"The receiver prints on aStream in terms of infix notation."
+!Float32Matrix3x3 methodsFor: 'arithmetic' stamp: 'jmv 9/3/2020 18:34:33'!
+* aFloatVector3
+	"Answer the result of multiplying self by an argument vector"
+	| x y z rx ry rz |
+	"It would be nice to have a plugin for this...
+	<primitive: 'Float32MultiplyByVector' module: 'Squeak3D'>"
 
-	self x printOn: aStream.
-	aStream nextPut: $@.
-	self y printOn: aStream.
-	aStream nextPut: $@.
-	self z printOn: aStream! !
+	x := aFloatVector3 x.
+	y := aFloatVector3 y.
+	z := aFloatVector3 z.
+
+	rx := (x * self a11) + (y * self a12) + (z * self a13).
+	ry := (x * self a21) + (y * self a22) + (z * self a23).
+	rz := (x * self a31) + (y * self a32) + (z * self a33).
+
+	^Float32Vector3 x: rx y: ry z: rz! !
+
+!Float32Matrix3x3 methodsFor: 'element-access' stamp: 'jmv 11/24/2015 16:30'!
+a11
+	"Return the element a11"
+	^self at: 1! !
+
+!Float32Matrix3x3 methodsFor: 'element-access' stamp: 'jmv 11/24/2015 16:30'!
+a11: aNumber
+	"Store the element a11"
+	self at: 1 put: aNumber! !
+
+!Float32Matrix3x3 methodsFor: 'element-access' stamp: 'jmv 11/24/2015 16:30'!
+a12
+	"Return the element a12"
+	^self at: 2! !
+
+!Float32Matrix3x3 methodsFor: 'element-access' stamp: 'jmv 11/24/2015 16:30'!
+a12: aNumber
+	"Store the element a12"
+	self at: 2 put: aNumber! !
+
+!Float32Matrix3x3 methodsFor: 'element-access' stamp: 'jmv 11/24/2015 16:30'!
+a13
+	"Return the element a13"
+	^self at: 3! !
+
+!Float32Matrix3x3 methodsFor: 'element-access' stamp: 'jmv 11/24/2015 16:30'!
+a13: aNumber
+	"Store the element a13"
+	self at: 3 put: aNumber! !
+
+!Float32Matrix3x3 methodsFor: 'element-access' stamp: 'jmv 11/24/2015 16:30'!
+a21
+	"Return the element a21"
+	^self at: 4! !
+
+!Float32Matrix3x3 methodsFor: 'element-access' stamp: 'jmv 11/24/2015 16:30'!
+a21: aNumber
+	"Store the element a21"
+	self at: 4 put: aNumber! !
+
+!Float32Matrix3x3 methodsFor: 'element-access' stamp: 'jmv 11/24/2015 16:30'!
+a22
+	"Return the element a22"
+	^self at: 5! !
+
+!Float32Matrix3x3 methodsFor: 'element-access' stamp: 'jmv 11/24/2015 16:30'!
+a22: aNumber
+	"Store the element a22"
+	self at: 5 put: aNumber! !
+
+!Float32Matrix3x3 methodsFor: 'element-access' stamp: 'jmv 11/24/2015 16:30'!
+a23
+	"Return the element a23"
+	^self at: 6! !
+
+!Float32Matrix3x3 methodsFor: 'element-access' stamp: 'jmv 11/24/2015 16:30'!
+a23: aNumber
+	"Store the element a23"
+	self at: 6 put: aNumber! !
+
+!Float32Matrix3x3 methodsFor: 'element-access' stamp: 'jmv 11/24/2015 16:30'!
+a31
+	"Return the element a31"
+	^self at: 7! !
+
+!Float32Matrix3x3 methodsFor: 'element-access' stamp: 'jmv 11/24/2015 16:30'!
+a31: aNumber
+	"Store the element a31"
+	self at: 7 put: aNumber! !
+
+!Float32Matrix3x3 methodsFor: 'element-access' stamp: 'jmv 11/24/2015 16:30'!
+a32
+	"Return the element a32"
+	^self at: 8! !
+
+!Float32Matrix3x3 methodsFor: 'element-access' stamp: 'jmv 11/24/2015 16:30'!
+a32: aNumber
+	"Store the element a32"
+	self at: 8 put: aNumber! !
+
+!Float32Matrix3x3 methodsFor: 'element-access' stamp: 'jmv 11/24/2015 16:30'!
+a33
+	"Return the element a33"
+	^self at: 9! !
+
+!Float32Matrix3x3 methodsFor: 'element-access' stamp: 'jmv 11/24/2015 16:30'!
+a33: aNumber
+	"Store the element a33"
+	self at: 9 put: aNumber! !
+
+!Float32Matrix3x3 methodsFor: 'accessing' stamp: 'jmv 11/24/2015 16:30'!
+at: i at: j
+	^ self at: ((i - 1) * 3 + j).
+! !
+
+!Float32Matrix3x3 methodsFor: 'accessing' stamp: 'jmv 11/24/2015 16:30'!
+at: i at: j put: aValue
+	^ self at: ((i - 1) * 3 + j) put: aValue.
+! !
+
+!Float32Matrix3x3 methodsFor: 'testing' stamp: 'jmv 11/24/2015 16:31'!
+isIdentity
+	^self = Float32Matrix3x3Identity! !
+
+!Float32Matrix3x3 methodsFor: 'testing' stamp: 'jmv 11/24/2015 16:31'!
+isZero
+	^self = Float32Matrix3x3Zero! !
+
+!Float32Matrix3x3 methodsFor: 'transforming' stamp: 'jmv 11/24/2015 16:30'!
+localDirToGlobal: aVector
+	"Multiply direction vector with the receiver"
+
+	^self * aVector! !
+
+!Float32Matrix3x3 methodsFor: 'initialize' stamp: 'jmv 11/24/2015 16:31'!
+setIdentity
+	"Set the receiver to the identity matrix"
+	self loadFrom: Float32Matrix3x3Identity! !
+
+!Float32Matrix3x3 methodsFor: 'initialize' stamp: 'jmv 11/24/2015 16:30'!
+setScale: aVector
+	self 
+		a11: aVector x;
+		a22: aVector y;
+		a33: aVector z! !
+
+!Float32Matrix3x3 methodsFor: 'initialize' stamp: 'jmv 11/24/2015 16:31'!
+setZero
+	"Set the receiver to the zero matrix"
+	self loadFrom: Float32Matrix3x3Zero! !
+
+!Float32Matrix3x3 class methodsFor: 'instance creation' stamp: 'jmv 11/24/2015 16:30'!
+identity
+	^self new setIdentity! !
+
+!Float32Matrix3x3 class methodsFor: 'instance creation' stamp: 'jmv 11/24/2015 16:30'!
+numElements
+	^9! !
+
+!Float32Matrix3x3 class methodsFor: 'instance creation' stamp: 'jmv 11/24/2015 16:30'!
+withScale: amount
+	^self identity setScale: amount! !
+
+!Float32Matrix3x3 class methodsFor: 'instance creation' stamp: 'jmv 11/24/2015 16:30'!
+zero
+	^self new! !
+
+!Float32Matrix3x3 class methodsFor: 'class initialization' stamp: 'jmv 11/24/2015 16:31'!
+initialize
+	"Float32Matrix3x3 initialize"
+	Float32Matrix3x3Zero := self new.
+	Float32Matrix3x3Identity := self new.
+	Float32Matrix3x3Identity a11: 1.0; a22: 1.0; a33: 1.0! !
+
+!Float32Vector3 methodsFor: 'vector functions' stamp: 'jmv 11/24/2015 16:32'!
+normalize
+	self /= self length! !
+
+!Float32Vector3 methodsFor: 'vector functions' stamp: 'jmv 11/24/2015 16:32'!
+normalized
+	^self / self length! !
+
+!Float32Vector3 methodsFor: 'vector functions' stamp: 'jmv 11/24/2015 16:32'!
+safelyNormalize
+	"Safely normalize the receiver, e.g. check if the length is non-zero"
+	| length |
+	length := self length.
+	length = 1.0 ifTrue:[^self].
+	length = 0.0 ifFalse:[self /= length].! !
+
+!Float32Vector3 methodsFor: 'vector functions' stamp: 'jmv 11/24/2015 16:32'!
+safelyNormalized
+	"Safely normalize the receiver, e.g. check if the length is non-zero"
+	^self copy safelyNormalize! !
+
+!Float32Vector3 methodsFor: 'private' stamp: 'jmv 11/24/2015 16:32'!
+privateLoadFrom: srcObject
+	self x: srcObject x y: srcObject y z: srcObject z.! !
+
+!Float32Vector3 methodsFor: 'accessing' stamp: 'jmv 11/24/2015 16:32'!
+x
+	^self at: 1! !
+
+!Float32Vector3 methodsFor: 'accessing' stamp: 'jmv 11/24/2015 16:32'!
+x: aFloat
+	self at: 1 put: aFloat! !
+
+!Float32Vector3 methodsFor: 'accessing' stamp: 'jmv 11/24/2015 16:32'!
+y
+	^self at: 2! !
+
+!Float32Vector3 methodsFor: 'accessing' stamp: 'jmv 11/24/2015 16:32'!
+y: aFloat
+	self at: 2 put: aFloat! !
+
+!Float32Vector3 methodsFor: 'accessing' stamp: 'jmv 11/24/2015 16:32'!
+z
+	^self at: 3! !
+
+!Float32Vector3 methodsFor: 'accessing' stamp: 'jmv 11/24/2015 16:33'!
+z: aFloat
+	self at: 3 put: aFloat! !
+
+!Float32Vector3 methodsFor: 'initialize' stamp: 'jmv 11/24/2015 16:33'!
+x: x y: y z: z
+	self x: x.
+	self y: y.
+	self z: z.! !
+
+!Float32Vector3 class methodsFor: 'instance creation' stamp: 'jmv 11/24/2015 16:33'!
+numElements
+	^3! !
+
+!Float32Vector3 class methodsFor: 'instance creation' stamp: 'jmv 11/24/2015 16:33'!
+value: aFloat
+	^self x: aFloat y: aFloat z: aFloat! !
+
+!Float32Vector3 class methodsFor: 'instance creation' stamp: 'jmv 11/24/2015 16:33'!
+x: x y: y z: z
+	^self new x: x y: y z: z! !
+
+!Float32Vector3 class methodsFor: 'instance creation' stamp: 'jmv 11/24/2015 16:33'!
+zero
+	^self new! !
 
 !Float64Color4 methodsFor: 'accessing'!
 alpha
@@ -319,6 +566,11 @@ red: r green: g blue: b alpha: a
 	^ newColor.
 ! !
 
+!Float64Matrix3x3 methodsFor: 'printing' stamp: 'jmv 11/24/2015 09:54'!
+print
+	self printOn: Transcript.
+	Transcript newLine! !
+
 !Float64Matrix3x3 methodsFor: 'arithmetic' stamp: 'jmv 11/24/2015 11:35'!
 * aFloat64Vector3
 	"Answer the result of multiplying self by an argument vector"
@@ -336,24 +588,6 @@ red: r green: g blue: b alpha: a
 	rz := (x * self a31) + (y * self a32) + (z * self a33).
 
 	^Float64Vector3 x: rx y: ry z: rz! !
-
-!Float64Matrix3x3 methodsFor: 'arithmetic' stamp: 'jmv 11/24/2015 09:54'!
-+ aFloat64Matrix
-	"Optimized for Matrix/Matrix operations"
-	"It would be nice to have FloatArrayPlugin or equivalent for Float64Array...
-	<primitive: 'primitiveAddFloatArray' module: 'FloatArrayPlugin'>"
-	self flag: #Float64Primitive.
-
-	^super + aFloat64Matrix! !
-
-!Float64Matrix3x3 methodsFor: 'arithmetic' stamp: 'jmv 11/24/2015 09:54'!
-- aFloat64Matrix
-	"Optimized for Matrix/Matrix operations"
-	"It would be nice to have FloatArrayPlugin or equivalent for Float64Array...
-	<primitive: 'primitiveSubFloatArray' module: 'FloatArrayPlugin'>"
-	self flag: #Float64Primitive.
-
-	^super - aFloat64Matrix! !
 
 !Float64Matrix3x3 methodsFor: 'element-access' stamp: 'jmv 11/24/2015 09:54'!
 a11
@@ -476,11 +710,6 @@ localDirToGlobal: aVector
 
 	^self * aVector! !
 
-!Float64Matrix3x3 methodsFor: 'printing' stamp: 'jmv 11/24/2015 09:54'!
-print
-	self printOn: Transcript.
-	Transcript newLine! !
-
 !Float64Matrix3x3 methodsFor: 'initialize' stamp: 'jmv 11/24/2015 09:56'!
 setIdentity
 	"Set the receiver to the identity matrix"
@@ -521,23 +750,10 @@ initialize
 	Float64Matrix3x3Identity := self new.
 	Float64Matrix3x3Identity a11: 1.0; a22: 1.0; a33: 1.0! !
 
-!Float64Matrix4x4 methodsFor: 'arithmetic' stamp: 'jmv 2/26/2015 13:25'!
-+ aFloat64Matrix
-	"Optimized for Matrix/Matrix operations"
-	"It would be nice to have FloatArrayPlugin or equivalent for Float64Array...
-	<primitive: 'primitiveAddFloatArray' module: 'FloatArrayPlugin'>"
-	self flag: #Float64Primitive.
-
-	^super + aFloat64Matrix! !
-
-!Float64Matrix4x4 methodsFor: 'arithmetic' stamp: 'jmv 2/26/2015 13:25'!
-- aFloat64Matrix
-	"Optimized for Matrix/Matrix operations"
-	"It would be nice to have FloatArrayPlugin or equivalent for Float64Array...
-	<primitive: 'primitiveSubFloatArray' module: 'FloatArrayPlugin'>"
-	self flag: #Float64Primitive.
-
-	^super - aFloat64Matrix! !
+!Float64Matrix4x4 methodsFor: 'printing' stamp: 'jmv 7/13/2015 10:10'!
+print
+	self printOn: Transcript.
+	Transcript newLine! !
 
 !Float64Matrix4x4 methodsFor: 'element-access' stamp: 'ar 2/1/1999 21:29'!
 a11
@@ -1433,11 +1649,6 @@ isIdentity
 isZero
 	^self = Float64Matrix4x4Zero! !
 
-!Float64Matrix4x4 methodsFor: 'printing' stamp: 'jmv 7/13/2015 10:10'!
-print
-	self printOn: Transcript.
-	Transcript newLine! !
-
 !Float64Matrix4x4 methodsFor: 'private' stamp: 'jmv 2/26/2015 13:29'!
 privateTransformMatrix: m1 with: m2 into: m3
 	"Perform a 4x4 matrix multiplication
@@ -1759,6 +1970,36 @@ initialize
 	Float64Matrix4x4Identity := self new.
 	Float64Matrix4x4Identity a11: 1.0; a22: 1.0; a33: 1.0; a44: 1.0.! !
 
+!Float64Quaternion methodsFor: 'printing' stamp: 'jmv 10/11/2016 10:16:06'!
+printAbcd
+	"Alternative way of printing a quaternion
+		(Float64Quaternion q1: -0.120340 q2: 0.399205 q3: 0.906501 q4: -0.066405) printAbcd 
+			'(-0.066405, -0.120340, 0.399205, 0.906501)' 
+	"
+	^String streamContents: [ :strm |
+		strm nextPut: $(.
+		self a printOn: strm fractionDigits: 6.
+		strm nextPutAll: ', '.
+		self b printOn: strm fractionDigits: 6.
+		strm nextPutAll: ', '.
+		self c printOn: strm fractionDigits: 6.
+		strm nextPutAll: ', '.
+		self d printOn: strm fractionDigits: 6.
+		strm nextPut: $) ]! !
+
+!Float64Quaternion methodsFor: 'printing' stamp: 'jmv 10/11/2016 10:14:27'!
+printq1q2q3q4
+	^String streamContents: [ :strm |
+		strm nextPut: $(.
+		self b printOn: strm fractionDigits: 6.
+		strm nextPutAll: ', '.
+		self c printOn: strm fractionDigits: 6.
+		strm nextPutAll: ', '.
+		self d printOn: strm fractionDigits: 6.
+		strm nextPutAll: ', '.
+		self a printOn: strm fractionDigits: 6.
+		strm nextPut: $) ]! !
+
 !Float64Quaternion methodsFor: 'arithmetic' stamp: 'jmv 10/11/2016 10:14:55'!
 * aRotation
 	"Multiplying two rotations is the same as concatenating the two rotations."
@@ -2016,36 +2257,6 @@ slerpTo: aRotation at: t extraSpins: spin
 		c: (alpha * aRotation c) + (beta * self c)
 		d: (alpha * aRotation d) + (beta * self d)! !
 
-!Float64Quaternion methodsFor: 'printing' stamp: 'jmv 10/11/2016 10:16:06'!
-printAbcd
-	"Alternative way of printing a quaternion
-		(Float64Quaternion q1: -0.120340 q2: 0.399205 q3: 0.906501 q4: -0.066405) printAbcd 
-			'(-0.066405, -0.120340, 0.399205, 0.906501)' 
-	"
-	^String streamContents: [ :strm |
-		strm nextPut: $(.
-		self a printOn: strm fractionDigits: 6.
-		strm nextPutAll: ', '.
-		self b printOn: strm fractionDigits: 6.
-		strm nextPutAll: ', '.
-		self c printOn: strm fractionDigits: 6.
-		strm nextPutAll: ', '.
-		self d printOn: strm fractionDigits: 6.
-		strm nextPut: $) ]! !
-
-!Float64Quaternion methodsFor: 'printing' stamp: 'jmv 10/11/2016 10:14:27'!
-printq1q2q3q4
-	^String streamContents: [ :strm |
-		strm nextPut: $(.
-		self b printOn: strm fractionDigits: 6.
-		strm nextPutAll: ', '.
-		self c printOn: strm fractionDigits: 6.
-		strm nextPutAll: ', '.
-		self d printOn: strm fractionDigits: 6.
-		strm nextPutAll: ', '.
-		self a printOn: strm fractionDigits: 6.
-		strm nextPut: $) ]! !
-
 !Float64Quaternion methodsFor: 'private' stamp: 'jmv 10/11/2016 10:16:20'!
 setA: aValue b: bValue c: cValue d: dValue
 
@@ -2241,6 +2452,10 @@ u: uValue v: vValue
 x: uValue y: vValue
 	^self new x: uValue y: vValue! !
 
+!Float64Vector3 methodsFor: 'private'!
+privateLoadFrom: srcObject
+	self x: srcObject x y: srcObject y z: srcObject z.! !
+
 !Float64Vector3 methodsFor: 'converting' stamp: 'jmv 11/3/2016 16:01:12'!
 @ aNumber
 	^Float64Vector4 x: self x y: self y z: self z w: aNumber! !
@@ -2427,10 +2642,6 @@ interpolateTo: end at: amountDone
 isZero
 	^self = Float64Vector3 zero! !
 
-!Float64Vector3 methodsFor: 'private'!
-privateLoadFrom: srcObject
-	self x: srcObject x y: srcObject y z: srcObject z.! !
-
 !Float64Vector3 methodsFor: 'enumerating' stamp: 'ar 5/20/2001 00:05'!
 vertexPositionsDo: aBlock
 	aBlock value: self! !
@@ -2551,276 +2762,10 @@ x: x y: y z: z w: w
 zero
 	^self new! !
 
-!Float32Matrix3x3 methodsFor: 'arithmetic' stamp: 'jmv 11/24/2015 16:33'!
-* aFloatVector3
-	"Answer the result of multiplying self by an argument vector"
-	| x y z rx ry rz |
-	"It would be nice to have a plugin for this...
-	<primitive: 'Float32MultiplyByVector' module: 'Squeak3D'>"
-	self flag: #Float32Primitive.
-
-	x := aFloatVector3 x.
-	y := aFloatVector3 y.
-	z := aFloatVector3 z.
-
-	rx := (x * self a11) + (y * self a12) + (z * self a13).
-	ry := (x * self a21) + (y * self a22) + (z * self a23).
-	rz := (x * self a31) + (y * self a32) + (z * self a33).
-
-	^Float32Vector3 x: rx y: ry z: rz! !
-
-!Float32Matrix3x3 methodsFor: 'arithmetic' stamp: 'jmv 11/24/2015 16:33'!
-+ aFloat32Matrix
-	"Optimized for Matrix/Matrix operations"
-	"It would be nice to have FloatArrayPlugin or equivalent for Float64Array...
-	<primitive: 'primitiveAddFloatArray' module: 'FloatArrayPlugin'>"
-	self flag: #Float32Primitive.
-
-	^super + aFloat32Matrix! !
-
-!Float32Matrix3x3 methodsFor: 'arithmetic' stamp: 'jmv 11/24/2015 16:34'!
-- aFloat32Matrix
-	"Optimized for Matrix/Matrix operations"
-	"It would be nice to have FloatArrayPlugin or equivalent for Float64Array...
-	<primitive: 'primitiveSubFloatArray' module: 'FloatArrayPlugin'>"
-	self flag: #Float32Primitive.
-
-	^super - aFloat32Matrix! !
-
-!Float32Matrix3x3 methodsFor: 'element-access' stamp: 'jmv 11/24/2015 16:30'!
-a11
-	"Return the element a11"
-	^self at: 1! !
-
-!Float32Matrix3x3 methodsFor: 'element-access' stamp: 'jmv 11/24/2015 16:30'!
-a11: aNumber
-	"Store the element a11"
-	self at: 1 put: aNumber! !
-
-!Float32Matrix3x3 methodsFor: 'element-access' stamp: 'jmv 11/24/2015 16:30'!
-a12
-	"Return the element a12"
-	^self at: 2! !
-
-!Float32Matrix3x3 methodsFor: 'element-access' stamp: 'jmv 11/24/2015 16:30'!
-a12: aNumber
-	"Store the element a12"
-	self at: 2 put: aNumber! !
-
-!Float32Matrix3x3 methodsFor: 'element-access' stamp: 'jmv 11/24/2015 16:30'!
-a13
-	"Return the element a13"
-	^self at: 3! !
-
-!Float32Matrix3x3 methodsFor: 'element-access' stamp: 'jmv 11/24/2015 16:30'!
-a13: aNumber
-	"Store the element a13"
-	self at: 3 put: aNumber! !
-
-!Float32Matrix3x3 methodsFor: 'element-access' stamp: 'jmv 11/24/2015 16:30'!
-a21
-	"Return the element a21"
-	^self at: 4! !
-
-!Float32Matrix3x3 methodsFor: 'element-access' stamp: 'jmv 11/24/2015 16:30'!
-a21: aNumber
-	"Store the element a21"
-	self at: 4 put: aNumber! !
-
-!Float32Matrix3x3 methodsFor: 'element-access' stamp: 'jmv 11/24/2015 16:30'!
-a22
-	"Return the element a22"
-	^self at: 5! !
-
-!Float32Matrix3x3 methodsFor: 'element-access' stamp: 'jmv 11/24/2015 16:30'!
-a22: aNumber
-	"Store the element a22"
-	self at: 5 put: aNumber! !
-
-!Float32Matrix3x3 methodsFor: 'element-access' stamp: 'jmv 11/24/2015 16:30'!
-a23
-	"Return the element a23"
-	^self at: 6! !
-
-!Float32Matrix3x3 methodsFor: 'element-access' stamp: 'jmv 11/24/2015 16:30'!
-a23: aNumber
-	"Store the element a23"
-	self at: 6 put: aNumber! !
-
-!Float32Matrix3x3 methodsFor: 'element-access' stamp: 'jmv 11/24/2015 16:30'!
-a31
-	"Return the element a31"
-	^self at: 7! !
-
-!Float32Matrix3x3 methodsFor: 'element-access' stamp: 'jmv 11/24/2015 16:30'!
-a31: aNumber
-	"Store the element a31"
-	self at: 7 put: aNumber! !
-
-!Float32Matrix3x3 methodsFor: 'element-access' stamp: 'jmv 11/24/2015 16:30'!
-a32
-	"Return the element a32"
-	^self at: 8! !
-
-!Float32Matrix3x3 methodsFor: 'element-access' stamp: 'jmv 11/24/2015 16:30'!
-a32: aNumber
-	"Store the element a32"
-	self at: 8 put: aNumber! !
-
-!Float32Matrix3x3 methodsFor: 'element-access' stamp: 'jmv 11/24/2015 16:30'!
-a33
-	"Return the element a33"
-	^self at: 9! !
-
-!Float32Matrix3x3 methodsFor: 'element-access' stamp: 'jmv 11/24/2015 16:30'!
-a33: aNumber
-	"Store the element a33"
-	self at: 9 put: aNumber! !
-
-!Float32Matrix3x3 methodsFor: 'accessing' stamp: 'jmv 11/24/2015 16:30'!
-at: i at: j
-	^ self at: ((i - 1) * 3 + j).
-! !
-
-!Float32Matrix3x3 methodsFor: 'accessing' stamp: 'jmv 11/24/2015 16:30'!
-at: i at: j put: aValue
-	^ self at: ((i - 1) * 3 + j) put: aValue.
-! !
-
-!Float32Matrix3x3 methodsFor: 'testing' stamp: 'jmv 11/24/2015 16:31'!
-isIdentity
-	^self = Float32Matrix3x3Identity! !
-
-!Float32Matrix3x3 methodsFor: 'testing' stamp: 'jmv 11/24/2015 16:31'!
-isZero
-	^self = Float32Matrix3x3Zero! !
-
-!Float32Matrix3x3 methodsFor: 'transforming' stamp: 'jmv 11/24/2015 16:30'!
-localDirToGlobal: aVector
-	"Multiply direction vector with the receiver"
-
-	^self * aVector! !
-
-!Float32Matrix3x3 methodsFor: 'printing' stamp: 'jmv 11/24/2015 16:30'!
-print
-	self printOn: Transcript.
-	Transcript newLine! !
-
-!Float32Matrix3x3 methodsFor: 'initialize' stamp: 'jmv 11/24/2015 16:31'!
-setIdentity
-	"Set the receiver to the identity matrix"
-	self loadFrom: Float32Matrix3x3Identity! !
-
-!Float32Matrix3x3 methodsFor: 'initialize' stamp: 'jmv 11/24/2015 16:30'!
-setScale: aVector
-	self 
-		a11: aVector x;
-		a22: aVector y;
-		a33: aVector z! !
-
-!Float32Matrix3x3 methodsFor: 'initialize' stamp: 'jmv 11/24/2015 16:31'!
-setZero
-	"Set the receiver to the zero matrix"
-	self loadFrom: Float32Matrix3x3Zero! !
-
-!Float32Matrix3x3 class methodsFor: 'instance creation' stamp: 'jmv 11/24/2015 16:30'!
-identity
-	^self new setIdentity! !
-
-!Float32Matrix3x3 class methodsFor: 'instance creation' stamp: 'jmv 11/24/2015 16:30'!
-numElements
-	^9! !
-
-!Float32Matrix3x3 class methodsFor: 'instance creation' stamp: 'jmv 11/24/2015 16:30'!
-withScale: amount
-	^self identity setScale: amount! !
-
-!Float32Matrix3x3 class methodsFor: 'instance creation' stamp: 'jmv 11/24/2015 16:30'!
-zero
-	^self new! !
-
-!Float32Matrix3x3 class methodsFor: 'class initialization' stamp: 'jmv 11/24/2015 16:31'!
-initialize
-	"Float32Matrix3x3 initialize"
-	Float32Matrix3x3Zero := self new.
-	Float32Matrix3x3Identity := self new.
-	Float32Matrix3x3Identity a11: 1.0; a22: 1.0; a33: 1.0! !
-
-!Float32Vector3 methodsFor: 'vector functions' stamp: 'jmv 11/24/2015 16:32'!
-normalize
-	self /= self length! !
-
-!Float32Vector3 methodsFor: 'vector functions' stamp: 'jmv 11/24/2015 16:32'!
-normalized
-	^self / self length! !
-
-!Float32Vector3 methodsFor: 'vector functions' stamp: 'jmv 11/24/2015 16:32'!
-safelyNormalize
-	"Safely normalize the receiver, e.g. check if the length is non-zero"
-	| length |
-	length := self length.
-	length = 1.0 ifTrue:[^self].
-	length = 0.0 ifFalse:[self /= length].! !
-
-!Float32Vector3 methodsFor: 'vector functions' stamp: 'jmv 11/24/2015 16:32'!
-safelyNormalized
-	"Safely normalize the receiver, e.g. check if the length is non-zero"
-	^self copy safelyNormalize! !
-
-!Float32Vector3 methodsFor: 'private' stamp: 'jmv 11/24/2015 16:32'!
-privateLoadFrom: srcObject
-	self x: srcObject x y: srcObject y z: srcObject z.! !
-
-!Float32Vector3 methodsFor: 'accessing' stamp: 'jmv 11/24/2015 16:32'!
-x
-	^self at: 1! !
-
-!Float32Vector3 methodsFor: 'accessing' stamp: 'jmv 11/24/2015 16:32'!
-x: aFloat
-	self at: 1 put: aFloat! !
-
-!Float32Vector3 methodsFor: 'accessing' stamp: 'jmv 11/24/2015 16:32'!
-y
-	^self at: 2! !
-
-!Float32Vector3 methodsFor: 'accessing' stamp: 'jmv 11/24/2015 16:32'!
-y: aFloat
-	self at: 2 put: aFloat! !
-
-!Float32Vector3 methodsFor: 'accessing' stamp: 'jmv 11/24/2015 16:32'!
-z
-	^self at: 3! !
-
-!Float32Vector3 methodsFor: 'accessing' stamp: 'jmv 11/24/2015 16:33'!
-z: aFloat
-	self at: 3 put: aFloat! !
-
-!Float32Vector3 methodsFor: 'initialize' stamp: 'jmv 11/24/2015 16:33'!
-x: x y: y z: z
-	self x: x.
-	self y: y.
-	self z: z.! !
-
-!Float32Vector3 class methodsFor: 'instance creation' stamp: 'jmv 11/24/2015 16:33'!
-numElements
-	^3! !
-
-!Float32Vector3 class methodsFor: 'instance creation' stamp: 'jmv 11/24/2015 16:33'!
-value: aFloat
-	^self x: aFloat y: aFloat z: aFloat! !
-
-!Float32Vector3 class methodsFor: 'instance creation' stamp: 'jmv 11/24/2015 16:33'!
-x: x y: y z: z
-	^self new x: x y: y z: z! !
-
-!Float32Vector3 class methodsFor: 'instance creation' stamp: 'jmv 11/24/2015 16:33'!
-zero
-	^self new! !
-
 !Point methodsFor: '*Math 3D' stamp: 'jmv 2/26/2015 15:05'!
 @ aNumber
 	^Float64Vector3 x: x y: y z: aNumber! !
+Float32Matrix3x3 initialize!
 Float64Matrix3x3 initialize!
 Float64Matrix4x4 initialize!
 Float64Quaternion initialize!
-Float32Matrix3x3 initialize!

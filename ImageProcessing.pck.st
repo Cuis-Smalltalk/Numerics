@@ -1,13 +1,13 @@
-'From Cuis 5.0 [latest update: #3817] on 2 July 2019 at 11:45:51 am'!
+'From Cuis 5.0 [latest update: #4370] on 4 September 2020 at 11:11:27 am'!
 'Description '!
-!provides: 'ImageProcessing' 1 17!
-!requires: 'Graphics-Files-Additional' 1 nil nil!
+!provides: 'ImageProcessing' 1 18!
+!requires: 'Statistics' 1 nil nil!
 !requires: 'SignalProcessing' 1 100 nil!
-!requires: 'NumericalMethods' 1 8 nil!
 !requires: 'ProbabilityDistributions' 1 nil nil!
 !requires: 'Complex' 1 nil nil!
+!requires: 'NumericalMethods' 1 8 nil!
 !requires: 'VectorGraphics' 1 50 nil!
-!requires: 'Statistics' 1 nil nil!
+!requires: 'Graphics-Files-Additional' 1 nil nil!
 SystemOrganization addCategory: #ImageProcessing!
 SystemOrganization addCategory: #'ImageProcessing-Images'!
 SystemOrganization addCategory: #'ImageProcessing-Interpolators'!
@@ -457,7 +457,7 @@ bSplineTransformedBy: anAffineTransformation resultExtent: resultExtentOrNil
 			scaled x: x y: y put: v ]].
 	^scaled! !
 
-!FloatImage methodsFor: 'resampling-advanced' stamp: 'jmv 5/22/2015 12:25'!
+!FloatImage methodsFor: 'resampling-advanced' stamp: 'jmv 9/3/2020 17:12:44'!
 bicubicTransformedBy: anAffineTransformation resultExtent: resultExtentOrNil
 	"Answer a new image.
 	anAffineTransformation specifies the transformation from us to the result image.
@@ -474,7 +474,7 @@ bicubicTransformedBy: anAffineTransformation resultExtent: resultExtentOrNil
 	resultHeight _ e y.
 	scaled _ self appropriateResultClass width: resultWidth height: resultHeight.
 	inverseTransformation _ anAffineTransformation inverseTransformation.
-	xFilter _ FloatArray new: 4.
+	xFilter _ Float32Array new: 4.
 	1 to: resultHeight do: [ :y |
 		1to: resultWidth do: [ :x |
 			p _ inverseTransformation transform: x@y.
@@ -578,7 +578,7 @@ fourierPhaseDisplacedBy: delta
 			answer fillWith: complex realPart ].
 	^answer! !
 
-!FloatImage methodsFor: 'resampling-advanced' stamp: 'jmv 5/22/2015 12:27'!
+!FloatImage methodsFor: 'resampling-advanced' stamp: 'jmv 9/3/2020 17:12:45'!
 lanczosTransformedBy: anAffineTransformation resultExtent: resultExtentOrNil
 	"Answer a new image.
 	anAffineTransformation specifies the transformation from us to the result image.
@@ -611,8 +611,8 @@ lanczosTransformedBy: anAffineTransformation resultExtent: resultExtentOrNil
 	If upscaling (zooming in, filterScale > 1), avoid creating frequencies above 1 in the result, as they were not in ourselves."
 	filterScale _ ((resultWidth / width) min: (resultHeight / height)) min: 1.0.
 	n _ (4 / filterScale) floor +1.
-	xFilter _ FloatArray new: n.
-	yFilter _ FloatArray new: n.
+	xFilter _ Float32Array new: n.
+	yFilter _ Float32Array new: n.
 	1 to: resultHeight do: [ :y |
 		1 to: resultWidth do: [ :x |
 			p _ inverseTransformation transform: x@y.
@@ -948,7 +948,7 @@ bilinearInterpolatedClampToEdgeValueAtX: x y: y
 	^ self bilinearInterpolatedValueAtX: (x min: width max: 1) y: (y min: height max: 1)
 ! !
 
-!FloatImage methodsFor: 'interpolation' stamp: 'jmv 1/27/2015 11:47'!
+!FloatImage methodsFor: 'interpolation' stamp: 'jmv 9/3/2020 17:12:45'!
 lanczosFilteredValueAtX: x y: y filterScale: filterScale
 	"Apply a Lanczos resampling filter at x@y, answer the filtered value.
 	Do not modify receiver in any way.
@@ -959,8 +959,8 @@ lanczosFilteredValueAtX: x y: y filterScale: filterScale
 
 	"Build arrays for filters"
 	n _ (4 / filterScale) floor +1.
-	xFilter _ FloatArray new: n.
-	yFilter _ FloatArray new: n.
+	xFilter _ Float32Array new: n.
+	yFilter _ Float32Array new: n.
 
 	"And call real method"
 	^self lanczosFilteredValueAtX: x y: y filterScale: filterScale xFilterStore: xFilter yFilterStore: yFilter! !
@@ -1359,10 +1359,10 @@ fixed repair: map.
 fixed writePNGfileNamed: 'fixed.png'.nil.
 "! !
 
-!FloatImage methodsFor: 'centroids' stamp: 'jmv 7/5/2016 14:53'!
+!FloatImage methodsFor: 'centroids' stamp: 'jmv 9/3/2020 17:12:44'!
 bicubicCentroidAround: centroidHint
 	| d delta dir dx dy f max xFilter |
-	xFilter _ FloatArray new: 4.
+	xFilter _ Float32Array new: 4.
 	d _ 0.1.	"Distance from hint where we look for max. Should work even if real centroid is much closer to hint."
 	"find angle of max growth of interpolator"
 	max _ 0.
@@ -2807,7 +2807,7 @@ pixelsCloserThanOrAtChebyshevDistance: distance ofX: baseX y: baseY do: aBlock
 			i _ y-1 * width + x.
 			aBlock value: x value: y value: i ]]! !
 
-!FloatImage methodsFor: 'quantization' stamp: 'jmv 6/9/2015 15:22'!
+!FloatImage methodsFor: 'quantization' stamp: 'jmv 9/3/2020 18:40:59'!
 quantizeTo: bits
 	"Simulate quantization to the specified number of bits.
 	Modify the receiver.
@@ -2821,11 +2821,11 @@ quantizeTo: bits
 
 	| i bits |
 	bits _ 3.
-	i _ FloatImage fromArrayOfArrays: { (0.0 to: 1.0 count: 20) asFloatArray }.
+	i _ FloatImage fromArrayOfArrays: { (0.0 to: 1.0 count: 20) asFloat32Array }.
 	(i quantizeTo: bits ) * (2 raisedTo: bits)
 
 	| i |
-	i _ FloatImage fromArrayOfArrays: { (0.0 to: 1.0 count: 100000) asFloatArray }.
+	i _ FloatImage fromArrayOfArrays: { (0.0 to: 1.0 count: 100000) asFloat32Array }.
 	(i quantizeTo: 3 ) elements asBag instVarNamed: 'contents'
 	"
 	| n q k |
@@ -3769,7 +3769,7 @@ example3
 	bigger display.
 	original display! !
 
-!FloatImage class methodsFor: 'examples' stamp: 'jmv 4/28/2015 12:01'!
+!FloatImage class methodsFor: 'examples' stamp: 'jmv 9/3/2020 17:12:45'!
 example4
 	"FOR SUBPIXEL RENDERED STUFF
 	Use a portion of display to show behavior on colored input.
@@ -3787,8 +3787,8 @@ example4
 	h _ origH * scale.
 	filterScale _ scale min: 1.
 	n _ (4 / filterScale) floor +1.
-	xFilter _ FloatArray new: n.
-	yFilter _ FloatArray new: n.
+	xFilter _ Float32Array new: n.
+	yFilter _ Float32Array new: n.
 "	original _ (Form fromFileNamed: 'IMG_2365.JPG') copy: (1100@1800 extent: 500@500)."
 	originalR _ FloatImage from32BitColorForm: original component: #red.
 	originalG _ FloatImage from32BitColorForm: original component: #green.
@@ -4152,14 +4152,14 @@ otf: extent
 	^ otf
 ! !
 
-!ConvolutionKernel methodsFor: 'private' stamp: 'jmv 7/2/2018 12:38:46'!
+!ConvolutionKernel methodsFor: 'private' stamp: 'jmv 9/3/2020 17:12:44'!
 privateInitHeight: h width: w
 	"To be called only from instance creation methods specific to this class,
 	to help ensure immutability, odd size and sum=1.0"
 
 	height _ h.
 	width _ w.
-	elements _ FloatArray new: height * width! !
+	elements _ Float32Array new: height * width! !
 
 !ConvolutionKernel methodsFor: 'private' stamp: 'jmv 6/27/2018 17:40:55'!
 withOriginOnCorners: extent
@@ -5131,7 +5131,7 @@ withIndexesDo: aBlock
 		1 to: w do: [ :j |
 			aBlock value: i value: j value: (self i: i j: j) ] ]! !
 
-!ComplexImage methodsFor: 'correlation & registration' stamp: 'jmv 7/26/2018 12:01:20'!
+!ComplexImage methodsFor: 'correlation & registration' stamp: 'jmv 9/3/2020 17:12:45'!
 displacementFrom: referenceImage initialGuess: initGuess errorOfGuess: errorOfGuess epsilon: epsilon
 	"High quality image registration.
 		initGuess must be less than a couple of pixels of errors. See senders.
@@ -5144,7 +5144,7 @@ displacementFrom: referenceImage initialGuess: initGuess errorOfGuess: errorOfGu
 			scoreOf: displacementFloatArray first @ displacementFloatArray second
 			asDisplacementFrom: referenceImage) negated ].
 	algorithm objectiveFunction: f.
-	algorithm initialPoint: (FloatArray with: initGuess x with: initGuess y) distanceForOthers: (errorOfGuess max: epsilon * 2).
+	algorithm initialPoint: (Float32Array with: initGuess x with: initGuess y) distanceForOthers: (errorOfGuess max: epsilon * 2).
 	algorithm epsilon: epsilon.
 	answer _ algorithm solve.
 	^ answer first @ answer second
@@ -5424,14 +5424,14 @@ initialCausalCoefficientRow: i pole: z
 		z2n _ z2n * iz].
 	^sum / (1.0 - (zn * zn))! !
 
-!BSplineInterpolatingImage methodsFor: 'pre-processing' stamp: 'jmv 8/13/2012 16:33'!
+!BSplineInterpolatingImage methodsFor: 'pre-processing' stamp: 'jmv 9/3/2020 17:12:45'!
 initializeFrom: aFloatImage
 
 	| v |
 	height _ aFloatImage height.
 	width _ aFloatImage width.
 	"We have two extra coefficients at each end. X indexes for them are -1, 0, width+1, with+2. Same for y."
-	coefficients _ FloatArray new: (width+4) * (height+4).
+	coefficients _ Float32Array new: (width+4) * (height+4).
 	"Copy values. Add 2 extra rows and 2 extra columns at each edge, repeating boundary values."
 	1 to: height do: [ :y |
 		1 to: width do: [ :x |
@@ -5882,13 +5882,13 @@ countAt: value
 	^((tallies at: i1) * ( i2 - floatIndex)) + 
 		((tallies at: i2) * (floatIndex - i1))! !
 
-!AccumulatedImageHistogram methodsFor: 'initialization' stamp: 'jmv 4/24/2013 14:20'!
+!AccumulatedImageHistogram methodsFor: 'initialization' stamp: 'jmv 9/3/2020 17:12:44'!
 fillFrom: anImageHistogram
 
 	| s histogramTallies |
 	histogramTallies _ anImageHistogram tallies.
 	s _ histogramTallies size + 1.
-	tallies _ FloatArray new: s.
+	tallies _ Float32Array new: s.
 	tallies at: 1 put: 0.0.
 	tallies at: 2 put: (histogramTallies at: 1).
 	3 to: s do: [ :i |
@@ -6022,10 +6022,10 @@ countAt: value
 	^((tallies at: i1) * ( i2 - floatIndex)) + 
 		((tallies at: i2) * (floatIndex - i1))! !
 
-!ImageHistogram2 methodsFor: 'initialization' stamp: 'jmv 11/5/2012 14:30'!
+!ImageHistogram2 methodsFor: 'initialization' stamp: 'jmv 9/3/2020 17:12:45'!
 initialize: anInteger
 
-	tallies _ FloatArray new: anInteger! !
+	tallies _ Float32Array new: anInteger! !
 
 !ImageHistogram2 methodsFor: 'aux' stamp: 'jmv 4/24/2013 11:20'!
 plot
@@ -6102,10 +6102,10 @@ countAt: value
 	^((tallies at: i1) * ( i2 - floatIndex)) + 
 		((tallies at: i2) * (floatIndex - i1))! !
 
-!ImageHistogram3 methodsFor: 'initialization' stamp: 'jmv 4/24/2013 12:11'!
+!ImageHistogram3 methodsFor: 'initialization' stamp: 'jmv 9/3/2020 17:12:45'!
 initialize: anInteger
 
-	tallies _ FloatArray new: anInteger! !
+	tallies _ Float32Array new: anInteger! !
 
 !ImageHistogram3 methodsFor: 'aux' stamp: 'jmv 4/24/2013 12:11'!
 plot

@@ -1,6 +1,6 @@
-'From Cuis 5.0 [latest update: #4112] on 17 April 2020 at 3:19:57 pm'!
+'From Cuis 5.0 [latest update: #4370] on 4 September 2020 at 11:11:44 am'!
 'Description '!
-!provides: 'LinearAlgebra' 1 56!
+!provides: 'LinearAlgebra' 1 57!
 SystemOrganization addCategory: #LinearAlgebra!
 
 
@@ -2065,7 +2065,7 @@ j: j put: column
 
 	self copyFromTile: column position: j@1! !
 
-!FloatMatrix methodsFor: 'accessing' stamp: 'jmv 8/24/2018 09:54:48'!
+!FloatMatrix methodsFor: 'accessing' stamp: 'jmv 9/3/2020 17:12:45'!
 onionLayer: i
 	"Answer a FloatArray with all elements at onion layer i
 	onionLayer: 1 includes all samples at the border of the matrix, i.e. those at first or last row or column.
@@ -2082,7 +2082,7 @@ onionLayer: i
 	| rowWidth columnHeight column answer |
 	rowWidth _ width - (i-1*2).
 	columnHeight _ height - (i*2).
-	answer _ FloatArray new: rowWidth+columnHeight*2.
+	answer _ Float32Array new: rowWidth+columnHeight*2.
 	answer replaceFrom: 1 to: rowWidth with: elements startingAt: i-1 * width + i.
 	answer replaceFrom: rowWidth+1 to: rowWidth*2 with: elements startingAt: height-i * width + i.
 	
@@ -2094,10 +2094,10 @@ onionLayer: i
 	
 	^ answer! !
 
-!FloatMatrix methodsFor: 'initialization' stamp: 'jmv 6/18/2001 19:10'!
+!FloatMatrix methodsFor: 'initialization' stamp: 'jmv 9/3/2020 17:12:44'!
 initializeElements
 
-	elements _ FloatArray new: height * width! !
+	elements _ Float32Array new: height * width! !
 
 !FloatMatrix methodsFor: 'testing' stamp: 'jmv 5/22/2015 12:16'!
 is: aSymbol
@@ -2428,10 +2428,10 @@ initHeightAndWidth: size bandWidth: bw
 	bandWidth _ bw.
 	self initializeElements.! !
 
-!FloatBandMatrix methodsFor: 'initialization' stamp: 'jmv 7/3/2001 17:47'!
+!FloatBandMatrix methodsFor: 'initialization' stamp: 'jmv 9/3/2020 17:12:45'!
 initializeElements
 
-	elements _ FloatArray new: height * bandWidth! !
+	elements _ Float32Array new: height * bandWidth! !
 
 !FloatBandMatrix class methodsFor: 'instance creation' stamp: 'jmv 8/23/2014 23:33'!
 height: height width: width

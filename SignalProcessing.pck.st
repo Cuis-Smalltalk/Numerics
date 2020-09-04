@@ -1,10 +1,10 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3398] on 9 August 2018 at 11:34:45 am'!
+'From Cuis 5.0 [latest update: #4370] on 4 September 2020 at 11:13:30 am'!
 'Description Image Processing and Signal Processing algorithms. FloatImage, Interpolation, Histograms, etc.'!
-!provides: 'SignalProcessing' 1 103!
-!requires: 'Pen' 1 0 nil!
-!requires: 'LinearAlgebra' 1 nil nil!
-!requires: 'Sound' 1 nil nil!
+!provides: 'SignalProcessing' 1 104!
 !requires: 'Collections-CompactArrays' 1 2 nil!
+!requires: 'Pen' 1 0 nil!
+!requires: 'Sound' 1 nil nil!
+!requires: 'LinearAlgebra' 1 nil nil!
 SystemOrganization addCategory: #SignalProcessing!
 SystemOrganization addCategory: #'SignalProcessing-SoundSynthesis'!
 
@@ -264,17 +264,17 @@ basicRealData: real
 		basicRealData: real
 		imagData: (real collect: [:i | 0.0])  "imaginary component all zero"! !
 
-!FFT methodsFor: 'initialization' stamp: 'jmv 8/10/2010 10:59'!
+!FFT methodsFor: 'initialization' stamp: 'jmv 9/3/2020 18:38:16'!
 basicRealData: real imagData: imag
 	"Avoids conversion to FloatArray.
-	If data is not in FloatArrays,  the fast plugin is disabled, but this allows for 64 bit Double precision:
+	If data is not in Float32Arrays,  the fast plugin is disabled, but this allows for 64 bit Double precision:
 	In any case, make the sinTable match the data, to allow either the plugin or the full precision"
-	(real is: #FloatArray)
+	(real is: #Float32Array)
 		ifTrue: [
-			(sinTable is: #FloatArray)
-				ifFalse: [ sinTable _ sinTable asFloatArray ]]
+			(sinTable is: #Float32Array)
+				ifFalse: [ sinTable _ sinTable asFloat32Array ]]
 		ifFalse: [
-			(sinTable is: #FloatArray)
+			(sinTable is: #Float32Array)
 				ifTrue: [ sinTable _ (0 to: n/4) collect: [:i | (i asFloat / (n//4) * Float pi / 2.0) sin ]]].
 	realData _ real.
 	imagData _ imag! !
@@ -285,7 +285,7 @@ n
 	^ n
 ! !
 
-!FFT methodsFor: 'initialization' stamp: 'jmv 12/4/2012 23:41'!
+!FFT methodsFor: 'initialization' stamp: 'jmv 9/3/2020 18:38:22'!
 nu: order
 	"Initialize variables and tables for transforming 2^nu points"
 	|  j perms k |
@@ -306,25 +306,25 @@ nu: order
 	"Initialize sin table 0..pi/2 in n/4 steps."
 	sinTable _ (0 to: n/4) collect: [:i | (i asFloat / (n//4) * Float pi / 2.0) sin].
 	
-	sinTable _ sinTable asFloatArray.
-	realData _ FloatArray new: n.
-	imagData _ FloatArray new: n.
+	sinTable _ sinTable asFloat32Array.
+	realData _ Float32Array new: n.
+	imagData _ Float32Array new: n.
 
 	self initializeHammingWindow: 0.54.  "0.54 for Hamming, 0.5 for hanning"! !
 
-!FFT methodsFor: 'initialization' stamp: 'jmv 8/10/2010 10:49'!
+!FFT methodsFor: 'initialization' stamp: 'jmv 9/3/2020 18:38:29'!
 realData: real
-	"By defaults use FloatArrays to allow for the fast primitive.
+	"By defaults use Float32Arrays to allow for the fast primitive.
 	This means precision is limeted to 32bit Float.
 	For 64 bit Double precision, use #basicRealData:"
-	self basicRealData: real asFloatArray! !
+	self basicRealData: real asFloat32Array! !
 
-!FFT methodsFor: 'initialization' stamp: 'jmv 8/10/2010 10:49'!
+!FFT methodsFor: 'initialization' stamp: 'jmv 9/3/2020 18:38:36'!
 realData: real imagData: imag
-	"By defaults use FloatArrays to allow for the fast primitive.
+	"By defaults use Float32Arrays to allow for the fast primitive.
 	This means precision is limeted to 32bit Float.
 	For 64 bit Double precision, use #basicRealData:imagData:"
-	self basicRealData: real asFloatArray imagData: imag asFloatArray! !
+	self basicRealData: real asFloat32Array imagData: imag asFloat32Array! !
 
 !FFT methodsFor: 'testing' stamp: 'jm 8/1/1998 13:08'!
 imagData
@@ -434,12 +434,12 @@ verticalLine: xx range: s in: rect color: aColor
 		pen down.
 		pen goto: x @ rect bottom ]! !
 
-!FFT methodsFor: 'bulk processing' stamp: 'jm 9/8/1999 17:10'!
+!FFT methodsFor: 'bulk processing' stamp: 'jmv 9/3/2020 17:12:44'!
 initializeHammingWindow: alpha
 	"Initialize the windowing function to the generalized Hamming window. See F. Richard Moore, Elements of Computer Music, p. 100. An alpha of 0.54 gives the Hamming window, 0.5 gives the hanning window."
 
 	| v midPoint |
-	window _ FloatArray new: n.
+	window _ Float32Array new: n.
 	midPoint _ (n + 1) / 2.0.
 	1 to: n do: [:i |
 		v _ alpha + ((1.0 - alpha) * (2.0 * Float pi * ((i - midPoint) / n)) cos).
@@ -447,12 +447,12 @@ initializeHammingWindow: alpha
 
 ! !
 
-!FFT methodsFor: 'bulk processing' stamp: 'jm 9/8/1999 16:42'!
+!FFT methodsFor: 'bulk processing' stamp: 'jmv 9/3/2020 17:12:44'!
 initializeTriangularWindow
 	"Initialize the windowing function to the triangular, or Parzen, window. See F. Richard Moore, Elements of Computer Music, p. 100."
 
 	| v |
-	window _ FloatArray new: n.
+	window _ Float32Array new: n.
 	0 to: (n // 2) - 1 do: [:i |
 		v _ i / ((n // 2) - 1).
 		window at: (i + 1) put: v.
@@ -467,7 +467,7 @@ setSize: anIntegerPowerOfTwo
 	n = anIntegerPowerOfTwo ifFalse: [self error: 'size must be a power of two']
 ! !
 
-!FFT methodsFor: 'bulk processing' stamp: 'jmv 8/10/2010 11:02'!
+!FFT methodsFor: 'bulk processing' stamp: 'jmv 9/3/2020 17:12:45'!
 transformDataFrom: anIndexableCollection startingAt: index
 	"Forward transform a block of real data taken from from the given indexable collection starting at the given index. Answer a block of values representing the normalized magnitudes of the frequency components."
 
@@ -476,7 +476,7 @@ transformDataFrom: anIndexableCollection startingAt: index
 	index to: index + n - 1 do: [:i |
 		realData at: (j _ j + 1) put: (anIndexableCollection at: i)].
 	realData *= window.
-	imagData _ FloatArray new: n.
+	imagData _ Float32Array new: n.
 	self transformForward: true.
 
 	"compute the magnitudes of the complex results"
@@ -510,11 +510,11 @@ scaleData
 		realData at: i put: (realData at: i) / realN.
 		imagData at: i put: (imagData at: i) / realN]! !
 
-!FFT methodsFor: 'transforming' stamp: 'jmv 8/10/2010 11:03'!
+!FFT methodsFor: 'transforming' stamp: 'jmv 9/3/2020 17:15:36'!
 transformForward: forward
 	| lev lev1 ip theta realU imagU realT imagT i |
 
-	"Use the primitive if available and if data is in the correct format (FloatArrays and a WordArray for permTable)"
+	"Use the primitive if available and if data is in the correct format (Float32Arrays and a WordArray for permTable)"
 	<primitive: 'primitiveFFTTransformData' module: 'FFTPlugin'>
 
 	self permuteData.
