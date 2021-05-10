@@ -1,158 +1,158 @@
-'From Cuis 5.0 [latest update: #4370] on 4 September 2020 at 11:11:27 am'!
+'From Cuis 5.0 [latest update: #4594] on 10 May 2021 at 4:27:55 pm'!
 'Description '!
-!provides: 'ImageProcessing' 1 18!
-!requires: 'Statistics' 1 nil nil!
+!provides: 'ImageProcessing' 1 19!
+!requires: 'Graphics-Files-Additional' 1 nil nil!
 !requires: 'SignalProcessing' 1 100 nil!
-!requires: 'ProbabilityDistributions' 1 nil nil!
 !requires: 'Complex' 1 nil nil!
 !requires: 'NumericalMethods' 1 8 nil!
+!requires: 'ProbabilityDistributions' 1 nil nil!
 !requires: 'VectorGraphics' 1 50 nil!
-!requires: 'Graphics-Files-Additional' 1 nil nil!
-SystemOrganization addCategory: #ImageProcessing!
-SystemOrganization addCategory: #'ImageProcessing-Images'!
-SystemOrganization addCategory: #'ImageProcessing-Interpolators'!
-SystemOrganization addCategory: #'ImageProcessing-Obsolete'!
-SystemOrganization addCategory: #'ImageProcessing-Support'!
-SystemOrganization addCategory: #'ImageProcessing-Tests'!
+!requires: 'Statistics' 1 nil nil!
+SystemOrganization addCategory: 'ImageProcessing'!
+SystemOrganization addCategory: 'ImageProcessing-Images'!
+SystemOrganization addCategory: 'ImageProcessing-Interpolators'!
+SystemOrganization addCategory: 'ImageProcessing-Obsolete'!
+SystemOrganization addCategory: 'ImageProcessing-Support'!
+SystemOrganization addCategory: 'ImageProcessing-Tests'!
 
 
-!classDefinition: #FloatImage category: #'ImageProcessing-Images'!
+!classDefinition: #FloatImage category: 'ImageProcessing-Images'!
 FloatMatrix subclass: #FloatImage
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ImageProcessing-Images'!
-!classDefinition: 'FloatImage class' category: #'ImageProcessing-Images'!
+!classDefinition: 'FloatImage class' category: 'ImageProcessing-Images'!
 FloatImage class
 	instanceVariableNames: ''!
 
-!classDefinition: #ConvolutionKernel category: #'ImageProcessing-Images'!
+!classDefinition: #ConvolutionKernel category: 'ImageProcessing-Images'!
 FloatImage subclass: #ConvolutionKernel
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ImageProcessing-Images'!
-!classDefinition: 'ConvolutionKernel class' category: #'ImageProcessing-Images'!
+!classDefinition: 'ConvolutionKernel class' category: 'ImageProcessing-Images'!
 ConvolutionKernel class
 	instanceVariableNames: ''!
 
-!classDefinition: #IrregularSampledImage category: #'ImageProcessing-Images'!
+!classDefinition: #IrregularSampledImage category: 'ImageProcessing-Images'!
 FloatImage subclass: #IrregularSampledImage
 	instanceVariableNames: 'closestKnownX closestKnownY possibleTriPoints'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ImageProcessing-Images'!
-!classDefinition: 'IrregularSampledImage class' category: #'ImageProcessing-Images'!
+!classDefinition: 'IrregularSampledImage class' category: 'ImageProcessing-Images'!
 IrregularSampledImage class
 	instanceVariableNames: ''!
 
-!classDefinition: #FloatImageTest category: #'ImageProcessing-Tests'!
+!classDefinition: #FloatImageTest category: 'ImageProcessing-Tests'!
 TestCase subclass: #FloatImageTest
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ImageProcessing-Tests'!
-!classDefinition: 'FloatImageTest class' category: #'ImageProcessing-Tests'!
+!classDefinition: 'FloatImageTest class' category: 'ImageProcessing-Tests'!
 FloatImageTest class
 	instanceVariableNames: ''!
 
-!classDefinition: #ComplexImage category: #'ImageProcessing-Images'!
+!classDefinition: #ComplexImage category: 'ImageProcessing-Images'!
 Object subclass: #ComplexImage
 	instanceVariableNames: 'real imaginary'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ImageProcessing-Images'!
-!classDefinition: 'ComplexImage class' category: #'ImageProcessing-Images'!
+!classDefinition: 'ComplexImage class' category: 'ImageProcessing-Images'!
 ComplexImage class
 	instanceVariableNames: ''!
 
-!classDefinition: #MultiBandImage category: #'ImageProcessing-Images'!
+!classDefinition: #MultiBandImage category: 'ImageProcessing-Images'!
 Object subclass: #MultiBandImage
 	instanceVariableNames: 'bands'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ImageProcessing-Images'!
-!classDefinition: 'MultiBandImage class' category: #'ImageProcessing-Images'!
+!classDefinition: 'MultiBandImage class' category: 'ImageProcessing-Images'!
 MultiBandImage class
 	instanceVariableNames: ''!
 
-!classDefinition: #GeneralizedInterpolatingImage category: #'ImageProcessing-Interpolators'!
+!classDefinition: #GeneralizedInterpolatingImage category: 'ImageProcessing-Interpolators'!
 Object subclass: #GeneralizedInterpolatingImage
 	instanceVariableNames: 'width height coefficients'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ImageProcessing-Interpolators'!
-!classDefinition: 'GeneralizedInterpolatingImage class' category: #'ImageProcessing-Interpolators'!
+!classDefinition: 'GeneralizedInterpolatingImage class' category: 'ImageProcessing-Interpolators'!
 GeneralizedInterpolatingImage class
 	instanceVariableNames: ''!
 
-!classDefinition: #BSplineInterpolatingImage category: #'ImageProcessing-Interpolators'!
+!classDefinition: #BSplineInterpolatingImage category: 'ImageProcessing-Interpolators'!
 GeneralizedInterpolatingImage subclass: #BSplineInterpolatingImage
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ImageProcessing-Interpolators'!
-!classDefinition: 'BSplineInterpolatingImage class' category: #'ImageProcessing-Interpolators'!
+!classDefinition: 'BSplineInterpolatingImage class' category: 'ImageProcessing-Interpolators'!
 BSplineInterpolatingImage class
 	instanceVariableNames: ''!
 
-!classDefinition: #ShiftedLinearInterpolatingImage category: #'ImageProcessing-Interpolators'!
+!classDefinition: #ShiftedLinearInterpolatingImage category: 'ImageProcessing-Interpolators'!
 GeneralizedInterpolatingImage subclass: #ShiftedLinearInterpolatingImage
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ImageProcessing-Interpolators'!
-!classDefinition: 'ShiftedLinearInterpolatingImage class' category: #'ImageProcessing-Interpolators'!
+!classDefinition: 'ShiftedLinearInterpolatingImage class' category: 'ImageProcessing-Interpolators'!
 ShiftedLinearInterpolatingImage class
 	instanceVariableNames: ''!
 
-!classDefinition: #AccumulatedImageHistogram category: #'ImageProcessing-Obsolete'!
+!classDefinition: #AccumulatedImageHistogram category: 'ImageProcessing-Obsolete'!
 Object subclass: #AccumulatedImageHistogram
 	instanceVariableNames: 'tallies'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ImageProcessing-Obsolete'!
-!classDefinition: 'AccumulatedImageHistogram class' category: #'ImageProcessing-Obsolete'!
+!classDefinition: 'AccumulatedImageHistogram class' category: 'ImageProcessing-Obsolete'!
 AccumulatedImageHistogram class
 	instanceVariableNames: ''!
 
-!classDefinition: #ImageHistogram category: #'ImageProcessing-Obsolete'!
+!classDefinition: #ImageHistogram category: 'ImageProcessing-Obsolete'!
 Object subclass: #ImageHistogram
 	instanceVariableNames: 'tallies'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ImageProcessing-Obsolete'!
-!classDefinition: 'ImageHistogram class' category: #'ImageProcessing-Obsolete'!
+!classDefinition: 'ImageHistogram class' category: 'ImageProcessing-Obsolete'!
 ImageHistogram class
 	instanceVariableNames: ''!
 
-!classDefinition: #ImageHistogram2 category: #'ImageProcessing-Obsolete'!
+!classDefinition: #ImageHistogram2 category: 'ImageProcessing-Obsolete'!
 Object subclass: #ImageHistogram2
 	instanceVariableNames: 'tallies'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ImageProcessing-Obsolete'!
-!classDefinition: 'ImageHistogram2 class' category: #'ImageProcessing-Obsolete'!
+!classDefinition: 'ImageHistogram2 class' category: 'ImageProcessing-Obsolete'!
 ImageHistogram2 class
 	instanceVariableNames: ''!
 
-!classDefinition: #ImageHistogram3 category: #'ImageProcessing-Obsolete'!
+!classDefinition: #ImageHistogram3 category: 'ImageProcessing-Obsolete'!
 Object subclass: #ImageHistogram3
 	instanceVariableNames: 'tallies'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ImageProcessing-Obsolete'!
-!classDefinition: 'ImageHistogram3 class' category: #'ImageProcessing-Obsolete'!
+!classDefinition: 'ImageHistogram3 class' category: 'ImageProcessing-Obsolete'!
 ImageHistogram3 class
 	instanceVariableNames: ''!
 
-!classDefinition: #FFT2D category: #'ImageProcessing-Support'!
+!classDefinition: #FFT2D category: 'ImageProcessing-Support'!
 Object subclass: #FFT2D
 	instanceVariableNames: 'realMatrix imagMatrix'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ImageProcessing-Support'!
-!classDefinition: 'FFT2D class' category: #'ImageProcessing-Support'!
+!classDefinition: 'FFT2D class' category: 'ImageProcessing-Support'!
 FFT2D class
 	instanceVariableNames: ''!
 
@@ -2339,8 +2339,8 @@ displayWithGammaAt: aPoint zoom: scale
 	form displayAt: aPoint.
 	^ form! !
 
-!FloatImage methodsFor: 'private' stamp: 'jmv 10/19/2017 13:17:52'!
-erodedBy: erosionRadious
+!FloatImage methodsFor: 'private' stamp: 'jmv 5/10/2021 13:28:08'!
+erodedBy: erosionRadius
 	"
 	(FloatImage fromArrayOfArrays: #(
 		#( 1 1 1 1 1 0)
@@ -2354,8 +2354,8 @@ erodedBy: erosionRadious
 	aux _ FloatImage extent: self extent.
 	answer _ nil.
 
-	erosionRadious negated to: erosionRadious do: [ :dy |
-		erosionRadious negated to: erosionRadious do: [ :dx |
+	erosionRadius negated to: erosionRadius do: [ :dy |
+		erosionRadius negated to: erosionRadius do: [ :dx |
 			aux *= 0. aux += 1.
 			aux fillWith: self displaced: dx@dy.
 			answer ifNil: [
@@ -3617,7 +3617,7 @@ gradient: extent
 			answer x: x y: y put: x+y-2 / (extent x + extent y - 2) ]].
 	^answer! !
 
-!FloatImage class methodsFor: 'synthetic images' stamp: 'jmv 8/16/2018 15:40:26'!
+!FloatImage class methodsFor: 'synthetic images' stamp: 'jmv 5/10/2021 16:18:10'!
 randomBoxes: extent
 "
 FloatImage randomBoxes: 256 :: display
@@ -3628,18 +3628,18 @@ FloatImage randomBoxes: 256 :: display
 	form fillColor: backColor.
 	location _ (AffineTransformation withRadians: -3/360*Float twoPi scale: 256*0.35 position: 127.5@127.5) withYAxisNegated.
 	canvas _ VectorCanvas onForm: form.
-	canvas engine geometryTransformation:  location.
+	canvas geometryTransformation:  location.
 	20 timesRepeat: [
 		canvas fillColor: (Random withDefaultDo: [ :r | Color gray: r next]) do: [
 			boxExtent _ Random withDefaultDo: [ :r | r next].
 			x0 _ Random withDefaultDo: [ :r | r next*2-1+(boxExtent/2)].
 			y0 _ Random withDefaultDo: [ :r | r next*2-1-(boxExtent/2)].
 			canvas
-			moveToX: x0 y: y0;
-			lineToX: x0-boxExtent y: y0;
-			lineToX: x0-boxExtent y: y0+boxExtent;
-			lineToX: x0 y: y0+boxExtent;
-			lineToX: x0 y: y0
+			moveTo: x0 @ y0;
+			lineTo: x0-boxExtent @ y0;
+			lineTo: x0-boxExtent @ (y0+boxExtent);
+			lineTo: x0 @ (y0+boxExtent);
+			lineTo: x0 @ y0
 		].
 	].
 	^ FloatImage from32BitColorForm: form component: #green.! !
@@ -3660,7 +3660,7 @@ resolutionTarget: extent offsetFromCenter: anOffsetFromCenter
 	"
 	^ self resolutionTarget: extent offsetFromCenter: anOffsetFromCenter backColor: nil blackColor: nil grayColor: nil whiteColor: nil! !
 
-!FloatImage class methodsFor: 'synthetic images' stamp: 'jmv 8/16/2018 15:42:30'!
+!FloatImage class methodsFor: 'synthetic images' stamp: 'jmv 5/10/2021 16:20:00'!
 resolutionTarget: extent offsetFromCenter: anOffsetFromCenter backColor: aBackColor blackColor: aBlackColor grayColor: aGrayColor whiteColor: aWhiteColor
 
 	| offsetFromCenter backColor blackColor grayColor whiteColor location canvas form |
@@ -3674,32 +3674,32 @@ resolutionTarget: extent offsetFromCenter: anOffsetFromCenter backColor: aBackCo
 	form fillColor: backColor.
 	location _ (AffineTransformation withRadians: -3/360*Float twoPi scale: extent*0.35 position: extent-1/2.0 + offsetFromCenter) withYAxisNegated.
 	canvas _ VectorCanvas onForm: form.
-	canvas engine geometryTransformation: location.
+	canvas geometryTransformation: location.
 	canvas fillColor: whiteColor do: [
 		canvas
-			moveToX: 1 y: 1;
-			lineToX: 0 y: 1;
-			lineToX: -1 y: 0;
-			lineToX: -1 y: -1;
-			lineToX: 0 y: -1;
-			lineToX: 1 y: 0;
-			lineToX: 1 y: 1.
+			moveTo: 1 @ 1;
+			lineTo: 0 @ 1;
+			lineTo: -1 @ 0;
+			lineTo: -1 @ -1;
+			lineTo: 0 @ -1;
+			lineTo: 1 @ 0;
+			lineTo: 1 @ 1.
 	].
 	canvas fillColor: blackColor do: [
 		canvas
-			moveToX: 0 y: 0;
-			lineToX: -1 y: 0;
-			lineToX: -1 y: 1;
-			lineToX: 0 y: 1;
-			lineToX: 0 y: 0
+			moveTo: 0 @ 0;
+			lineTo: -1 @ 0;
+			lineTo: -1 @ 1;
+			lineTo: 0 @ 1;
+			lineTo: 0 @ 0
 	].
 	canvas fillColor: grayColor do: [
 		canvas
-			moveToX: 0 y: 0;
-			lineToX: 1 y: 0;
-			lineToX: 1 y: -1;
-			lineToX: 0 y: -1;
-			lineToX: 0 y: 0
+			moveTo: 0 @ 0;
+			lineTo: 1 @ 0;
+			lineTo: 1 @ -1;
+			lineTo: 0 @ -1;
+			lineTo: 0 @ 0
 	].
 	^ FloatImage from32BitColorForm: form component: #green.! !
 
@@ -3710,7 +3710,7 @@ siemensStar: extent
 	"
 	^ self siemensStar: extent count: 32 offsetFromCenter: 0@0 backColor: `Color gray: 50/255` foreColor: `Color gray: 200/255`! !
 
-!FloatImage class methodsFor: 'synthetic images' stamp: 'jmv 8/16/2018 15:43:26'!
+!FloatImage class methodsFor: 'synthetic images' stamp: 'jmv 5/10/2021 16:20:19'!
 siemensStar: extent count: count offsetFromCenter: offsetFromCenter backColor: backColor foreColor: foreColor
 	"
 	FloatImage siemensStar: 256 :: displayAt: 0@0 zoom: 4
@@ -3722,16 +3722,16 @@ siemensStar: extent count: count offsetFromCenter: offsetFromCenter backColor: b
 	canvas _ VectorCanvas onForm: form.
 	1 to: count do: [ :i |
 		location _ AffineTransformation withRadians: i * angle * 2+0.02 scale: extent*0.45 position: extent-1/2.0 + offsetFromCenter.
-		canvas engine geometryTransformation: location.
+		canvas geometryTransformation: location.
 		"Alternatively...
 		canvas fillColor: foreColor do: ["
 		canvas strokeWidth: 3.0/extent color: foreColor fillColor: foreColor do: [
 			canvas
-				moveToX: 0 y: 0;
-				lineToX: 1 y: 0;
-				lineToX: angle cos y: angle sin;
-				lineToX: 0 y: 0.
-		canvas engine geometryTransformation: canvas currentTransformation
+				moveTo: 0 @ 0;
+				lineTo: 1 @ 0;
+				lineTo: angle cos @ angle sin;
+				lineTo: 0 @ 0.
+		canvas geometryTransformation: canvas currentTransformation
 		].
 	].
 	^FloatImage from32BitColorForm: form component: #green! !
