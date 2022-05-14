@@ -1,6 +1,6 @@
 'From Cuis 5.0 [latest update: #4594] on 10 May 2021 at 4:27:55 pm'!
 'Description '!
-!provides: 'ImageProcessing' 1 19!
+!provides: 'ImageProcessing' 1 20!
 !requires: 'Graphics-Files-Additional' 1 nil nil!
 !requires: 'SignalProcessing' 1 100 nil!
 !requires: 'Complex' 1 nil nil!
@@ -2863,7 +2863,7 @@ repairLocalRelativeThreshold: fractionOfPixelValue
 	meanElements _ mean elements.
 
 	"8 neighbors might be overkill, but better be safe."
-	{ -1@0. -1@-1. 0@ -1. 1@ -1. 1@0. 1@1. 0@1. -1@1 } do: [ :delta |
+	{ -1@0. -1@ -1. 0@ -1. 1@ -1. 1@0. 1@1. 0@1. -1@1 } do: [ :delta |
 		displaced _ self cheapDisplacedBy: delta.
 		mean += displaced.
 		diffElements _ (self - displaced) elements.
@@ -5179,7 +5179,7 @@ reference - greatAligned displayAt: 0@0 min: -0.2 max: 0.2 zoom: 4.
 "
 "
 reference _ FloatImage siemensStar: 256 offsetFromCenter: 0@0.
-moved _ FloatImage siemensStar: 256 offsetFromCenter: -3.4@-2.7.
+moved _ FloatImage siemensStar: 256 offsetFromCenter: -3.4@ -2.7.
 reference addNormalNoise: 0.02.
 moved addNormalNoise: 0.02.
 

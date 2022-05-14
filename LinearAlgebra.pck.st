@@ -1,6 +1,6 @@
 'From Cuis 5.0 [latest update: #4370] on 4 September 2020 at 11:11:44 am'!
 'Description '!
-!provides: 'LinearAlgebra' 1 57!
+!provides: 'LinearAlgebra' 1 58!
 SystemOrganization addCategory: #LinearAlgebra!
 
 
@@ -1515,7 +1515,7 @@ fillWith: aFloatMatrix displaced: deltaPoint
 	i1 _ FloatImage lena.
 	i2 _ FloatImage extent: i1 extent.
 	i1 displayAt: 0@0.
-	i2 fillWith: i1 displaced: 40@-30.
+	i2 fillWith: i1 displaced: 40@ -30.
 	i2 displayAt: 256@0.
 	"
 	

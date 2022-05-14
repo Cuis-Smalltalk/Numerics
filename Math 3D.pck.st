@@ -1,6 +1,6 @@
 'From Cuis 5.0 [latest update: #4370] on 4 September 2020 at 11:11:58 am'!
 'Description Stuff from Balloon3D-Math by Andreas Raab. Adapted to use 64-bit Float arithmetic (in addition to 32-bit FloatArray).'!
-!provides: 'Math 3D' 1 23!
+!provides: 'Math 3D' 1 24!
 SystemOrganization addCategory: #'Math 3D'!
 
 
@@ -2266,7 +2266,7 @@ setA: aValue b: bValue c: cValue d: dValue
 	self at: 4 put: dValue.
 	"
 	(Float64Quaternion axis: 0@0@1 angle: 0.01) rotate: 0@0@ -1.
-	should answer 0@0@-1,
+	should answer 0@0@ -1,
 	but was answering 0@0@1
 	because of this.
 	It is subtle, but a conjugate must be a conjugate, etc. In this particular case, it was the product #*
