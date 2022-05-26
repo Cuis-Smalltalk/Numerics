@@ -1,66 +1,66 @@
-'From Cuis 5.0 [latest update: #4370] on 4 September 2020 at 11:11:44 am'!
+'From Cuis 6.0 [latest update: #5202] on 26 May 2022 at 12:46:22 pm'!
 'Description '!
-!provides: 'LinearAlgebra' 1 58!
-SystemOrganization addCategory: #LinearAlgebra!
+!provides: 'LinearAlgebra' 1 59!
+SystemOrganization addCategory: 'LinearAlgebra'!
 
 
-!classDefinition: #NumericalMatrix category: #LinearAlgebra!
+!classDefinition: #NumericalMatrix category: 'LinearAlgebra'!
 Array2D subclass: #NumericalMatrix
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'LinearAlgebra'!
-!classDefinition: 'NumericalMatrix class' category: #LinearAlgebra!
+!classDefinition: 'NumericalMatrix class' category: 'LinearAlgebra'!
 NumericalMatrix class
 	instanceVariableNames: ''!
 
-!classDefinition: #ByteMatrix category: #LinearAlgebra!
+!classDefinition: #ByteMatrix category: 'LinearAlgebra'!
 NumericalMatrix subclass: #ByteMatrix
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'LinearAlgebra'!
-!classDefinition: 'ByteMatrix class' category: #LinearAlgebra!
+!classDefinition: 'ByteMatrix class' category: 'LinearAlgebra'!
 ByteMatrix class
 	instanceVariableNames: ''!
 
-!classDefinition: #FloatMatrix category: #LinearAlgebra!
+!classDefinition: #FloatMatrix category: 'LinearAlgebra'!
 NumericalMatrix subclass: #FloatMatrix
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'LinearAlgebra'!
-!classDefinition: 'FloatMatrix class' category: #LinearAlgebra!
+!classDefinition: 'FloatMatrix class' category: 'LinearAlgebra'!
 FloatMatrix class
 	instanceVariableNames: ''!
 
-!classDefinition: #Float64Matrix category: #LinearAlgebra!
+!classDefinition: #Float64Matrix category: 'LinearAlgebra'!
 FloatMatrix subclass: #Float64Matrix
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'LinearAlgebra'!
-!classDefinition: 'Float64Matrix class' category: #LinearAlgebra!
+!classDefinition: 'Float64Matrix class' category: 'LinearAlgebra'!
 Float64Matrix class
 	instanceVariableNames: ''!
 
-!classDefinition: #FloatBandMatrix category: #LinearAlgebra!
+!classDefinition: #FloatBandMatrix category: 'LinearAlgebra'!
 FloatMatrix subclass: #FloatBandMatrix
 	instanceVariableNames: 'bandWidth'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'LinearAlgebra'!
-!classDefinition: 'FloatBandMatrix class' category: #LinearAlgebra!
+!classDefinition: 'FloatBandMatrix class' category: 'LinearAlgebra'!
 FloatBandMatrix class
 	instanceVariableNames: ''!
 
-!classDefinition: #IntegerMatrix category: #LinearAlgebra!
+!classDefinition: #IntegerMatrix category: 'LinearAlgebra'!
 NumericalMatrix subclass: #IntegerMatrix
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'LinearAlgebra'!
-!classDefinition: 'IntegerMatrix class' category: #LinearAlgebra!
+!classDefinition: 'IntegerMatrix class' category: 'LinearAlgebra'!
 IntegerMatrix class
 	instanceVariableNames: ''!
 
@@ -91,16 +91,6 @@ IntegerMatrix fromArrayOfArrays: {
 	{ 0. 									1. 						-1 }.
 	{ (2 raisedTo: 31) negated.	-10000.   				-16r80000000}.
 	{ (2 raisedTo: 31) -1. 			12 factorial.			16r7FFFFFFF }}!
-
-!FloatMatrix methodsFor: 'printing' stamp: 'jmv 1/9/2014 21:28'!
-printOn: aStream
-	aStream newLine.
-	1 to: height do: [ :i |
-		aStream nextPutAll: '| '.
-		1 to: width do: [ :j |
-			(self i: i j: j) printOn: aStream integerDigits: 1 fractionDigits: 3.
-			aStream space ].
-		aStream nextPut: $|; newLine ]! !
 
 !NumericalMatrix methodsFor: 'aritmethic' stamp: 'jmv 5/14/2019 09:37:18'!
 * aMatrixOrNumber
@@ -1098,6 +1088,16 @@ fillFromGrayForm: aGrayForm
 initializeElements
 
 	elements _ ByteArray new: height * width! !
+
+!FloatMatrix methodsFor: 'printing' stamp: 'jmv 1/9/2014 21:28'!
+printOn: aStream
+	aStream newLine.
+	1 to: height do: [ :i |
+		aStream nextPutAll: '| '.
+		1 to: width do: [ :j |
+			(self i: i j: j) printOn: aStream integerDigits: 1 fractionDigits: 3.
+			aStream space ].
+		aStream nextPut: $|; newLine ]! !
 
 !FloatMatrix methodsFor: 'arithmetic-modify self' stamp: 'jmv 6/27/2018 12:05:44'!
 += aFloatMatrixOrNumber
@@ -2219,7 +2219,7 @@ fromNpyFile: aFileEntry
 		stream binary.
 		self fromNpyStream: stream ]! !
 
-!FloatMatrix class methodsFor: 'files' stamp: 'jmv 12/4/2017 14:59:00'!
+!FloatMatrix class methodsFor: 'files' stamp: 'jmv 5/26/2022 12:18:26'!
 fromNpyStream: byteStream
 	"
 	FloatMatrix fromNpyFile: 'vigneteo' asDirectoryEntry // 'vign_x.npy'
@@ -2236,7 +2236,7 @@ self asForm writeJPEGfileNamed: 'tt.jpg'.
 		[1] -> [hLength _ (byteStream next: 2) unsignedShortAt: 1 bigEndian: false].
 		[2] -> [hLength _ (byteStream next: 4) unsignedShortAt: 1 bigEndian: false].
 	} otherwise: [ self error: 'Unsupported format' ].
-	headerData _ String fromUtf8: (byteStream next: hLength).	"It is ASCII. utf-8 will do."
+	headerData _ String fromUtf8Bytes: (byteStream next: hLength).	"It is ASCII. utf-8 will do."
 
 	" Read 'an ASCII string which contains a Python literal expression of a dictionary'
 	https://docs.scipy.org/doc/numpy-dev/neps/npy-format.html
