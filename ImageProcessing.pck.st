@@ -1,12 +1,11 @@
 'From Cuis 5.0 [latest update: #4594] on 10 May 2021 at 4:27:55 pm'!
 'Description '!
-!provides: 'ImageProcessing' 1 20!
+!provides: 'ImageProcessing' 1 21!
 !requires: 'Graphics-Files-Additional' 1 nil nil!
 !requires: 'SignalProcessing' 1 100 nil!
 !requires: 'Complex' 1 nil nil!
 !requires: 'NumericalMethods' 1 8 nil!
 !requires: 'ProbabilityDistributions' 1 nil nil!
-!requires: 'VectorGraphics' 1 50 nil!
 !requires: 'Statistics' 1 nil nil!
 SystemOrganization addCategory: 'ImageProcessing'!
 SystemOrganization addCategory: 'ImageProcessing-Images'!
@@ -3029,7 +3028,7 @@ showRotations
 	'Test resampling algorithms without significant scaling.' print.
 	'The approach is to do successive rotations.'  print.
 
-	c _ 140.	"Evidencia la falta de nitidez de BiCubic, y tambien cierta deformación geométrica de Lanczos. BSpline es impresionante."
+	c _ 140.	"Evidencia la falta de nitidez de BiCubic, y tambien cierta deformaciÃ³n geomÃ©trica de Lanczos. BSpline es impresionante."
 	c _ 27.
 	a _ -360.0 / (c+1).
 
@@ -3192,7 +3191,7 @@ showTranslations
 	'Test resampling algorithms without significant scaling.' print.
 	'The approach is to do successive fractional translations.'  print.
 
-	c _ 140.	"Evidencia la falta de nitidez de BiCubic, y tambien cierta deformación geométrica de Lanczos. BSpline es impresionante."
+	c _ 140.	"Evidencia la falta de nitidez de BiCubic, y tambien cierta deformaciÃ³n geomÃ©trica de Lanczos. BSpline es impresionante."
 	c _ 27.
 
 	xx _ 0.
