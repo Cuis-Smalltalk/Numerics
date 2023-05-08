@@ -1,6 +1,6 @@
-'From Cuis 6.0 [latest update: #5202] on 26 May 2022 at 12:46:22 pm'!
+'From Cuis 6.0 [latest update: #5791] on 7 May 2023 at 6:18:48 pm'!
 'Description '!
-!provides: 'LinearAlgebra' 1 59!
+!provides: 'LinearAlgebra' 1 60!
 SystemOrganization addCategory: 'LinearAlgebra'!
 
 
@@ -2149,15 +2149,15 @@ rowsCloserToZero: count
 			asSortedCollection: [ :a :b | a y < b y ])
 				copyFrom: 1 to: count) collect: [ :each | each x ] ) asSortedCollection! !
 
-!FloatMatrix methodsFor: 'files' stamp: 'jmv 12/4/2017 14:59:32'!
+!FloatMatrix methodsFor: 'files' stamp: 'jmv 5/7/2023 11:00:59'!
 readFromNpyStream: byteStream bigEndian: isByteStreamBigEndian
 	| bytesPerElement rowBytes |
-	bytesPerElement _ 4.
-	rowBytes _ ByteArray new: width*bytesPerElement.
+	bytesPerElement := 4.
+	rowBytes := ByteArray new: width*bytesPerElement.
 	1 to: height do: [ :i |
 		byteStream nextInto: rowBytes.
 		1 to: width do: [ :j |
-			self i: i j: j put: (rowBytes floatAt: j-1*bytesPerElement+1 bigEndian: isByteStreamBigEndian) ]].! !
+			self i: i j: j put: (rowBytes float32At: j-1*bytesPerElement+1 bigEndian: isByteStreamBigEndian) ]].! !
 
 !FloatMatrix methodsFor: 'operations' stamp: 'jmv 9/2/2014 11:28'!
 round
@@ -2219,7 +2219,7 @@ fromNpyFile: aFileEntry
 		stream binary.
 		self fromNpyStream: stream ]! !
 
-!FloatMatrix class methodsFor: 'files' stamp: 'jmv 5/26/2022 12:18:26'!
+!FloatMatrix class methodsFor: 'files' stamp: 'jmv 5/7/2023 11:07:25'!
 fromNpyStream: byteStream
 	"
 	FloatMatrix fromNpyFile: 'vigneteo' asDirectoryEntry // 'vign_x.npy'
@@ -2228,15 +2228,15 @@ self asForm writeJPEGfileNamed: 'tt.jpg'.
 (self asFormMin: 0.0 max: 1.0) writeJPEGfileNamed: 'ttt.jpg'.
 	"
 	| magic hLength versionMajor versionMinor headerData i1 i2 key descrString fortranOrderString columnsString rowsString answer height instanceClass isBigEndian width bytesPerElement |
-	magic _ byteStream next: 6.
+	magic := byteStream next: 6.
 	self assert: magic = (#[16r93], 'NUMPY' asByteArray).
-	versionMajor _ byteStream next.
-	versionMinor _ byteStream next.
+	versionMajor := byteStream next.
+	versionMinor := byteStream next.
 	versionMajor caseOf: {
-		[1] -> [hLength _ (byteStream next: 2) unsignedShortAt: 1 bigEndian: false].
-		[2] -> [hLength _ (byteStream next: 4) unsignedShortAt: 1 bigEndian: false].
+		[1] -> [hLength := (byteStream next: 2) uint16At: 1 bigEndian: false].
+		[2] -> [hLength := (byteStream next: 4) uint16At: 1 bigEndian: false].
 	} otherwise: [ self error: 'Unsupported format' ].
-	headerData _ String fromUtf8Bytes: (byteStream next: hLength).	"It is ASCII. utf-8 will do."
+	headerData := String fromUtf8Bytes: (byteStream next: hLength).	"It is ASCII. utf-8 will do."
 
 	" Read 'an ASCII string which contains a Python literal expression of a dictionary'
 	https://docs.scipy.org/doc/numpy-dev/neps/npy-format.html
@@ -2247,41 +2247,41 @@ self asForm writeJPEGfileNamed: 'tt.jpg'.
 		'no fortran order, i.e. row-major, i.e. row after row'
 		'major size (i.e. rows)= 5120. minor size (i.e. columns) = 5120
 	"
-	i1 _ 1.
-	key _ '''descr'''.
-	i1 _ (headerData findString: key startingAt: i1) + key size. 
-	i1 _ headerData findString: $' asString startingAt: i1.
-	i1 _ i1 + 1.
-	i2 _ headerData findString: $' asString startingAt: i1.
-	descrString _ headerData copyFrom: i1 to: i2-1.
+	i1 := 1.
+	key := '''descr'''.
+	i1 := (headerData findString: key startingAt: i1) + key size. 
+	i1 := headerData findString: $' asString startingAt: i1.
+	i1 := i1 + 1.
+	i2 := headerData findString: $' asString startingAt: i1.
+	descrString := headerData copyFrom: i1 to: i2-1.
 
-	key _ '''fortran_order'''.
-	i1 _ (headerData findString: key startingAt: i1) + key size. 
-	i1 _ headerData findString: $: asString startingAt: i1.
-	i1 _ i1 + 1.
-	i2 _ headerData findString: $, asString startingAt: i1.
-	fortranOrderString _ (headerData copyFrom: i1 to: i2-1) withBlanksTrimmed.
+	key := '''fortran_order'''.
+	i1 := (headerData findString: key startingAt: i1) + key size. 
+	i1 := headerData findString: $: asString startingAt: i1.
+	i1 := i1 + 1.
+	i2 := headerData findString: $, asString startingAt: i1.
+	fortranOrderString := (headerData copyFrom: i1 to: i2-1) withBlanksTrimmed.
 
-	key _ '''shape'''.
-	i1 _ (headerData findString: key startingAt: i1) + key size. 
-	i1 _ headerData findString: $( asString startingAt: i1.
-	i1 _ i1 + 1.
-	i2 _ headerData findString: $, asString startingAt: i1.
-	rowsString _ (headerData copyFrom: i1 to: i2-1) withBlanksTrimmed.
-	i1 _ i2 + 1.
-	i2 _ headerData findString: $) asString startingAt: i1.
-	columnsString _ (headerData copyFrom: i1 to: i2-1) withBlanksTrimmed.
+	key := '''shape'''.
+	i1 := (headerData findString: key startingAt: i1) + key size. 
+	i1 := headerData findString: $( asString startingAt: i1.
+	i1 := i1 + 1.
+	i2 := headerData findString: $, asString startingAt: i1.
+	rowsString := (headerData copyFrom: i1 to: i2-1) withBlanksTrimmed.
+	i1 := i2 + 1.
+	i2 := headerData findString: $) asString startingAt: i1.
+	columnsString := (headerData copyFrom: i1 to: i2-1) withBlanksTrimmed.
 
-	isBigEndian _ descrString first = $>.
+	isBigEndian := descrString first = $>.
 	self assert: descrString second = $f.
-	bytesPerElement _ descrString third digitValue.
-	instanceClass _ bytesPerElement caseOf: { [4] -> [FloatMatrix]. [8] -> [Float64Matrix]} otherwise: [self assert: false ].
+	bytesPerElement := descrString third digitValue.
+	instanceClass := bytesPerElement caseOf: { [4] -> [FloatMatrix]. [8] -> [Float64Matrix]} otherwise: [self assert: false ].
 	
 	self assert: fortranOrderString = 'False'.
-	height _ rowsString asInteger.
-	width _ columnsString asInteger.
+	height := rowsString asInteger.
+	width := columnsString asInteger.
 	
-	answer _ instanceClass height: height width: width.
+	answer := instanceClass height: height width: width.
 	answer readFromNpyStream: byteStream bigEndian: isBigEndian.
 
 	^ answer! !
@@ -2354,7 +2354,7 @@ true ifTrue: [ ^ super j: j put: column ].
 	1 to: height do: [ :i |
 		self i: i j: j put: (column at: i) ]! !
 
-!Float64Matrix methodsFor: 'files' stamp: 'jmv 12/4/2017 15:09:52'!
+!Float64Matrix methodsFor: 'files' stamp: 'jmv 5/7/2023 10:54:09'!
 readFromNpyStream: byteStream bigEndian: isByteStreamBigEndian
 	"
 	FloatMatrix fromNpyFile: 'vigneteo' asDirectoryEntry // 'vign_x.npy'
@@ -2366,12 +2366,12 @@ readFromNpyStream: byteStream bigEndian: isByteStreamBigEndian
 	isByteStreamBigEndian | Smalltalk isBigEndian ifFalse: [
 		^ self readFromNpyStreamFastHack: byteStream ].
 
-	bytesPerElement _ 8.
-	rowBytes _ ByteArray new: width*bytesPerElement.
+	bytesPerElement := 8.
+	rowBytes := ByteArray new: width*bytesPerElement.
 	1 to: height do: [ :i |
 		byteStream nextInto: rowBytes.
 		1 to: width do: [ :j |
-			self i: i j: j put: (rowBytes doubleAt: j-1*bytesPerElement+1 bigEndian: isByteStreamBigEndian) ]]! !
+			self i: i j: j put: (rowBytes float64At: j-1*bytesPerElement+1 bigEndian: isByteStreamBigEndian) ]]! !
 
 !Float64Matrix methodsFor: 'files' stamp: 'jmv 12/4/2017 15:07:09'!
 readFromNpyStreamFastHack: byteStream

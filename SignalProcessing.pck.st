@@ -1,41 +1,41 @@
-'From Cuis 5.0 [latest update: #4370] on 4 September 2020 at 11:13:30 am'!
+'From Cuis 6.0 [latest update: #5795] on 7 May 2023 at 7:07:09 pm'!
 'Description Image Processing and Signal Processing algorithms. FloatImage, Interpolation, Histograms, etc.'!
-!provides: 'SignalProcessing' 1 104!
-!requires: 'Collections-CompactArrays' 1 2 nil!
+!provides: 'SignalProcessing' 1 105!
+!requires: 'LinearAlgebra' 1 nil nil!
 !requires: 'Pen' 1 0 nil!
 !requires: 'Sound' 1 nil nil!
-!requires: 'LinearAlgebra' 1 nil nil!
-SystemOrganization addCategory: #SignalProcessing!
-SystemOrganization addCategory: #'SignalProcessing-SoundSynthesis'!
+!requires: 'Collections-CompactArrays' 1 2 nil!
+SystemOrganization addCategory: 'SignalProcessing'!
+SystemOrganization addCategory: 'SignalProcessing-SoundSynthesis'!
 
 
-!classDefinition: #WaveletCodec category: #'SignalProcessing-SoundSynthesis'!
+!classDefinition: #WaveletCodec category: 'SignalProcessing-SoundSynthesis'!
 SoundCodec subclass: #WaveletCodec
 	instanceVariableNames: 'fwt samplesPerFrame nLevels alpha beta'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'SignalProcessing-SoundSynthesis'!
-!classDefinition: 'WaveletCodec class' category: #'SignalProcessing-SoundSynthesis'!
+!classDefinition: 'WaveletCodec class' category: 'SignalProcessing-SoundSynthesis'!
 WaveletCodec class
 	instanceVariableNames: ''!
 
-!classDefinition: #FFT category: #SignalProcessing!
+!classDefinition: #FFT category: 'SignalProcessing'!
 Object subclass: #FFT
 	instanceVariableNames: 'nu n sinTable permTable realData imagData window'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'SignalProcessing'!
-!classDefinition: 'FFT class' category: #SignalProcessing!
+!classDefinition: 'FFT class' category: 'SignalProcessing'!
 FFT class
 	instanceVariableNames: ''!
 
-!classDefinition: #FWT category: #SignalProcessing!
+!classDefinition: #FWT category: 'SignalProcessing'!
 Object subclass: #FWT
 	instanceVariableNames: 'alpha beta coeffs h g hTilde gTilde samples nSamples nLevels transform'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'SignalProcessing'!
-!classDefinition: 'FWT class' category: #SignalProcessing!
+!classDefinition: 'FWT class' category: 'SignalProcessing'!
 FWT class
 	instanceVariableNames: ''!
 
@@ -94,48 +94,48 @@ bytesPerEncodedFrame
 	^ 0
 ! !
 
-!WaveletCodec methodsFor: 'subclass responsibilities' stamp: 'jmv 2/26/2016 17:02'!
+!WaveletCodec methodsFor: 'subclass responsibilities' stamp: 'jmv 5/7/2023 18:56:59'!
 decodeFrames: frameCount from: srcByteArray at: srcIndex into: dstSoundBuffer at: dstIndex
 	"Decode the given number of monophonic frames starting at the given index in the given ByteArray of compressed sound data and storing the decoded samples into the given SoundBuffer starting at the given destination index. Answer a pair containing the number of bytes of compressed data consumed and the number of decompressed samples produced."
 	"Note: Assume that the sender has ensured that the given number of frames will not exhaust either the source or destination buffers."
 
 	| frameBase coeffArray scale i c nullCount samples sourceFrameEnd frameSize inStream val |
-	inStream _ ReadStream on: srcByteArray from: srcIndex to: srcByteArray size.
-	"frameCount _ " inStream nextUnsignedInt32BigEndian: true.
-	samplesPerFrame _ inStream nextUnsignedInt32BigEndian: true.
-	nLevels _ inStream nextUnsignedInt32BigEndian: true.
-	alpha _ inStream nextFloat32BigEndian: true.
-	beta _ inStream nextFloat32BigEndian: true.
+	inStream := ReadStream on: srcByteArray from: srcIndex to: srcByteArray size.
+	"frameCount _ " inStream nextUint32BigEndian: true.
+	samplesPerFrame := inStream nextUint32BigEndian: true.
+	nLevels := inStream nextUint32BigEndian: true.
+	alpha := inStream nextFloat32BigEndian: true.
+	beta := inStream nextFloat32BigEndian: true.
 	fwt ifNil:
 		["NOTE: This should read parameters from the encoded data"
-		fwt _ FWT new.
+		fwt := FWT new.
 		fwt nSamples: samplesPerFrame nLevels: nLevels.
 		fwt setAlpha: alpha beta: beta].
-	frameBase _ dstIndex.
-	coeffArray _ fwt coeffs.  "A copy that we can modify"
+	frameBase := dstIndex.
+	coeffArray := fwt coeffs.  "A copy that we can modify"
 
 	1 to: frameCount do:
 		[:frame | 
 
 		"Decode the scale for this frame"
-		frameSize _ inStream nextUnsignedInt16BigEndian: true.
-		sourceFrameEnd _ frameSize + inStream position.
-		scale _ inStream nextFloat32BigEndian: true.
+		frameSize := inStream nextUint16BigEndian: true.
+		sourceFrameEnd := frameSize + inStream position.
+		scale := inStream nextFloat32BigEndian: true.
 
 		"Expand run-coded samples to scaled float values."
-		i _ 5.
+		i := 5.
 		[i <= coeffArray size]
 			whileTrue:
-			[c _ inStream next.
+			[c := inStream next.
 			c < 128
-				ifTrue: [nullCount _ c < 112
+				ifTrue: [nullCount := c < 112
 							ifTrue: [c + 1]
 							ifFalse: [(c-112)*256 + inStream next + 1].
 						i to: i + nullCount - 1 do: [:j | coeffArray at: j put: 0.0].
-						i _ i + nullCount]
-				ifFalse: [val _ (c*256 + inStream next) - 32768 - 16384.
+						i := i + nullCount]
+				ifFalse: [val := (c*256 + inStream next) - 32768 - 16384.
 						coeffArray at: i put: val * scale.
-						i _ i + 1]].
+						i := i + 1]].
 
 		"Copy float values into the wavelet sample array"		
 			fwt coeffs: coeffArray.
@@ -144,46 +144,46 @@ decodeFrames: frameCount from: srcByteArray at: srcIndex into: dstSoundBuffer at
 		fwt transformForward: false.
 
 		"Determine the scale for this frame"
-		samples _ fwt samples.
+		samples := fwt samples.
 		samples size = samplesPerFrame ifFalse: [self error: 'frame size error'].
 		1 to: samples size do:
 			[:j | dstSoundBuffer at: frameBase + j - 1 put: (samples at: j) asInteger].
 
 		inStream position = sourceFrameEnd ifFalse: [self error: 'frame size error'].
-		frameBase _ frameBase + samplesPerFrame].
+		frameBase := frameBase + samplesPerFrame].
 
 	^ Array with: inStream position + 1 - srcIndex
 			with: frameBase - dstIndex! !
 
-!WaveletCodec methodsFor: 'subclass responsibilities' stamp: 'jmv 2/26/2016 17:13'!
+!WaveletCodec methodsFor: 'subclass responsibilities' stamp: 'jmv 5/7/2023 18:59:35'!
 encodeFrames: frameCount from: srcSoundBuffer at: srcIndex into: dstByteArray at: dstIndex
 	"Encode the given number of frames starting at the given index in the given monophonic SoundBuffer and storing the encoded sound data into the given ByteArray starting at the given destination index. Encode only as many complete frames as will fit into the destination. Answer a pair containing the number of samples consumed and the number of bytes of compressed data produced."
 	"Note: Assume that the sender has ensured that the given number of frames will not exhaust either the source or destination buffers."
 
 	| frameBase coeffs maxVal minVal c scale nullCount frameI outFrameSize threshold outStream cMin val |
-	threshold _ 2000.
+	threshold := 2000.
 	fwt ifNil:
-		[samplesPerFrame _ self samplesPerFrame.
-		nLevels _ 8.
+		[samplesPerFrame := self samplesPerFrame.
+		nLevels := 8.
 		"Here are some sample mother wavelets, with the compression achieved on a
 		sample of my voice at a threshold of 2000:
 									compression achieved "
-		alpha _ 0.0.  beta _ 0.0.		"12.1"
-		alpha _ 1.72.  beta _ 1.51.	"14.0"
-		alpha _ -1.86.  beta _ -1.53.	"14.4"
-		alpha _ 1.28.  beta _ -0.86.	"15.9"
-		alpha _ -1.15.  beta _ 0.69.	"16.0"
-		fwt _ FWT new.
+		alpha := 0.0.  beta := 0.0.		"12.1"
+		alpha := 1.72.  beta := 1.51.	"14.0"
+		alpha := -1.86.  beta := -1.53.	"14.4"
+		alpha := 1.28.  beta := -0.86.	"15.9"
+		alpha := -1.15.  beta := 0.69.	"16.0"
+		fwt := FWT new.
 		fwt nSamples: samplesPerFrame nLevels: nLevels.
 		fwt setAlpha: alpha beta: beta].
 
-	(outStream _ WriteStream on: dstByteArray from: dstIndex to: dstByteArray size)
-		nextUnsignedInt32Put: frameCount bigEndian: true;
-		nextUnsignedInt32Put: samplesPerFrame bigEndian: true;
-		nextUnsignedInt32Put: nLevels bigEndian: true;
+	(outStream := WriteStream on: dstByteArray from: dstIndex to: dstByteArray size)
+		nextUint32Put: frameCount bigEndian: true;
+		nextUint32Put: samplesPerFrame bigEndian: true;
+		nextUint32Put: nLevels bigEndian: true;
 		nextFloat32Put: alpha bigEndian: true;
 		nextFloat32Put: beta bigEndian: true.
-	frameBase _ srcIndex.
+	frameBase := srcIndex.
 	1 to: frameCount do:
 		[:frame | 
 
@@ -194,44 +194,44 @@ encodeFrames: frameCount from: srcSoundBuffer at: srcIndex into: dstByteArray at
 		"Compute the transform"
 		fwt transformForward: true.
 
-		frameI _ outStream position+1.  "Reserve space for frame size"
-		outStream nextUnsignedInt16Put: 0 bigEndian: true.
+		frameI := outStream position+1.  "Reserve space for frame size"
+		outStream nextUint16Put: 0 bigEndian: true.
 
 		"Determine and output the scale for this frame"
-		coeffs _ fwt coeffs.
-		maxVal _ 0.0.  minVal _ 0.0.
+		coeffs := fwt coeffs.
+		maxVal := 0.0.  minVal := 0.0.
 		5 to: coeffs size do:
-			[:i | c _ coeffs at: i.
-			c > maxVal ifTrue: [maxVal _ c].
-			c < minVal ifTrue: [minVal _ c]].
-		scale _ (maxVal max: minVal negated) / 16000.0.  "Will scale all to -16k..16k: 15 bits"
+			[:i | c := coeffs at: i.
+			c > maxVal ifTrue: [maxVal := c].
+			c < minVal ifTrue: [minVal := c]].
+		scale := (maxVal max: minVal negated) / 16000.0.  "Will scale all to -16k..16k: 15 bits"
 		outStream nextFloat32Put: scale bigEndian: true.
 
 		"Copy scaled values, with run-coded sequences of 0's, to destByteArray"
-		nullCount _ 0.
-		cMin _ threshold / scale.
+		nullCount := 0.
+		cMin := threshold / scale.
 		5 to: coeffs size do:
-			[:i | c _ (coeffs at: i) / scale.
+			[:i | c := (coeffs at: i) / scale.
 			c abs < cMin
 			ifTrue: ["Below threshold -- count nulls."
-					nullCount _ nullCount + 1]
+					nullCount := nullCount + 1]
 			ifFalse: ["Above threshold -- emit prior null count and this sample."
 					nullCount > 0 ifTrue:
 						[nullCount <= 112
 						ifTrue: [outStream nextPut: nullCount-1]
-						ifFalse: [outStream nextUnsignedInt16Put: (112*256) + nullCount-1 bigEndian: true ].
-						nullCount _ 0].
-						val _ c asInteger + 16384 + 32768.  "Map -16k..16k into 32k..64k"
-						outStream nextUnsignedInt16Put: val bigEndian: true ]].
+						ifFalse: [outStream nextUint16Put: (112*256) + nullCount-1 bigEndian: true ].
+						nullCount := 0].
+						val := c asInteger + 16384 + 32768.  "Map -16k..16k into 32k..64k"
+						outStream nextUint16Put: val bigEndian: true ]].
 
 					nullCount > 0 ifTrue:
 						[nullCount <= 112
 						ifTrue: [outStream nextPut: nullCount-1]
-						ifFalse: [outStream nextUnsignedInt16Put: (112*256) + nullCount-1 bigEndian: true ]].
-		outFrameSize _ outStream position+1 - frameI - 2.  "Write frame size back at the beginning"
+						ifFalse: [outStream nextUint16Put: (112*256) + nullCount-1 bigEndian: true ]].
+		outFrameSize := outStream position+1 - frameI - 2.  "Write frame size back at the beginning"
 		(WriteStream on: dstByteArray from: frameI to: dstByteArray size)
-			nextUnsignedInt16Put: outFrameSize bigEndian: true .
-		frameBase _ frameBase + samplesPerFrame].
+			nextUint16Put: outFrameSize bigEndian: true .
+		frameBase := frameBase + samplesPerFrame].
 
 "This displays a temporary indication of compression achieved"
 (((frameBase - srcIndex) *2.0 / (outStream position+1 - dstIndex) truncateTo: 0.1) printString , ' : 1') displayAt: Sensor mousePoint + (-20@30).
@@ -243,11 +243,11 @@ encodeFrames: frameCount from: srcSoundBuffer at: srcIndex into: dstByteArray at
 	^ Array with: frameBase - srcIndex
 			with: outStream position+1 - dstIndex! !
 
-!WaveletCodec methodsFor: 'subclass responsibilities' stamp: 'jmv 2/26/2016 17:02'!
+!WaveletCodec methodsFor: 'subclass responsibilities' stamp: 'jmv 5/7/2023 18:57:02'!
 frameCount: aByteArray
 	"Compute the frame count for this byteArray.  This default computation will have to be overridden by codecs with variable frame sizes."
 
-	^ (ReadStream on: aByteArray) nextUnsignedInt32BigEndian: true! !
+	^ (ReadStream on: aByteArray) nextUint32BigEndian: true! !
 
 !WaveletCodec methodsFor: 'subclass responsibilities' stamp: 'di 2/8/1999 14:17'!
 samplesPerFrame
