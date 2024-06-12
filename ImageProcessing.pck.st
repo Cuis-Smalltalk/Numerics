@@ -1,157 +1,157 @@
-'From Cuis 5.0 [latest update: #4594] on 10 May 2021 at 4:27:55 pm'!
+'From Cuis7.1 [latest update: #6466] on 12 June 2024 at 3:33:33 pm'!
 'Description '!
-!provides: 'ImageProcessing' 1 21!
+!provides: 'ImageProcessing' 1 22!
 !requires: 'Graphics-Files-Additional' 1 nil nil!
 !requires: 'SignalProcessing' 1 100 nil!
-!requires: 'Complex' 1 nil nil!
 !requires: 'NumericalMethods' 1 8 nil!
 !requires: 'ProbabilityDistributions' 1 nil nil!
+!requires: 'Complex' 1 nil nil!
 !requires: 'Statistics' 1 nil nil!
-SystemOrganization addCategory: 'ImageProcessing'!
-SystemOrganization addCategory: 'ImageProcessing-Images'!
-SystemOrganization addCategory: 'ImageProcessing-Interpolators'!
-SystemOrganization addCategory: 'ImageProcessing-Obsolete'!
-SystemOrganization addCategory: 'ImageProcessing-Support'!
-SystemOrganization addCategory: 'ImageProcessing-Tests'!
+SystemOrganization addCategory: #ImageProcessing!
+SystemOrganization addCategory: #'ImageProcessing-Images'!
+SystemOrganization addCategory: #'ImageProcessing-Interpolators'!
+SystemOrganization addCategory: #'ImageProcessing-Obsolete'!
+SystemOrganization addCategory: #'ImageProcessing-Support'!
+SystemOrganization addCategory: #'ImageProcessing-Tests'!
 
 
-!classDefinition: #FloatImage category: 'ImageProcessing-Images'!
+!classDefinition: #FloatImage category: #'ImageProcessing-Images'!
 FloatMatrix subclass: #FloatImage
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ImageProcessing-Images'!
-!classDefinition: 'FloatImage class' category: 'ImageProcessing-Images'!
+!classDefinition: 'FloatImage class' category: #'ImageProcessing-Images'!
 FloatImage class
 	instanceVariableNames: ''!
 
-!classDefinition: #ConvolutionKernel category: 'ImageProcessing-Images'!
+!classDefinition: #ConvolutionKernel category: #'ImageProcessing-Images'!
 FloatImage subclass: #ConvolutionKernel
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ImageProcessing-Images'!
-!classDefinition: 'ConvolutionKernel class' category: 'ImageProcessing-Images'!
+!classDefinition: 'ConvolutionKernel class' category: #'ImageProcessing-Images'!
 ConvolutionKernel class
 	instanceVariableNames: ''!
 
-!classDefinition: #IrregularSampledImage category: 'ImageProcessing-Images'!
+!classDefinition: #IrregularSampledImage category: #'ImageProcessing-Images'!
 FloatImage subclass: #IrregularSampledImage
 	instanceVariableNames: 'closestKnownX closestKnownY possibleTriPoints'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ImageProcessing-Images'!
-!classDefinition: 'IrregularSampledImage class' category: 'ImageProcessing-Images'!
+!classDefinition: 'IrregularSampledImage class' category: #'ImageProcessing-Images'!
 IrregularSampledImage class
 	instanceVariableNames: ''!
 
-!classDefinition: #FloatImageTest category: 'ImageProcessing-Tests'!
+!classDefinition: #FloatImageTest category: #'ImageProcessing-Tests'!
 TestCase subclass: #FloatImageTest
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ImageProcessing-Tests'!
-!classDefinition: 'FloatImageTest class' category: 'ImageProcessing-Tests'!
+!classDefinition: 'FloatImageTest class' category: #'ImageProcessing-Tests'!
 FloatImageTest class
 	instanceVariableNames: ''!
 
-!classDefinition: #ComplexImage category: 'ImageProcessing-Images'!
+!classDefinition: #ComplexImage category: #'ImageProcessing-Images'!
 Object subclass: #ComplexImage
 	instanceVariableNames: 'real imaginary'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ImageProcessing-Images'!
-!classDefinition: 'ComplexImage class' category: 'ImageProcessing-Images'!
+!classDefinition: 'ComplexImage class' category: #'ImageProcessing-Images'!
 ComplexImage class
 	instanceVariableNames: ''!
 
-!classDefinition: #MultiBandImage category: 'ImageProcessing-Images'!
+!classDefinition: #MultiBandImage category: #'ImageProcessing-Images'!
 Object subclass: #MultiBandImage
 	instanceVariableNames: 'bands'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ImageProcessing-Images'!
-!classDefinition: 'MultiBandImage class' category: 'ImageProcessing-Images'!
+!classDefinition: 'MultiBandImage class' category: #'ImageProcessing-Images'!
 MultiBandImage class
 	instanceVariableNames: ''!
 
-!classDefinition: #GeneralizedInterpolatingImage category: 'ImageProcessing-Interpolators'!
+!classDefinition: #GeneralizedInterpolatingImage category: #'ImageProcessing-Interpolators'!
 Object subclass: #GeneralizedInterpolatingImage
 	instanceVariableNames: 'width height coefficients'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ImageProcessing-Interpolators'!
-!classDefinition: 'GeneralizedInterpolatingImage class' category: 'ImageProcessing-Interpolators'!
+!classDefinition: 'GeneralizedInterpolatingImage class' category: #'ImageProcessing-Interpolators'!
 GeneralizedInterpolatingImage class
 	instanceVariableNames: ''!
 
-!classDefinition: #BSplineInterpolatingImage category: 'ImageProcessing-Interpolators'!
+!classDefinition: #BSplineInterpolatingImage category: #'ImageProcessing-Interpolators'!
 GeneralizedInterpolatingImage subclass: #BSplineInterpolatingImage
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ImageProcessing-Interpolators'!
-!classDefinition: 'BSplineInterpolatingImage class' category: 'ImageProcessing-Interpolators'!
+!classDefinition: 'BSplineInterpolatingImage class' category: #'ImageProcessing-Interpolators'!
 BSplineInterpolatingImage class
 	instanceVariableNames: ''!
 
-!classDefinition: #ShiftedLinearInterpolatingImage category: 'ImageProcessing-Interpolators'!
+!classDefinition: #ShiftedLinearInterpolatingImage category: #'ImageProcessing-Interpolators'!
 GeneralizedInterpolatingImage subclass: #ShiftedLinearInterpolatingImage
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ImageProcessing-Interpolators'!
-!classDefinition: 'ShiftedLinearInterpolatingImage class' category: 'ImageProcessing-Interpolators'!
+!classDefinition: 'ShiftedLinearInterpolatingImage class' category: #'ImageProcessing-Interpolators'!
 ShiftedLinearInterpolatingImage class
 	instanceVariableNames: ''!
 
-!classDefinition: #AccumulatedImageHistogram category: 'ImageProcessing-Obsolete'!
+!classDefinition: #AccumulatedImageHistogram category: #'ImageProcessing-Obsolete'!
 Object subclass: #AccumulatedImageHistogram
 	instanceVariableNames: 'tallies'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ImageProcessing-Obsolete'!
-!classDefinition: 'AccumulatedImageHistogram class' category: 'ImageProcessing-Obsolete'!
+!classDefinition: 'AccumulatedImageHistogram class' category: #'ImageProcessing-Obsolete'!
 AccumulatedImageHistogram class
 	instanceVariableNames: ''!
 
-!classDefinition: #ImageHistogram category: 'ImageProcessing-Obsolete'!
+!classDefinition: #ImageHistogram category: #'ImageProcessing-Obsolete'!
 Object subclass: #ImageHistogram
 	instanceVariableNames: 'tallies'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ImageProcessing-Obsolete'!
-!classDefinition: 'ImageHistogram class' category: 'ImageProcessing-Obsolete'!
+!classDefinition: 'ImageHistogram class' category: #'ImageProcessing-Obsolete'!
 ImageHistogram class
 	instanceVariableNames: ''!
 
-!classDefinition: #ImageHistogram2 category: 'ImageProcessing-Obsolete'!
+!classDefinition: #ImageHistogram2 category: #'ImageProcessing-Obsolete'!
 Object subclass: #ImageHistogram2
 	instanceVariableNames: 'tallies'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ImageProcessing-Obsolete'!
-!classDefinition: 'ImageHistogram2 class' category: 'ImageProcessing-Obsolete'!
+!classDefinition: 'ImageHistogram2 class' category: #'ImageProcessing-Obsolete'!
 ImageHistogram2 class
 	instanceVariableNames: ''!
 
-!classDefinition: #ImageHistogram3 category: 'ImageProcessing-Obsolete'!
+!classDefinition: #ImageHistogram3 category: #'ImageProcessing-Obsolete'!
 Object subclass: #ImageHistogram3
 	instanceVariableNames: 'tallies'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ImageProcessing-Obsolete'!
-!classDefinition: 'ImageHistogram3 class' category: 'ImageProcessing-Obsolete'!
+!classDefinition: 'ImageHistogram3 class' category: #'ImageProcessing-Obsolete'!
 ImageHistogram3 class
 	instanceVariableNames: ''!
 
-!classDefinition: #FFT2D category: 'ImageProcessing-Support'!
+!classDefinition: #FFT2D category: #'ImageProcessing-Support'!
 Object subclass: #FFT2D
 	instanceVariableNames: 'realMatrix imagMatrix'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ImageProcessing-Support'!
-!classDefinition: 'FFT2D class' category: 'ImageProcessing-Support'!
+!classDefinition: 'FFT2D class' category: #'ImageProcessing-Support'!
 FFT2D class
 	instanceVariableNames: ''!
 
@@ -314,11 +314,6 @@ are now obsolete. They have been superseded by Histogram and UnitaryMonotonicMap
 !FFT2D commentStamp: '<historical>' prior: 0!
 My instances provide for 2D FFT on FloatMatrix'es and FloatImages. I rely on FFT for succesive transform by rows and by columns.!
 
-!ComplexImage methodsFor: 'copying' stamp: 'jmv 7/5/2018 08:17:06'!
-postCopy
-	real _ real copy.
-	imaginary _ imaginary copy! !
-
 !FloatImage methodsFor: 'arithmetic-answer new' stamp: 'jmv 7/5/2018 07:27:09'!
 * aFloatImageOrNumber
 	"Answer a new FloatImage. Don't affect receiver or argument in any way.
@@ -372,7 +367,7 @@ divideBy: aFloatImageOrNumber ifDivisorZero: zeroDivisionBlockOrValue ifBothZero
 			self validateSameSize: aFloatImageOrNumber.
 			elements divideBy: aFloatImageOrNumber elements ifDivisorZero: zeroDivisionBlockOrValue ifBothZero: indeterminateBlockOrValue ]! !
 
-!FloatImage methodsFor: 'resampling-basic' stamp: 'jmv 4/8/2015 15:28'!
+!FloatImage methodsFor: 'resampling-basic' stamp: 'jmv 6/12/2024 15:00:21'!
 scaledBy: scale
 	"Answer a new image. Extent is multiplied by scale (i.e. scale=0.5 means half size, scale=2 means twice size.
 	Gives very good results for any scale values, including very large and very small.
@@ -386,13 +381,13 @@ scaledBy: scale
 	(original scaledBy: 0.25) display.
 
 	| original |
-	original _ FloatImage from8BitColorForm: Cursor read as8BitColorForm.
+	original _ FloatImage fromForm: Cursor readCursor asGrayForm.
 	(original scaledBy: 4.0) display.
 	original asForm displayAt: 16@0.
 	(original scaledBy: 0.7) display.
 	"
 	| t |
-	t _ AffineTransformation forImageZoom: scale.
+	t := AffineTransformation forImageZoom: scale.
 	^scale < 0.8
 		ifTrue: [
 			scale < 0.25
@@ -2875,14 +2870,14 @@ repairLocalRelativeThreshold: fractionOfPixelValue
 		(minDiffElements at: idx) > absoluteThreshold ifTrue: [ elements at: idx put: (meanElements at: idx)/8 ].
 		(maxDiffElements at: idx) < absoluteThreshold negated ifTrue: [ elements at: idx put: (meanElements at: idx)/8 ] ]! !
 
-!FloatImage methodsFor: 'resampling-aux' stamp: 'jmv 1/27/2015 14:26'!
+!FloatImage methodsFor: 'resampling-aux' stamp: 'jmv 6/12/2024 15:27:07'!
 resultExtentFor: anAffineTransformation
 	"Compute an appropriate extent for the result of applying anAffineTransformation to self.
 	Guarantees that the image bottomRight is enough.
 	Does not prevent clipping if result would require x or y with values less than 1!!"
 
-	^(anAffineTransformation displayBoundsOfTransformOf: (0@0 extent: width@ height))
-		corner! !
+	^ (anAffineTransformation externalBoundingRectOf: (0@0 extent: width@ height))
+		encompassingIntegerRectangle corner! !
 
 !FloatImage methodsFor: 'file operations' stamp: 'jmv 5/24/2018 11:04:05'!
 writeBMPfileNamed: fName
@@ -3503,7 +3498,7 @@ showZoomOut
 	'=== Area is really good, and very very cheap.' print.
 	'=== Lanczos gives best avoidance of aliasing effects but is quite expensive.' print.! !
 
-!FloatImage class methodsFor: 'experiments' stamp: 'jmv 6/2/2016 20:33'!
+!FloatImage class methodsFor: 'experiments' stamp: 'jmv 6/12/2024 13:00:57'!
 interpolationExperiment1
 	"
 	self interpolationExperiment1
@@ -3512,24 +3507,24 @@ interpolationExperiment1
 	"
 
 	| original t e p |
-	original _ FloatImage fromGrayForm: Cursor read asGrayForm.
-	t _ AffineTransformation forImageRotation: -0.2 zoom: 10.23 originalExtent: original extent.
-	e _ original resultExtentFor: t.
-	p _ 0@0.
+	original := FloatImage fromGrayForm: Cursor readCursor asGrayForm.
+	t := AffineTransformation forImageRotation: -0.2 zoom: 10.23 originalExtent: original extent.
+	e := original resultExtentFor: t.
+	p := 0@0.
 	original displayAt: p.
-	p _ p + (original width@0).
+	p := p + (original width@0).
 	(original areaTransformedBy: t resultExtent: e) displayAt: p.
-	p _ p + (e x@0).
+	p := p + (e x@0).
 	(original bSplineTransformedBy: t resultExtent: e) displayAt: p.
-	p _ p + (e x@0).
+	p := p + (e x@0).
 	(original bicubicTransformedBy: t resultExtent: e) displayAt: p.
-	p _ p + (e x@0).
+	p := p + (e x@0).
 	(original bilinearTransformedBy: t resultExtent: e) displayAt: p.
-	p _ p + (e x@0).
+	p := p + (e x@0).
 	(original lanczosTransformedBy: t resultExtent: e) displayAt: p.
-	p _ p + (e x@0).
+	p := p + (e x@0).
 	(original nearestNeighborTransformedBy: t resultExtent: e) displayAt: p.
-	p _ p + (e x@0).
+	p := p + (e x@0).
 	(original shiftedLinearTransformedBy: t resultExtent: e) displayAt: p.! !
 
 !FloatImage class methodsFor: 'experiments' stamp: 'jmv 1/27/2015 14:00'!
@@ -3616,23 +3611,23 @@ gradient: extent
 			answer x: x y: y put: x+y-2 / (extent x + extent y - 2) ]].
 	^answer! !
 
-!FloatImage class methodsFor: 'synthetic images' stamp: 'jmv 5/10/2021 16:18:10'!
+!FloatImage class methodsFor: 'synthetic images' stamp: 'jmv 6/12/2024 13:09:41'!
 randomBoxes: extent
 "
 FloatImage randomBoxes: 256 :: display
 "
 	| backColor canvas form location boxExtent x0 y0 |
-	backColor _ `Color gray: 30/255`.
-	form _ Form extent: extent asPoint depth: 32.
+	backColor := `Color gray: 30/255`.
+	form := Form extent: extent asPoint depth: 32.
 	form fillColor: backColor.
-	location _ (AffineTransformation withRadians: -3/360*Float twoPi scale: 256*0.35 position: 127.5@127.5) withYAxisNegated.
-	canvas _ VectorCanvas onForm: form.
+	location := (AffineTransformation withRadians: -3/360*Float twoPi scale: 256*0.35 position: 127.5@127.5) withCurrentYAxisInverted.
+	canvas := VectorCanvas onForm: form.
 	canvas geometryTransformation:  location.
 	20 timesRepeat: [
 		canvas fillColor: (Random withDefaultDo: [ :r | Color gray: r next]) do: [
-			boxExtent _ Random withDefaultDo: [ :r | r next].
-			x0 _ Random withDefaultDo: [ :r | r next*2-1+(boxExtent/2)].
-			y0 _ Random withDefaultDo: [ :r | r next*2-1-(boxExtent/2)].
+			boxExtent := Random withDefaultDo: [ :r | r next].
+			x0 := Random withDefaultDo: [ :r | r next*2-1+(boxExtent/2)].
+			y0 := Random withDefaultDo: [ :r | r next*2-1-(boxExtent/2)].
 			canvas
 			moveTo: x0 @ y0;
 			lineTo: x0-boxExtent @ y0;
@@ -3659,20 +3654,20 @@ resolutionTarget: extent offsetFromCenter: anOffsetFromCenter
 	"
 	^ self resolutionTarget: extent offsetFromCenter: anOffsetFromCenter backColor: nil blackColor: nil grayColor: nil whiteColor: nil! !
 
-!FloatImage class methodsFor: 'synthetic images' stamp: 'jmv 5/10/2021 16:20:00'!
+!FloatImage class methodsFor: 'synthetic images' stamp: 'jmv 6/12/2024 13:09:45'!
 resolutionTarget: extent offsetFromCenter: anOffsetFromCenter backColor: aBackColor blackColor: aBlackColor grayColor: aGrayColor whiteColor: aWhiteColor
 
 	| offsetFromCenter backColor blackColor grayColor whiteColor location canvas form |
 	offsetFromCenter := anOffsetFromCenter ifNil: [ `0@0` ].
-	backColor _ aBackColor ifNil: [`Color gray: 30/255`].
-	blackColor _ aBlackColor ifNil: [`Color gray: 50/255`].
-	grayColor _ aGrayColor ifNil: [`Color gray: 100/255`].
-	whiteColor _ aWhiteColor ifNil: [`Color gray: 200/255`].
+	backColor := aBackColor ifNil: [`Color gray: 30/255`].
+	blackColor := aBlackColor ifNil: [`Color gray: 50/255`].
+	grayColor := aGrayColor ifNil: [`Color gray: 100/255`].
+	whiteColor := aWhiteColor ifNil: [`Color gray: 200/255`].
 
-	form _ Form extent: extent asPoint depth: 32.
+	form := Form extent: extent asPoint depth: 32.
 	form fillColor: backColor.
-	location _ (AffineTransformation withRadians: -3/360*Float twoPi scale: extent*0.35 position: extent-1/2.0 + offsetFromCenter) withYAxisNegated.
-	canvas _ VectorCanvas onForm: form.
+	location := (AffineTransformation withRadians: -3/360*Float twoPi scale: extent*0.35 position: extent-1/2.0 + offsetFromCenter) withCurrentYAxisInverted.
+	canvas := VectorCanvas onForm: form.
 	canvas geometryTransformation: location.
 	canvas fillColor: whiteColor do: [
 		canvas
@@ -4523,34 +4518,36 @@ test3
 			clean; interpolateBarycentricInLinearGammaSpace; displayAt: w*3 @ h.
 		Processor yield ]! !
 
-!FloatImageTest methodsFor: 'testing' stamp: 'jmv 3/12/2017 19:33:09'!
+!FloatImageTest methodsFor: 'testing' stamp: 'jmv 6/12/2024 15:17:18'!
 testAreaInterpolation
 	"
 	FloatImageTest new testAreaInterpolation
 	"
 	| desiredResult large t subsampled |
 
-	desiredResult _ FloatImage checkerboard: 8@8 n: 8.
+	desiredResult := FloatImage checkerboard: 8@8 n: 8.
 
-	t _ AffineTransformation forImageZoom: 0.25.
-	large _ FloatImage checkerboard: 32@32 n: 8.
-	subsampled _ large areaTransformedBy: t resultExtent: nil.
-	self assert: subsampled = desiredResult.
+	t := AffineTransformation forImageZoom: 0.25.
+	large := FloatImage checkerboard: 32@32 n: 8.
+	subsampled := large areaTransformedBy: t resultExtent: nil.
+	self assert: (subsampled expandTo: 8@8)= desiredResult.
 
-	t _ AffineTransformation forImageZoom: 1.0/3.0.
-	large _ FloatImage checkerboard: 24@24 n: 8.
-	subsampled _ large areaTransformedBy: t resultExtent: nil.
-	self assert: subsampled = desiredResult.
+	t := AffineTransformation forImageZoom: 1.0/3.0.
+	large := FloatImage checkerboard: 24@24 n: 8.
+	subsampled := large areaTransformedBy: t resultExtent: nil.
+	self assert: (subsampled expandTo: 8@8) = desiredResult.
 
-	t _ AffineTransformation forImageZoom: 0.5.
-	large _ FloatImage checkerboard: 16@16 n: 8.
-	subsampled _ large areaTransformedBy: t resultExtent: nil.
-	self assert: subsampled = desiredResult.
+	t := AffineTransformation forImageZoom: 0.5.
+	large := FloatImage checkerboard: 16@16 n: 8.
+	subsampled := large areaTransformedBy: t resultExtent: nil.
+	self assert: (subsampled expandTo: 8@8) = desiredResult.
 
-	t _ AffineTransformation forImageZoom: 1.0.
-	large _ FloatImage checkerboard: 8@8 n: 8.
-	subsampled _ large areaTransformedBy: t resultExtent: nil.
-	self assert: subsampled = desiredResult.! !
+"
+	t := AffineTransformation forImageZoom: 1.0.
+	large := FloatImage checkerboard: 8@8 n: 8.
+	subsampled := large areaTransformedBy: t resultExtent: nil.
+	self assert: subsampled= desiredResult.
+"! !
 
 !FloatImageTest methodsFor: 'testing' stamp: 'jmv 7/26/2018 10:07:29'!
 testCentroids
@@ -4600,6 +4597,11 @@ testHistogram
 	self assert: (histogram countAt: 1.0) = 1.
 	self assert: (histogram accumulated countAt: 0.0) = 1.
 	self assert: (histogram accumulated countAt: 1.0) = 5! !
+
+!ComplexImage methodsFor: 'copying' stamp: 'jmv 7/5/2018 08:17:06'!
+postCopy
+	real _ real copy.
+	imaginary _ imaginary copy! !
 
 !ComplexImage methodsFor: 'accessing' stamp: 'jmv 7/2/2018 19:03:43'!
 height
@@ -5455,7 +5457,7 @@ initializeFrom: aFloatImage
 	-1 to: width+2 do: [ :j |
 		self convertColumn: j ]! !
 
-!BSplineInterpolatingImage methodsFor: 'interpolating' stamp: 'jmv 5/4/2015 13:29'!
+!BSplineInterpolatingImage methodsFor: 'interpolating' stamp: 'jmv 6/12/2024 13:03:53'!
 interpolatedValueAtX: x y: y
 	"Evaluate the interpolated function. See class comment"
 
@@ -5463,20 +5465,20 @@ interpolatedValueAtX: x y: y
 	"
 	Podria ser que esto ocurra si los argumentos estan mal... habria que validar, pero no en cada evaluacion!!
 	"
-	self revisar.
+	self flag: #revisar.
 "
 (self xDomain rangeIncludes: x) ifFalse: [^0.0].
 (self yDomain rangeIncludes: y) ifFalse: [ ^0.0].
 "
-	xIndex2 _ x floor.
-	xIndex3 _ xIndex2+1.
-	xIndex1 _ xIndex2-1.
-	xIndex4 _ xIndex2+2.
+	xIndex2 := x floor.
+	xIndex3 := xIndex2+1.
+	xIndex1 := xIndex2-1.
+	xIndex4 := xIndex2+2.
 
-	yIndex2 _ y floor.
-	yIndex3 _ yIndex2+1.
-	yIndex1 _ yIndex2-1.
-	yIndex4 _ yIndex2+2.
+	yIndex2 := y floor.
+	yIndex3 := yIndex2+1.
+	yIndex1 := yIndex2-1.
+	yIndex4 := yIndex2+2.
 
 	"Validate inside some reasonable bounds. We allow extending up to 0.8 in any direction"
 	"x < 0.2 ifTrue: [ ^0.0 ]."			"Do it with integer arithmetic if at all possible"
@@ -5492,44 +5494,44 @@ interpolatedValueAtX: x y: y
 	yIndex1 > height ifTrue: [ ^0.0 ].
 	(yIndex1 = height and: [y > (height + 0.8)]) ifTrue: [ ^0.0 ].
 
-	oneSixth _ 1.0 / 6.0.
+	oneSixth := 1.0 / 6.0.
 
-	w _ x - xIndex2.
-	xWeight4 _ oneSixth * w * w * w.
-	xWeight1 _ oneSixth + ((w * w - w) * 0.5) - xWeight4.
-	xWeight3 _ w + xWeight1 - (2.0 * xWeight4).
-	xWeight2 _ 1.0 - (xWeight1 + xWeight3 + xWeight4).
+	w := x - xIndex2.
+	xWeight4 := oneSixth * w * w * w.
+	xWeight1 := oneSixth + ((w * w - w) * 0.5) - xWeight4.
+	xWeight3 := w + xWeight1 - (2.0 * xWeight4).
+	xWeight2 := 1.0 - (xWeight1 + xWeight3 + xWeight4).
 
-	w _ y - yIndex2.
-	yWeight4 _ oneSixth * w * w * w .
-	yWeight1 _ oneSixth + ((w * w - w) * 0.5) - yWeight4.
-	yWeight3 _ w + yWeight1 - (2.0 * yWeight4).
-	yWeight2 _ 1.0 - (yWeight1 + yWeight3 + yWeight4).
+	w := y - yIndex2.
+	yWeight4 := oneSixth * w * w * w .
+	yWeight1 := oneSixth + ((w * w - w) * 0.5) - yWeight4.
+	yWeight3 := w + yWeight1 - (2.0 * yWeight4).
+	yWeight2 := 1.0 - (yWeight1 + yWeight3 + yWeight4).
 
 	"/* perform interpolation */"
-	w _ xWeight1 * (self coefficientAtX: xIndex1 y: yIndex1) +
+	w := xWeight1 * (self coefficientAtX: xIndex1 y: yIndex1) +
 		(xWeight2 * (self coefficientAtX: xIndex2 y: yIndex1)) +
 		(xWeight3 * (self coefficientAtX: xIndex3 y: yIndex1)) +
 		(xWeight4 * (self coefficientAtX: xIndex4 y: yIndex1)).
-	interpolated _ yWeight1 * w.
+	interpolated := yWeight1 * w.
 
-	w _ xWeight1 * (self coefficientAtX: xIndex1 y: yIndex2) +
+	w := xWeight1 * (self coefficientAtX: xIndex1 y: yIndex2) +
 		(xWeight2 * (self coefficientAtX: xIndex2 y: yIndex2)) +
 		(xWeight3 * (self coefficientAtX: xIndex3 y: yIndex2)) +
 		(xWeight4 * (self coefficientAtX: xIndex4 y: yIndex2)).
-	interpolated _ yWeight2 * w + interpolated.
+	interpolated := yWeight2 * w + interpolated.
 
-	w _ xWeight1 * (self coefficientAtX: xIndex1 y: yIndex3) +
+	w := xWeight1 * (self coefficientAtX: xIndex1 y: yIndex3) +
 		(xWeight2 * (self coefficientAtX: xIndex2 y: yIndex3)) +
 		(xWeight3 * (self coefficientAtX: xIndex3 y: yIndex3)) +
 		(xWeight4 * (self coefficientAtX: xIndex4 y: yIndex3)).
-	interpolated _ yWeight3 * w + interpolated.
+	interpolated := yWeight3 * w + interpolated.
 
-	w _ xWeight1 * (self coefficientAtX: xIndex1 y: yIndex4) +
+	w := xWeight1 * (self coefficientAtX: xIndex1 y: yIndex4) +
 		(xWeight2 * (self coefficientAtX: xIndex2 y: yIndex4)) +
 		(xWeight3 * (self coefficientAtX: xIndex3 y: yIndex4)) +
 		(xWeight4 * (self coefficientAtX: xIndex4 y: yIndex4)).
-	interpolated _ yWeight4 * w + interpolated.
+	interpolated := yWeight4 * w + interpolated.
 
 	^interpolated! !
 
@@ -5557,19 +5559,19 @@ example1
 	FFT new plot: interpolatedValues in: rect color: Color red min: min max: max.
 	FFT new plot: samples in: smallerRect color: Color blue min: min max: max.! !
 
-!BSplineInterpolatingImage class methodsFor: 'examples' stamp: 'jmv 6/2/2016 20:31'!
+!BSplineInterpolatingImage class methodsFor: 'examples' stamp: 'jmv 6/12/2024 14:20:34'!
 example2
 	"Zooming into a 1-bit black & white image is not the best, but it shows how this work.
 	Note: resampling category in FloatImage has methods for whole image resampling."
 	| bigger h interpolated origH origW original w |
-	w _ 500.
-	h _ 500.
-	original _ FloatImage fromGrayForm: Cursor read asGrayForm.
-	origW _ original width.
-	origH _ original height.
+	w := 500.
+	h := 500.
+	original := FloatImage fromGrayForm: Cursor readCursor asGrayForm.
+	origW := original width.
+	origH := original height.
 	original display.
-	interpolated _ BSplineInterpolatingImage from: original.
-	bigger _ FloatImage width: w height: h.
+	interpolated := BSplineInterpolatingImage from: original.
+	bigger := FloatImage width: w height: h.
 	1 to: h do: [ :y |
 		1 to: w do: [ :x |
 			bigger x: x y: y put: (interpolated interpolatedValueAtX: x-0.5/w*origW+0.5 y: y-0.5/h*origH+0.5) ]].
@@ -5783,19 +5785,19 @@ example1
 	FFT new plot: interpolatedValues in: rect color: Color red min: min max: max.
 	FFT new plot: samples in: smallerRect color: Color blue min: min max: max.! !
 
-!ShiftedLinearInterpolatingImage class methodsFor: 'examples' stamp: 'jmv 6/2/2016 20:35'!
+!ShiftedLinearInterpolatingImage class methodsFor: 'examples' stamp: 'jmv 6/12/2024 14:20:40'!
 example2
 	"Zooming into a 1-bit black & white image is not the best, but it shows how this work.
 	Note: resampling category in FloatImage has methods for whole image resampling."
 	| bigger h interpolated origH origW original w |
-	w _ 500.
-	h _ 500.
-	original _ FloatImage fromGrayForm: Cursor read asGrayForm.
-	origW _ original width.
-	origH _ original height.
+	w := 500.
+	h := 500.
+	original := FloatImage fromGrayForm: Cursor readCursor asGrayForm.
+	origW := original width.
+	origH := original height.
 	original display.
-	interpolated _ ShiftedLinearInterpolatingImage from: original.
-	bigger _ FloatImage width: w height: h.
+	interpolated := ShiftedLinearInterpolatingImage from: original.
+	bigger := FloatImage width: w height: h.
 	1 to: h do: [ :y |
 		1 to: w do: [ :x |
 			bigger x: x y: y put: (interpolated interpolatedValueAtX: x-0.5/w*origW+0.5 y: y-0.5/h*origH+0.5) ]].
@@ -5928,10 +5930,10 @@ accumulate
 	2 to: tallies size do: [ :i |
 		tallies at: i put: (tallies at: i) + (tallies at: i-1) ]! !
 
-!ImageHistogram methodsFor: 'operations' stamp: 'jmv 4/24/2013 15:24'!
+!ImageHistogram methodsFor: 'operations' stamp: 'jmv 6/12/2024 14:32:59'!
 accumulated
 
-	^self copyTwoLevel accumulate! !
+	^self copy accumulate! !
 
 !ImageHistogram methodsFor: 'building' stamp: 'jmv 7/24/2012 17:56'!
 addValue: aNumber
@@ -5966,6 +5968,10 @@ plot
 plotIn: rect color: aColor min: min max: max
 FFT new plot: tallies in: rect color: aColor min: min max: max! !
 
+!ImageHistogram methodsFor: 'copying' stamp: 'jmv 6/12/2024 14:32:29'!
+postCopy
+	tallies := tallies copy! !
+
 !ImageHistogram class methodsFor: 'instance creation' stamp: 'jmv 7/24/2012 16:35'!
 new: anInteger
 
@@ -5977,10 +5983,10 @@ accumulate
 	2 to: tallies size do: [ :i |
 		tallies at: i put: (tallies at: i) + (tallies at: i-1) ]! !
 
-!ImageHistogram2 methodsFor: 'operations' stamp: 'jmv 4/24/2013 15:24'!
+!ImageHistogram2 methodsFor: 'operations' stamp: 'jmv 6/12/2024 14:33:04'!
 accumulated
 
-	^self copyTwoLevel accumulate! !
+	^self copy accumulate! !
 
 !ImageHistogram2 methodsFor: 'building' stamp: 'jmv 11/5/2012 14:43'!
 addValue: aValue
@@ -6049,6 +6055,10 @@ plot2
 !ImageHistogram2 methodsFor: 'aux' stamp: 'jmv 11/5/2012 14:30'!
 plotIn: rect color: aColor min: min max: max
 	FFT new plot: tallies in: rect color: aColor min: min max: max! !
+
+!ImageHistogram2 methodsFor: 'copying' stamp: 'jmv 6/12/2024 14:32:31'!
+postCopy
+	tallies := tallies copy! !
 
 !ImageHistogram2 class methodsFor: 'instance creation' stamp: 'jmv 11/5/2012 14:19'!
 new: anInteger

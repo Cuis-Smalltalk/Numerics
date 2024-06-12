@@ -1,41 +1,41 @@
-'From Cuis 6.0 [latest update: #5795] on 7 May 2023 at 7:07:09 pm'!
+'From Cuis7.1 [latest update: #6466] on 12 June 2024 at 3:33:15 pm'!
 'Description Image Processing and Signal Processing algorithms. FloatImage, Interpolation, Histograms, etc.'!
-!provides: 'SignalProcessing' 1 105!
-!requires: 'LinearAlgebra' 1 nil nil!
+!provides: 'SignalProcessing' 1 106!
+!requires: 'Collections-CompactArrays' 1 2 nil!
 !requires: 'Pen' 1 0 nil!
 !requires: 'Sound' 1 nil nil!
-!requires: 'Collections-CompactArrays' 1 2 nil!
-SystemOrganization addCategory: 'SignalProcessing'!
-SystemOrganization addCategory: 'SignalProcessing-SoundSynthesis'!
+!requires: 'LinearAlgebra' 1 nil nil!
+SystemOrganization addCategory: #SignalProcessing!
+SystemOrganization addCategory: #'SignalProcessing-SoundSynthesis'!
 
 
-!classDefinition: #WaveletCodec category: 'SignalProcessing-SoundSynthesis'!
+!classDefinition: #WaveletCodec category: #'SignalProcessing-SoundSynthesis'!
 SoundCodec subclass: #WaveletCodec
 	instanceVariableNames: 'fwt samplesPerFrame nLevels alpha beta'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'SignalProcessing-SoundSynthesis'!
-!classDefinition: 'WaveletCodec class' category: 'SignalProcessing-SoundSynthesis'!
+!classDefinition: 'WaveletCodec class' category: #'SignalProcessing-SoundSynthesis'!
 WaveletCodec class
 	instanceVariableNames: ''!
 
-!classDefinition: #FFT category: 'SignalProcessing'!
+!classDefinition: #FFT category: #SignalProcessing!
 Object subclass: #FFT
 	instanceVariableNames: 'nu n sinTable permTable realData imagData window'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'SignalProcessing'!
-!classDefinition: 'FFT class' category: 'SignalProcessing'!
+!classDefinition: 'FFT class' category: #SignalProcessing!
 FFT class
 	instanceVariableNames: ''!
 
-!classDefinition: #FWT category: 'SignalProcessing'!
+!classDefinition: #FWT category: #SignalProcessing!
 Object subclass: #FWT
 	instanceVariableNames: 'alpha beta coeffs h g hTilde gTilde samples nSamples nLevels transform'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'SignalProcessing'!
-!classDefinition: 'FWT class' category: 'SignalProcessing'!
+!classDefinition: 'FWT class' category: #SignalProcessing!
 FWT class
 	instanceVariableNames: ''!
 
@@ -849,7 +849,7 @@ setAlpha: alph beta: bet
 		[:i | g at: i put: (g at: i) negated]
 ! !
 
-!AffineTransformation class methodsFor: '*SignalProcessing-Images' stamp: 'jmv 1/27/2015 13:48'!
+!AffineTransformation class methodsFor: '*SignalProcessing-Images' stamp: 'jmv 6/12/2024 15:23:03'!
 forImageRotation: radians zoom: scale originalExtent: originalExtent
 	"
 	Good for processing FloatImages
@@ -873,11 +873,11 @@ forImageRotation: radians zoom: scale originalExtent: originalExtent
 	"
 
 	| halfOrig t1 r halfResult |
-	t1 _ (AffineTransformation withRadians: radians) composedWith:
+	t1 := (AffineTransformation withRadians: radians) composedWith:
 				(AffineTransformation withScale: scale).
-	r _ t1 displayBoundsOfTransformOf: (0.5@0.5 extent: originalExtent).
-	halfOrig _ originalExtent / 2.0+0.5.
-	halfResult _ r extent / 2.0+0.5.
+	r := (t1 externalBoundingRectOf: (0.5@0.5 extent: originalExtent)) encompassingIntegerRectangle.
+	halfOrig := originalExtent / 2.0+0.5.
+	halfResult := r extent / 2.0+0.5.
 	^ (AffineTransformation withTranslation: halfResult) composedWith:
 			(t1 composedWith:
 					(AffineTransformation withTranslation: halfOrig negated))! !
