@@ -1,66 +1,76 @@
-'From Cuis 6.0 [latest update: #5791] on 7 May 2023 at 6:18:48 pm'!
+'From Cuis7.1 [latest update: #6511] on 9 July 2024 at 7:23:09 pm'!
 'Description '!
-!provides: 'LinearAlgebra' 1 60!
-SystemOrganization addCategory: 'LinearAlgebra'!
+!provides: 'LinearAlgebra' 1 61!
+SystemOrganization addCategory: #LinearAlgebra!
 
 
-!classDefinition: #NumericalMatrix category: 'LinearAlgebra'!
+!classDefinition: #NumericalMatrix category: #LinearAlgebra!
 Array2D subclass: #NumericalMatrix
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'LinearAlgebra'!
-!classDefinition: 'NumericalMatrix class' category: 'LinearAlgebra'!
+!classDefinition: 'NumericalMatrix class' category: #LinearAlgebra!
 NumericalMatrix class
 	instanceVariableNames: ''!
 
-!classDefinition: #ByteMatrix category: 'LinearAlgebra'!
+!classDefinition: #ByteMatrix category: #LinearAlgebra!
 NumericalMatrix subclass: #ByteMatrix
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'LinearAlgebra'!
-!classDefinition: 'ByteMatrix class' category: 'LinearAlgebra'!
+!classDefinition: 'ByteMatrix class' category: #LinearAlgebra!
 ByteMatrix class
 	instanceVariableNames: ''!
 
-!classDefinition: #FloatMatrix category: 'LinearAlgebra'!
+!classDefinition: #DoubleByteMatrix category: #LinearAlgebra!
+NumericalMatrix subclass: #DoubleByteMatrix
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'LinearAlgebra'!
+!classDefinition: 'DoubleByteMatrix class' category: #LinearAlgebra!
+DoubleByteMatrix class
+	instanceVariableNames: ''!
+
+!classDefinition: #FloatMatrix category: #LinearAlgebra!
 NumericalMatrix subclass: #FloatMatrix
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'LinearAlgebra'!
-!classDefinition: 'FloatMatrix class' category: 'LinearAlgebra'!
+!classDefinition: 'FloatMatrix class' category: #LinearAlgebra!
 FloatMatrix class
 	instanceVariableNames: ''!
 
-!classDefinition: #Float64Matrix category: 'LinearAlgebra'!
+!classDefinition: #Float64Matrix category: #LinearAlgebra!
 FloatMatrix subclass: #Float64Matrix
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'LinearAlgebra'!
-!classDefinition: 'Float64Matrix class' category: 'LinearAlgebra'!
+!classDefinition: 'Float64Matrix class' category: #LinearAlgebra!
 Float64Matrix class
 	instanceVariableNames: ''!
 
-!classDefinition: #FloatBandMatrix category: 'LinearAlgebra'!
+!classDefinition: #FloatBandMatrix category: #LinearAlgebra!
 FloatMatrix subclass: #FloatBandMatrix
 	instanceVariableNames: 'bandWidth'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'LinearAlgebra'!
-!classDefinition: 'FloatBandMatrix class' category: 'LinearAlgebra'!
+!classDefinition: 'FloatBandMatrix class' category: #LinearAlgebra!
 FloatBandMatrix class
 	instanceVariableNames: ''!
 
-!classDefinition: #IntegerMatrix category: 'LinearAlgebra'!
+!classDefinition: #IntegerMatrix category: #LinearAlgebra!
 NumericalMatrix subclass: #IntegerMatrix
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'LinearAlgebra'!
-!classDefinition: 'IntegerMatrix class' category: 'LinearAlgebra'!
+!classDefinition: 'IntegerMatrix class' category: #LinearAlgebra!
 IntegerMatrix class
 	instanceVariableNames: ''!
 
@@ -77,6 +87,15 @@ ByteMatrix fromArrayOfArrays: #(
 	#[ 0 	255 	94   	]
 	#[ 4 	127 	128 	]
 	#[ 1 	254	3 		])!
+
+!DoubleByteMatrix commentStamp: 'jmv 7/9/2024 19:21:00' prior: 0!
+Elements are integers between 0 and 65535, i.e. unsigned 16-bit words.
+
+DoubleByteMatrix fromArrayOfArrays: #(
+	#( 0 			255 		65500)
+	#( 40000 		127 		128)
+	#( 32768 		254		32767 ))
+!
 
 !FloatMatrix commentStamp: '<historical>' prior: 0!
 My instances are m x n matrices of Float values, where m is the height and n the width. Suitable for LinearAlgebra and SignalProcessing suff, among many other possible applications. It is possible to build VM plugins for fast processing.!
@@ -1088,6 +1107,15 @@ fillFromGrayForm: aGrayForm
 initializeElements
 
 	elements _ ByteArray new: height * width! !
+
+!DoubleByteMatrix methodsFor: 'initialization' stamp: 'jmv 7/9/2024 19:17:40'!
+initializeElements
+
+	| n |
+	n := height * width.
+	n even ifFalse: [
+		n := n + 1 ].
+	elements := DoubleByteArray new: n! !
 
 !FloatMatrix methodsFor: 'printing' stamp: 'jmv 1/9/2014 21:28'!
 printOn: aStream

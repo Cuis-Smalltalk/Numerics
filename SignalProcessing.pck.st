@@ -1,7 +1,6 @@
-'From Cuis7.1 [latest update: #6466] on 12 June 2024 at 3:33:15 pm'!
+'From Cuis7.1 [latest update: #6511] on 9 July 2024 at 7:0712 pm'!
 'Description Image Processing and Signal Processing algorithms. FloatImage, Interpolation, Histograms, etc.'!
-!provides: 'SignalProcessing' 1 106!
-!requires: 'Collections-CompactArrays' 1 2 nil!
+!provides: 'SignalProcessing' 1 107!
 !requires: 'Pen' 1 0 nil!
 !requires: 'Sound' 1 nil nil!
 !requires: 'LinearAlgebra' 1 nil nil!

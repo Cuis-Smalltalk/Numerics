@@ -1,11 +1,11 @@
-'From Cuis7.1 [latest update: #6466] on 12 June 2024 at 3:33:33 pm'!
+'From Cuis7.1 [latest update: #6511] on 9 July 2024 at 7:23:12 pm'!
 'Description '!
-!provides: 'ImageProcessing' 1 22!
+!provides: 'ImageProcessing' 1 24!
 !requires: 'Graphics-Files-Additional' 1 nil nil!
 !requires: 'SignalProcessing' 1 100 nil!
-!requires: 'NumericalMethods' 1 8 nil!
 !requires: 'ProbabilityDistributions' 1 nil nil!
 !requires: 'Complex' 1 nil nil!
+!requires: 'NumericalMethods' 1 8 nil!
 !requires: 'Statistics' 1 nil nil!
 SystemOrganization addCategory: #ImageProcessing!
 SystemOrganization addCategory: #'ImageProcessing-Images'!
@@ -43,16 +43,6 @@ FloatImage subclass: #IrregularSampledImage
 	category: 'ImageProcessing-Images'!
 !classDefinition: 'IrregularSampledImage class' category: #'ImageProcessing-Images'!
 IrregularSampledImage class
-	instanceVariableNames: ''!
-
-!classDefinition: #FloatImageTest category: #'ImageProcessing-Tests'!
-TestCase subclass: #FloatImageTest
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'ImageProcessing-Tests'!
-!classDefinition: 'FloatImageTest class' category: #'ImageProcessing-Tests'!
-FloatImageTest class
 	instanceVariableNames: ''!
 
 !classDefinition: #ComplexImage category: #'ImageProcessing-Images'!
@@ -153,6 +143,16 @@ Object subclass: #FFT2D
 	category: 'ImageProcessing-Support'!
 !classDefinition: 'FFT2D class' category: #'ImageProcessing-Support'!
 FFT2D class
+	instanceVariableNames: ''!
+
+!classDefinition: #FloatImageTest category: #'ImageProcessing-Tests'!
+TestCase subclass: #FloatImageTest
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ImageProcessing-Tests'!
+!classDefinition: 'FloatImageTest class' category: #'ImageProcessing-Tests'!
+FloatImageTest class
 	instanceVariableNames: ''!
 
 
@@ -1194,24 +1194,24 @@ Esto serviria para, por ejemplo, ajustes de brillo, etc en una gui"
 	bb copyBits.
 	self -= magic! !
 
-!FloatImage methodsFor: 'repair' stamp: 'jmv 8/3/2016 14:31:33'!
+!FloatImage methodsFor: 'repair' stamp: 'jmv 7/9/2024 19:21:56'!
 badPixelCorrectionMapFor: badPixels
 	"Answer a ShortWordMatrix with a correction map for badPixels"
 
 	| correctionMap badPixelsSet x x0 x1 y y0 y1 |
-	badPixelsSet _ badPixels asSet.
-	correctionMap _ ShortWordMatrix extent: 6@badPixels size.
+	badPixelsSet := badPixels asSet.
+	correctionMap := DoubleByteMatrix extent: 6@badPixels size.
 	badPixels withIndexDo: [ :each :i |
-		x _ each x.
-		y _ each y.
-		x0 _ (x-1 to: 1 by: -1) detect: [ :xx | (badPixelsSet includes: xx@y) not] ifNone: [].
-		x1 _ (x+1 to: width) detect: [ :xx | (badPixelsSet includes: xx@y) not] ifNone: [].
-		x0 ifNil: [ x0 _ x1 ].
-		x1 ifNil: [ x1 _ x0 ].
-		y0 _ (y-1 to: 1 by: -1) detect: [ :yy | (badPixelsSet includes: x@yy) not] ifNone: [].
-		y1 _ (y+1 to: height) detect: [ :yy | (badPixelsSet includes: x@yy) not] ifNone: [].
-		y0 ifNil: [ y0 _ y1 ].
-		y1 ifNil: [ y1 _ y0 ].
+		x := each x.
+		y := each y.
+		x0 := (x-1 to: 1 by: -1) detect: [ :xx | (badPixelsSet includes: xx@y) not] ifNone: [].
+		x1 := (x+1 to: width) detect: [ :xx | (badPixelsSet includes: xx@y) not] ifNone: [].
+		x0 ifNil: [ x0 := x1 ].
+		x1 ifNil: [ x1 := x0 ].
+		y0 := (y-1 to: 1 by: -1) detect: [ :yy | (badPixelsSet includes: x@yy) not] ifNone: [].
+		y1 := (y+1 to: height) detect: [ :yy | (badPixelsSet includes: x@yy) not] ifNone: [].
+		y0 ifNil: [ y0 := y1 ].
+		y1 ifNil: [ y1 := y0 ].
 		correctionMap at: 1@i put: x.
 		correctionMap at: 2@i put: y.
 		correctionMap at: 3@i put: x0.
@@ -4403,8 +4403,8 @@ initializeElements
 	| s |
 	super initializeElements.
 	s _ width * height roundUpTo: 2.
-	closestKnownX _ ShortIntegerArray new: s.
-	closestKnownY _ ShortIntegerArray new: s.
+	closestKnownX _ DoubleByteArray new: s.
+	closestKnownY _ DoubleByteArray new: s.
 	possibleTriPoints _ OrderedCollection new! !
 
 !IrregularSampledImage methodsFor: 'testing' stamp: 'jmv 2/25/2014 11:00'!
@@ -4517,86 +4517,6 @@ test3
 			clean; interpolateBarycentric; displayAt: w*2 @ h;
 			clean; interpolateBarycentricInLinearGammaSpace; displayAt: w*3 @ h.
 		Processor yield ]! !
-
-!FloatImageTest methodsFor: 'testing' stamp: 'jmv 6/12/2024 15:17:18'!
-testAreaInterpolation
-	"
-	FloatImageTest new testAreaInterpolation
-	"
-	| desiredResult large t subsampled |
-
-	desiredResult := FloatImage checkerboard: 8@8 n: 8.
-
-	t := AffineTransformation forImageZoom: 0.25.
-	large := FloatImage checkerboard: 32@32 n: 8.
-	subsampled := large areaTransformedBy: t resultExtent: nil.
-	self assert: (subsampled expandTo: 8@8)= desiredResult.
-
-	t := AffineTransformation forImageZoom: 1.0/3.0.
-	large := FloatImage checkerboard: 24@24 n: 8.
-	subsampled := large areaTransformedBy: t resultExtent: nil.
-	self assert: (subsampled expandTo: 8@8) = desiredResult.
-
-	t := AffineTransformation forImageZoom: 0.5.
-	large := FloatImage checkerboard: 16@16 n: 8.
-	subsampled := large areaTransformedBy: t resultExtent: nil.
-	self assert: (subsampled expandTo: 8@8) = desiredResult.
-
-"
-	t := AffineTransformation forImageZoom: 1.0.
-	large := FloatImage checkerboard: 8@8 n: 8.
-	subsampled := large areaTransformedBy: t resultExtent: nil.
-	self assert: subsampled= desiredResult.
-"! !
-
-!FloatImageTest methodsFor: 'testing' stamp: 'jmv 7/26/2018 10:07:29'!
-testCentroids
-	"Some test on the centroid functionality
-	FloatImageTest new testCentroids
-	This is the performance of the various centroid algorithms I tried
-	centroidAround: 	0.03
-	centroidAround4 	0.063
-	centroidAround5 	0.25
-	centroidAround1 	1.06
-	centroidAround3 	2.06
-	centroidAround2 	2.76
-	"
-
-	| testImage v c max |
-	max _ 0.
-	testImage _ FloatImage width: 5 height: 5.
-	-0.5 to: 0.5 count: 21 do: [ :dx |
-		-0.5 to: 0.5 count: 18 do: [ :dy |
-			1.0 to: 5 count: 20 do: [ :scale |
-				1 to: 5 do: [ :y |
-					1 to: 5 do: [ :x |
-						v _ (x@y - (dx@dy) - 3) r * Float pi / 2 /  scale.
-						testImage x: x y: y put: v cos ]].
-				"
-				data _ testImage asFloatMatrix i: 3.
-				FFT new plot: data elements in: (10@10 extent: 200@100).
-				"
-				c _ testImage centroidAround: 3@3.
-				"We find centroid with error less than 3.5% of a pixel!!"
-				self assert: (dx@dy + 3 - c) r < 0.0323.
-				max _ max max: (dx@dy + 3 - c) r.
-			]]].
-	max print! !
-
-!FloatImageTest methodsFor: 'testing' stamp: 'jmv 5/24/2018 08:54:22'!
-testHistogram
-	"
-	FloatImageTest new testHistogram
-	"
-	| image histogram |
-	image _ FloatImage fromArrayOfArrays: #(
-		#(0.1   0.3   0.5   0.7   0.9 )
-	).
-	histogram _ image histogramUnitRange: 5.
-	self assert: (histogram countAt: 0.0) = 1.
-	self assert: (histogram countAt: 1.0) = 1.
-	self assert: (histogram accumulated countAt: 0.0) = 1.
-	self assert: (histogram accumulated countAt: 1.0) = 5! !
 
 !ComplexImage methodsFor: 'copying' stamp: 'jmv 7/5/2018 08:17:06'!
 postCopy
@@ -6226,6 +6146,86 @@ transformRows: forward
 		realMatrix i: i put: realRow.
 		imagMatrix ifNotNil: [
 			imagMatrix i: i put: imagRow ]]! !
+
+!FloatImageTest methodsFor: 'testing' stamp: 'jmv 6/12/2024 15:17:18'!
+testAreaInterpolation
+	"
+	FloatImageTest new testAreaInterpolation
+	"
+	| desiredResult large t subsampled |
+
+	desiredResult := FloatImage checkerboard: 8@8 n: 8.
+
+	t := AffineTransformation forImageZoom: 0.25.
+	large := FloatImage checkerboard: 32@32 n: 8.
+	subsampled := large areaTransformedBy: t resultExtent: nil.
+	self assert: (subsampled expandTo: 8@8)= desiredResult.
+
+	t := AffineTransformation forImageZoom: 1.0/3.0.
+	large := FloatImage checkerboard: 24@24 n: 8.
+	subsampled := large areaTransformedBy: t resultExtent: nil.
+	self assert: (subsampled expandTo: 8@8) = desiredResult.
+
+	t := AffineTransformation forImageZoom: 0.5.
+	large := FloatImage checkerboard: 16@16 n: 8.
+	subsampled := large areaTransformedBy: t resultExtent: nil.
+	self assert: (subsampled expandTo: 8@8) = desiredResult.
+
+"
+	t := AffineTransformation forImageZoom: 1.0.
+	large := FloatImage checkerboard: 8@8 n: 8.
+	subsampled := large areaTransformedBy: t resultExtent: nil.
+	self assert: subsampled= desiredResult.
+"! !
+
+!FloatImageTest methodsFor: 'testing' stamp: 'jmv 7/26/2018 10:07:29'!
+testCentroids
+	"Some test on the centroid functionality
+	FloatImageTest new testCentroids
+	This is the performance of the various centroid algorithms I tried
+	centroidAround: 	0.03
+	centroidAround4 	0.063
+	centroidAround5 	0.25
+	centroidAround1 	1.06
+	centroidAround3 	2.06
+	centroidAround2 	2.76
+	"
+
+	| testImage v c max |
+	max _ 0.
+	testImage _ FloatImage width: 5 height: 5.
+	-0.5 to: 0.5 count: 21 do: [ :dx |
+		-0.5 to: 0.5 count: 18 do: [ :dy |
+			1.0 to: 5 count: 20 do: [ :scale |
+				1 to: 5 do: [ :y |
+					1 to: 5 do: [ :x |
+						v _ (x@y - (dx@dy) - 3) r * Float pi / 2 /  scale.
+						testImage x: x y: y put: v cos ]].
+				"
+				data _ testImage asFloatMatrix i: 3.
+				FFT new plot: data elements in: (10@10 extent: 200@100).
+				"
+				c _ testImage centroidAround: 3@3.
+				"We find centroid with error less than 3.5% of a pixel!!"
+				self assert: (dx@dy + 3 - c) r < 0.0323.
+				max _ max max: (dx@dy + 3 - c) r.
+			]]].
+	max print! !
+
+!FloatImageTest methodsFor: 'testing' stamp: 'jmv 5/24/2018 08:54:22'!
+testHistogram
+	"
+	FloatImageTest new testHistogram
+	"
+	| image histogram |
+	image _ FloatImage fromArrayOfArrays: #(
+		#(0.1   0.3   0.5   0.7   0.9 )
+	).
+	histogram _ image histogramUnitRange: 5.
+	self assert: (histogram countAt: 0.0) = 1.
+	self assert: (histogram countAt: 1.0) = 1.
+	self assert: (histogram accumulated countAt: 0.0) = 1.
+	self assert: (histogram accumulated countAt: 1.0) = 5! !
 
 !NumericalMatrix methodsFor: '*ImageProcessing-resampling' stamp: 'jmv 5/4/2016 10:13'!
 bilinearInterpolatedValueAtX: x y: y
