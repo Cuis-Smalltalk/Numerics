@@ -1,6 +1,6 @@
 'From Cuis7.1 [latest update: #6511] on 9 July 2024 at 7:0712 pm'!
 'Description Image Processing and Signal Processing algorithms. FloatImage, Interpolation, Histograms, etc.'!
-!provides: 'SignalProcessing' 1 107!
+!provides: 'SignalProcessing' 1 108!
 !requires: 'Pen' 1 0 nil!
 !requires: 'Sound' 1 nil nil!
 !requires: 'LinearAlgebra' 1 nil nil!
@@ -393,7 +393,7 @@ samplesPerCycleForIndex: i
 	^ windowSize asFloat / (i - 1)
 ! !
 
-!FFT methodsFor: 'testing' stamp: 'di 6/17/97 07:47'!
+!FFT methodsFor: 'testing' stamp: 'di 6/17/1997 07:47'!
 test  "Display restoreAfter: [(FFT new nu: 8) test].  --  Test on an array of 256 samples"
 	"Initialize to pure (co)Sine Wave, plot, transform, plot, invert and plot again"
 	self realData: ((1 to: n) collect: [:i | (Float pi * (i-1) / (n/8)) cos]).
@@ -487,7 +487,7 @@ transformDataFrom: anIndexableCollection startingAt: index
 	^ out
 ! !
 
-!FFT methodsFor: 'transforming' stamp: 'di 6/17/97 07:47'!
+!FFT methodsFor: 'transforming' stamp: 'di 6/17/1997 07:47'!
 permuteData
 	| i end a b |
 	i _ 1.
@@ -499,7 +499,7 @@ permuteData
 		imagData swap: a with: b.
 		i _ i + 2]! !
 
-!FFT methodsFor: 'transforming' stamp: 'di 6/17/97 07:47'!
+!FFT methodsFor: 'transforming' stamp: 'di 6/17/1997 07:47'!
 scaleData
 	"Scale all elements by 1/n when doing inverse"
 	| realN |
