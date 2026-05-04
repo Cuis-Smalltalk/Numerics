@@ -1,96 +1,96 @@
-'From Cuis 5.0 [latest update: #4370] on 4 September 2020 at 11:11:58 am'!
+'From Cuis7.7 [latest update: #7902] on 3 May 2026 at 9:16:55 pm'!
 'Description Stuff from Balloon3D-Math by Andreas Raab. Adapted to use 64-bit Float arithmetic (in addition to 32-bit FloatArray).'!
-!provides: 'Math 3D' 1 24!
-SystemOrganization addCategory: #'Math 3D'!
+!provides: 'Math3D' 1 25!
+SystemOrganization addCategory: #'Math3D'!
 
 
-!classDefinition: #Float32Matrix3x3 category: #'Math 3D'!
+!classDefinition: #Float32Matrix3x3 category: #'Math3D'!
 Float32Array variableWordSubclass: #Float32Matrix3x3
 	instanceVariableNames: ''
 	classVariableNames: 'Float32Matrix3x3Identity Float32Matrix3x3Zero'
 	poolDictionaries: ''
-	category: 'Math 3D'!
-!classDefinition: 'Float32Matrix3x3 class' category: #'Math 3D'!
+	category: 'Math3D'!
+!classDefinition: 'Float32Matrix3x3 class' category: #'Math3D'!
 Float32Matrix3x3 class
 	instanceVariableNames: ''!
 
-!classDefinition: #Float32Vector3 category: #'Math 3D'!
+!classDefinition: #Float32Vector3 category: #'Math3D'!
 Float32Array variableWordSubclass: #Float32Vector3
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
-	category: 'Math 3D'!
-!classDefinition: 'Float32Vector3 class' category: #'Math 3D'!
+	category: 'Math3D'!
+!classDefinition: 'Float32Vector3 class' category: #'Math3D'!
 Float32Vector3 class
 	instanceVariableNames: ''!
 
-!classDefinition: #Float64Color4 category: #'Math 3D'!
-Float64Array variableWordSubclass: #Float64Color4
+!classDefinition: #Float64Color4 category: #'Math3D'!
+Float64Array variableDoubleWordSubclass: #Float64Color4
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
-	category: 'Math 3D'!
-!classDefinition: 'Float64Color4 class' category: #'Math 3D'!
+	category: 'Math3D'!
+!classDefinition: 'Float64Color4 class' category: #'Math3D'!
 Float64Color4 class
 	instanceVariableNames: ''!
 
-!classDefinition: #Float64Matrix3x3 category: #'Math 3D'!
-Float64Array variableWordSubclass: #Float64Matrix3x3
+!classDefinition: #Float64Matrix3x3 category: #'Math3D'!
+Float64Array variableDoubleWordSubclass: #Float64Matrix3x3
 	instanceVariableNames: ''
 	classVariableNames: 'Float64Matrix3x3Identity Float64Matrix3x3Zero'
 	poolDictionaries: ''
-	category: 'Math 3D'!
-!classDefinition: 'Float64Matrix3x3 class' category: #'Math 3D'!
+	category: 'Math3D'!
+!classDefinition: 'Float64Matrix3x3 class' category: #'Math3D'!
 Float64Matrix3x3 class
 	instanceVariableNames: ''!
 
-!classDefinition: #Float64Matrix4x4 category: #'Math 3D'!
-Float64Array variableWordSubclass: #Float64Matrix4x4
+!classDefinition: #Float64Matrix4x4 category: #'Math3D'!
+Float64Array variableDoubleWordSubclass: #Float64Matrix4x4
 	instanceVariableNames: ''
 	classVariableNames: 'Float64Matrix4x4Identity Float64Matrix4x4Zero'
 	poolDictionaries: ''
-	category: 'Math 3D'!
-!classDefinition: 'Float64Matrix4x4 class' category: #'Math 3D'!
+	category: 'Math3D'!
+!classDefinition: 'Float64Matrix4x4 class' category: #'Math3D'!
 Float64Matrix4x4 class
 	instanceVariableNames: ''!
 
-!classDefinition: #Float64Quaternion category: #'Math 3D'!
-Float64Array variableWordSubclass: #Float64Quaternion
+!classDefinition: #Float64Quaternion category: #'Math3D'!
+Float64Array variableDoubleWordSubclass: #Float64Quaternion
 	instanceVariableNames: ''
 	classVariableNames: 'Float64IdentityRotation Identity'
 	poolDictionaries: ''
-	category: 'Math 3D'!
-!classDefinition: 'Float64Quaternion class' category: #'Math 3D'!
+	category: 'Math3D'!
+!classDefinition: 'Float64Quaternion class' category: #'Math3D'!
 Float64Quaternion class
 	instanceVariableNames: ''!
 
-!classDefinition: #Float64Vector2 category: #'Math 3D'!
-Float64Array variableWordSubclass: #Float64Vector2
+!classDefinition: #Float64Vector2 category: #'Math3D'!
+Float64Array variableDoubleWordSubclass: #Float64Vector2
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
-	category: 'Math 3D'!
-!classDefinition: 'Float64Vector2 class' category: #'Math 3D'!
+	category: 'Math3D'!
+!classDefinition: 'Float64Vector2 class' category: #'Math3D'!
 Float64Vector2 class
 	instanceVariableNames: ''!
 
-!classDefinition: #Float64Vector3 category: #'Math 3D'!
-Float64Array variableWordSubclass: #Float64Vector3
+!classDefinition: #Float64Vector3 category: #'Math3D'!
+Float64Array variableDoubleWordSubclass: #Float64Vector3
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
-	category: 'Math 3D'!
-!classDefinition: 'Float64Vector3 class' category: #'Math 3D'!
+	category: 'Math3D'!
+!classDefinition: 'Float64Vector3 class' category: #'Math3D'!
 Float64Vector3 class
 	instanceVariableNames: ''!
 
-!classDefinition: #Float64Vector4 category: #'Math 3D'!
-Float64Array variableWordSubclass: #Float64Vector4
+!classDefinition: #Float64Vector4 category: #'Math3D'!
+Float64Array variableDoubleWordSubclass: #Float64Vector4
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
-	category: 'Math 3D'!
-!classDefinition: 'Float64Vector4 class' category: #'Math 3D'!
+	category: 'Math3D'!
+!classDefinition: 'Float64Vector4 class' category: #'Math3D'!
 Float64Vector4 class
 	instanceVariableNames: ''!
 
@@ -133,7 +133,7 @@ See http://tutis.ca/Rotate/7quaternions.htm
 
 Quaternions are used to state the attitude of an aircraft or spaceship with respect to a reference frame.
 
-The reference frame might be ECEF cartesian coordinates (origin at Earth center, +x towards 0� lat, 0� lon, +y towards 0� lat, 90� lon east, +z towards North pole.
+The reference frame might be ECEF cartesian coordinates (origin at Earth center, +x towards 0째 lat, 0째 lon, +y towards 0째 lat, 90째 lon east, +z towards North pole.
 The "Body" coordinates have origin at center of mass of aircraft, +x points forward (nose of the plane), +y points to the right, +z points downwards.
 
 The attitude is usually specified as "Inertial to Body" or "ECEF to Body" meaning a quaterion that if applied to the ECEF cartesian axes the result is the Body axes expressed in ECEF coordinates.
@@ -463,35 +463,35 @@ zero
 
 !Float64Color4 methodsFor: 'accessing'!
 alpha
-	^self floatAt: 4! !
+	^self at: 4! !
 
 !Float64Color4 methodsFor: 'accessing'!
 alpha: aNumber
-	self floatAt: 4 put: aNumber! !
+	self at: 4 put: aNumber! !
 
 !Float64Color4 methodsFor: 'accessing'!
 blue
-	^self floatAt: 3! !
+	^self at: 3! !
 
 !Float64Color4 methodsFor: 'accessing'!
 blue: aNumber
-	self floatAt: 3 put: aNumber! !
+	self at: 3 put: aNumber! !
 
 !Float64Color4 methodsFor: 'accessing'!
 green
-	^self floatAt: 2! !
+	^self at: 2! !
 
 !Float64Color4 methodsFor: 'accessing'!
 green: aNumber
-	self floatAt: 2 put: aNumber! !
+	self at: 2 put: aNumber! !
 
 !Float64Color4 methodsFor: 'accessing'!
 red
-	^self floatAt: 1! !
+	^self at: 1! !
 
 !Float64Color4 methodsFor: 'accessing'!
 red: aNumber
-	self floatAt: 1 put: aNumber! !
+	self at: 1 put: aNumber! !
 
 !Float64Color4 methodsFor: 'converting'!
 asColor
@@ -1467,12 +1467,12 @@ quickTransformV3ArrayFrom: srcArray to: dstArray
 	a31 := self a31.	a32 := self a32.	a33 := self a33.	a34 := self a34.
 	1 to: srcArray size do:[:i|
 		index := i-1*3.
-		x := srcArray floatAt: index+1.
-		y := srcArray floatAt: index+2.
-		z := srcArray floatAt: index+3.
-		dstArray floatAt: index+1 put: (a11*x) + (a12*y) + (a13*z) + a14.
-		dstArray floatAt: index+2 put: (a21*x) + (a22*y) + (a23*z) + a24.
-		dstArray floatAt: index+3 put: (a31*x) + (a32*y) + (a33*z) + a34.
+		x := srcArray at: index+1.
+		y := srcArray at: index+2.
+		z := srcArray at: index+3.
+		dstArray at: index+1 put: (a11*x) + (a12*y) + (a13*z) + a14.
+		dstArray at: index+2 put: (a21*x) + (a22*y) + (a23*z) + a24.
+		dstArray at: index+3 put: (a31*x) + (a32*y) + (a33*z) + a34.
 	].
 	^dstArray! !
 
@@ -2392,7 +2392,7 @@ initialize
 	Float64Quaternion initialize
 	"
 	Identity := self new.
-	Identity floatAt: 1 put: 1.0.! !
+	Identity at: 1 put: 1.0.! !
 
 !Float64Vector2 methodsFor: 'converting' stamp: 'ar 2/13/1999 20:03'!
 asPoint
@@ -2400,19 +2400,19 @@ asPoint
 
 !Float64Vector2 methodsFor: 'accessing' stamp: 'ar 2/6/1999 23:26'!
 u
-	^self floatAt: 1! !
+	^self at: 1! !
 
 !Float64Vector2 methodsFor: 'accessing' stamp: 'ar 2/6/1999 23:27'!
 u: aFloat
-	self floatAt: 1 put: aFloat! !
+	self at: 1 put: aFloat! !
 
 !Float64Vector2 methodsFor: 'accessing' stamp: 'ar 2/6/1999 23:27'!
 v
-	^self floatAt: 2! !
+	^self at: 2! !
 
 !Float64Vector2 methodsFor: 'accessing' stamp: 'ar 2/6/1999 23:27'!
 v: aFloat
-	self floatAt: 2 put: aFloat! !
+	self at: 2 put: aFloat! !
 
 !Float64Vector2 methodsFor: 'accessing' stamp: 'ar 2/7/1999 02:58'!
 x
@@ -2420,7 +2420,7 @@ x
 
 !Float64Vector2 methodsFor: 'accessing' stamp: 'ar 5/4/2000 16:00'!
 x: aFloat
-	self floatAt: 1 put: aFloat! !
+	self at: 1 put: aFloat! !
 
 !Float64Vector2 methodsFor: 'accessing' stamp: 'ar 2/7/1999 02:58'!
 y
@@ -2428,7 +2428,7 @@ y
 
 !Float64Vector2 methodsFor: 'accessing' stamp: 'ar 5/4/2000 16:00'!
 y: aFloat
-	self floatAt: 2 put: aFloat! !
+	self at: 2 put: aFloat! !
 
 !Float64Vector2 methodsFor: 'initialize' stamp: 'ar 2/6/1999 23:30'!
 u: uValue v: vValue
@@ -2762,7 +2762,7 @@ x: x y: y z: z w: w
 zero
 	^self new! !
 
-!Point methodsFor: '*Math 3D' stamp: 'jmv 2/26/2015 15:05'!
+!Point methodsFor: '*Math3D' stamp: 'jmv 2/26/2015 15:05'!
 @ aNumber
 	^Float64Vector3 x: x y: y z: aNumber! !
 Float32Matrix3x3 initialize!
