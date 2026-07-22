@@ -1,6 +1,6 @@
-'From Cuis 5.0 of 7 November 2016 [latest update: #3528] on 18 December 2018 at 12:54:11 pm'!
+'From Cuis7.9 [latest update: #8076] on 22 July 2026 at 4:04:17 pm'!
 'Description A collection of general numerical algorithms for continuous problems.'!
-!provides: 'NumericalMethods' 1 9!
+!provides: 'NumericalMethods' 1 10!
 SystemOrganization addCategory: #NumericalMethods!
 
 
@@ -21,12 +21,12 @@ The Nelder-Mead method or downhill simplex method or amoeba method is a commonly
 See https://en.wikipedia.org/wiki/Nelder-Mead_method
 
 	- objectiveFunction is the (continuous, unimodal) N-dimensional function to minimize. It takes N variables,
-		actually a kind of FloatArray or Float64Array of N elements.
+		actually a kind of FloatArray of N elements.
 	- testPoints a collection of N+1 points, needed to walk an N-dimensional space
 	
 At each step, the worst of the testPoints is detected, and replaced with an improvement (a reflection towards the centroid of the testPoints). Upon convergence, all testPoints are very close, essentially at the solution.!
 
-!NelderMeadMethod methodsFor: 'initialization' stamp: 'jmv 7/11/2017 16:26:17'!
+!NelderMeadMethod methodsFor: 'initialization' stamp: 'jmv 11/Jul/2017, 7:26:17 pm (UTC)'!
 epsilon: aNumberOrArray
 	"Convergence criteria.
 	Stop iterating when error in the answer (i.e. the test points) is believed to be smaller than epsilon.
@@ -34,9 +34,9 @@ epsilon: aNumberOrArray
 
 	epsilon _ aNumberOrArray! !
 
-!NelderMeadMethod methodsFor: 'initialization' stamp: 'jmv 12/1/2016 12:54:00'!
+!NelderMeadMethod methodsFor: 'initialization' stamp: 'jmv 1/Dec/2016, 3:54:00 pm (UTC)'!
 initialPoint: aPoint distanceForOthers: aNumber
-	"aPoint is a kind of FloatArray or Float64Array of size N.
+	"aPoint is a kind of FloatArray of size N.
 	N is the dimension of the function input, i.e. the number of variables.
 	aNumber is a reasonable distance to aPoint for the rest of the initial testPoints."
 
@@ -49,22 +49,22 @@ initialPoint: aPoint distanceForOthers: aNumber
 		testPoints at: i put: p ].
 	testPoints at: n+1 put: aPoint! !
 
-!NelderMeadMethod methodsFor: 'initialization' stamp: 'jmv 12/1/2016 12:51:16'!
+!NelderMeadMethod methodsFor: 'initialization' stamp: 'jmv 1/Dec/2016, 3:51:16 pm (UTC)'!
 initialPoints: initialPoints
-	"initialPoints is size N+1. Each element is a kind of FloatArray or Float64Array of size N.
+	"initialPoints is size N+1. Each element is a kind of FloatArray of size N.
 	N is the dimension of the function input, i.e. the number of variables.
 	Call this method when you do have a set of initial points. Otherwise it is ok to call #initialPoint:distanceForOthers:"
 
 	testPoints _ initialPoints! !
 
-!NelderMeadMethod methodsFor: 'initialization' stamp: 'jmv 10/13/2017 12:32:09'!
+!NelderMeadMethod methodsFor: 'initialization' stamp: 'jmv 13/Oct/2017, 3:32:09 pm (UTC)'!
 objectiveFunction: aBlock
 	"Set the function to minimize.
 	See class comment"
 
 	objectiveFunction _ aBlock! !
 
-!NelderMeadMethod methodsFor: 'computing' stamp: 'jmv 12/18/2018 11:04:37'!
+!NelderMeadMethod methodsFor: 'computing' stamp: 'jmv 18/Dec/2018, 2:04:37 pm (UTC)'!
 solve
 	"Closely follows implementation at
 		https://en.wikipedia.org/wiki/Nelder-Mead_method
@@ -143,7 +143,7 @@ solve
 	objectiveFunction value: bestPointX1.
 	^bestPointX1! !
 
-!NelderMeadMethod class methodsFor: 'examples' stamp: 'jmv 10/13/2017 12:44:44'!
+!NelderMeadMethod class methodsFor: 'examples' stamp: 'jmv 13/Oct/2017, 3:44:44 pm (UTC)'!
 example01
 	"
 	NelderMeadMethod example01
